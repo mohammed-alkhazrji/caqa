@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_caqa_program_supervisor_own" model="ir.rule">
+        <field name="name">Program - Supervisor Own Institution</field>
+        <field name="model_id" ref="model_caqa_program"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_supervisor'))]"/>
+        <field name="domain_force">[('institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+
+    <record id="rule_caqa_program_user_own" model="ir.rule">
+        <field name="name">Program - User Own Institution</field>
+        <field name="model_id" ref="model_caqa_program"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_user'))]"/>
+        <field name="domain_force">[('institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+
+    <record id="rule_caqa_program_admin_full_access" model="ir.rule">
+        <field name="name">Program - System Administrator Full Access</field>
+        <field name="model_id" ref="model_caqa_program"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_system_administrator'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_caqa_program_course_supervisor_own" model="ir.rule">
+        <field name="name">Course - Supervisor Own Institution</field>
+        <field name="model_id" ref="model_caqa_program_course"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_supervisor'))]"/>
+        <field name="domain_force">[('program_id.institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+
+    <record id="rule_caqa_program_course_user_own" model="ir.rule">
+        <field name="name">Course - User Own Institution</field>
+        <field name="model_id" ref="model_caqa_program_course"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_user'))]"/>
+        <field name="domain_force">[('program_id.institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+
+    <record id="rule_caqa_program_course_admin_full_access" model="ir.rule">
+        <field name="name">Course - System Administrator Full Access</field>
+        <field name="model_id" ref="model_caqa_program_course"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_system_administrator'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_caqa_program_lo_supervisor_own" model="ir.rule">
+        <field name="name">Learning Outcome - Supervisor Own Institution</field>
+        <field name="model_id" ref="model_caqa_program_learning_outcome"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_supervisor'))]"/>
+        <field name="domain_force">[('program_id.institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+
+    <record id="rule_caqa_program_lo_user_own" model="ir.rule">
+        <field name="name">Learning Outcome - User Own Institution</field>
+        <field name="model_id" ref="model_caqa_program_learning_outcome"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_user'))]"/>
+        <field name="domain_force">[('program_id.institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+
+    <record id="rule_caqa_program_lo_admin_full_access" model="ir.rule">
+        <field name="name">Learning Outcome - System Administrator Full Access</field>
+        <field name="model_id" ref="model_caqa_program_learning_outcome"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_system_administrator'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_application_form_ux" model="ir.ui.view">
+        <field name="name">caqa.application.form.ux</field>
+        <field name="model">caqa.application</field>
+        <field name="inherit_id" ref="caqa_application.view_caqa_application_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <widget name="web_ribbon" title="Approved" bg_color="bg-success" invisible="state != 'approved'"/>
+                <widget name="web_ribbon" title="Conditional" bg_color="bg-warning" invisible="state != 'conditional_approved'"/>
+                <widget name="web_ribbon" title="Rejected" bg_color="bg-danger" invisible="state != 'rejected'"/>
+            </xpath>
+<!--            <xpath expr="//group[@string='Readiness &amp; Completion']" position="before">-->
+<!--                <div class="alert alert-info caqa-helper-banner">-->
+<!--                    <strong>Product Guidance:</strong>-->
+<!--                    Maintain readiness above 70% and resolve all high-severity deficiencies before committee review.-->
+<!--                </div>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+    <record id="view_caqa_application_indicator_form_ux" model="ir.ui.view">
+        <field name="name">caqa.application.indicator.form.ux</field>
+        <field name="model">caqa.application.indicator</field>
+        <field name="inherit_id" ref="caqa_application.view_caqa_application_indicator_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="alert alert-secondary">
+                    Use the narrative block to explain evidence context, not just repeat attachment titles.
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

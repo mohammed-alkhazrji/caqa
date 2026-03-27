@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_caqa_committee_session_user,caqa.committee.session.user,model_caqa_committee_session,base.group_user,1,1,1,1
+access_caqa_committee_member_user,caqa.committee.member.user,model_caqa_committee_member,base.group_user,1,1,1,1
+access_caqa_decision_pack_user,caqa.decision.pack.user,model_caqa_decision_pack,base.group_user,1,1,1,1
+access_caqa_committee_vote_user,caqa.committee.vote.user,model_caqa_committee_vote,base.group_user,1,1,1,1
+access_caqa_final_decision_user,caqa.final.decision.user,model_caqa_final_decision,base.group_user,1,1,1,1

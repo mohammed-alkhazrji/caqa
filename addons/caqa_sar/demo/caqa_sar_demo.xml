@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_sar_version_1" model="caqa.sar.version">
+        <field name="name">SAR Version 1</field>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="version_no">1</field>
+        <field name="state">submitted</field>
+    </record>
+    <record id="demo_sar_section_1" model="caqa.sar.section">
+        <field name="version_id" ref="demo_sar_version_1"/>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="chapter_line_id" ref="caqa_application.demo_application_chapter_line_1"/>
+        <field name="name">Mission and Governance</field>
+        <field name="content_html">&lt;p&gt;The program mission is aligned with the institution mission and stakeholder needs.&lt;/p&gt;</field>
+        <field name="state">submitted</field>
+    </record>
+    <record id="demo_form_template_1" model="caqa.form.template">
+        <field name="name">Indicator Reflection Form</field>
+        <field name="code">FRM-IND-01</field>
+        <field name="applies_to">indicator</field>
+    </record>
+    <record id="demo_form_question_1" model="caqa.form.question">
+        <field name="template_id" ref="demo_form_template_1"/>
+        <field name="question_text">What is the main evidence proving this indicator?</field>
+        <field name="field_type">text</field>
+        <field name="is_required">1</field>
+    </record>
+    <record id="demo_form_response_1" model="caqa.form.response">
+        <field name="name">Mission Indicator Reflection</field>
+        <field name="template_id" ref="demo_form_template_1"/>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="application_indicator_id" ref="caqa_application.demo_application_indicator_line_1"/>
+        <field name="state">submitted</field>
+    </record>
+    <record id="demo_evidence_1" model="caqa.evidence">
+        <field name="name">Mission Approval Evidence</field>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="application_indicator_id" ref="caqa_application.demo_application_indicator_line_1"/>
+        <field name="requirement_id" ref="caqa_standards.demo_evidence_requirement_1"/>
+        <field name="summary">&lt;p&gt;Signed mission approval extracted from university council minutes.&lt;/p&gt;</field>
+        <field name="state">submitted</field>
+    </record>
+    <record id="demo_evidence_version_1" model="caqa.evidence.version">
+        <field name="evidence_id" ref="demo_evidence_1"/>
+        <field name="name">Mission Approval V1</field>
+        <field name="sequence_no">1</field>
+        <field name="state">submitted</field>
+    </record>
+</odoo>

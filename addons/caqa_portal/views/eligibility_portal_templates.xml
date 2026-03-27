@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Eligibility Creation Form -->
+    <template id="portal_caqa_eligibility_form_new" name="New Eligibility Request">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Request New Eligibility</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="/my/caqa/eligibility/new" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="name">Request Name or Description *</label>
+                                    <input type="text" class="form-control" name="name" required="required" placeholder="e.g. Initial Eligibility for BSc Computer Science"/>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="program_id">Program *</label>
+                                    <select class="form-control" name="program_id" required="required">
+                                        <option value="">-- Select Program --</option>
+                                        <t t-foreach="programs" t-as="program">
+                                            <option t-att-value="program.id"><t t-esc="program.name"/></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="accreditation_type_id">Accreditation Type *</label>
+                                    <select class="form-control" name="accreditation_type_id" required="required">
+                                        <option value="">-- Select Type --</option>
+                                        <t t-foreach="accreditation_types" t-as="type">
+                                            <option t-att-value="type.id"><t t-esc="type.name"/></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cycle_id">Accreditation Cycle *</label>
+                                    <select class="form-control" name="cycle_id" required="required">
+                                        <option value="">-- Select Cycle --</option>
+                                        <t t-foreach="cycles" t-as="cycle">
+                                            <option t-att-value="cycle.id"><t t-esc="cycle.name"/></option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="standard_version_id">Standards Version *</label>
+                                    <select class="form-control" name="standard_version_id" required="required">
+                                        <option value="">-- Select Standard --</option>
+                                        <t t-foreach="standard_versions" t-as="ver">
+                                            <option t-att-value="ver.id"><t t-esc="ver.name"/></option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"/> Create Eligibility Request</button>
+                                <a href="/my/caqa/eligibilities" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Eligibility Detail / Edit Form -->
+    <template id="portal_caqa_eligibility_detail" name="Eligibility Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="is_editable" t-value="eligibility.state == 'draft'"/>
+            <div class="container mt-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><t t-esc="eligibility.reference"/> - <t t-esc="eligibility.name"/></h4>
+                        <span t-attf-class="badge badge-pill #{'badge-info' if eligibility.state == 'draft' else 'badge-success'}">
+                            <t t-esc="dict(eligibility.fields_get(allfields=['state'])['state']['selection'])[eligibility.state]"/>
+                        </span>
+                    </div>
+                    
+                    <t t-if="request.session.get('form_error')">
+                        <div class="alert alert-danger border-0 rounded-0 mb-0">
+                            <strong>Submission Error:</strong> <t t-esc="request.session.pop('form_error')"/>
+                        </div>
+                    </t>
+
+                    <t t-if="is_editable">
+                        <div class="alert alert-info border-0 rounded-0 mb-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa fa-info-circle"/> <strong>Draft Mode:</strong> Review the checklist and verify requirements. You must meet at least 50% checklist completion to submit.
+                            </div>
+                            <form t-attf-action="/my/caqa/eligibility/#{eligibility.id}/submit" method="post" class="m-0">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <!-- The button triggers submission of the checklist implicitly handled in the controller if needed, but a dedicated submit action is cleaner -->
+                                <button type="submit" class="btn btn-sm btn-success px-4 font-weight-bold">
+                                    <i class="fa fa-paper-plane"/> Submit Request
+                                </button>
+                            </form>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="alert alert-warning border-0 rounded-0 mb-0">
+                            <i class="fa fa-lock"/> <strong>Locked:</strong> This request has been submitted and is currently being processed.
+                        </div>
+                    </t>
+
+                    <div class="card-body">
+                        
+                        <form t-attf-action="/my/caqa/eligibility/#{eligibility.id}" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            
+                            <div class="row mb-5">
+                                <div class="col-md-3 text-center border-right">
+                                    <div class="text-muted small">Overall Readiness</div>
+                                    <h3 class="mt-2 text-primary"><t t-esc="'%.1f' % eligibility.readiness_score"/>%</h3>
+                                </div>
+                                <div class="col-md-3 text-center border-right">
+                                    <div class="text-muted small">Checklist Completion</div>
+                                    <h3 class="mt-2 text-info"><t t-esc="'%.1f' % eligibility.checklist_completion"/>%</h3>
+                                </div>
+                                <div class="col-md-3 text-center border-right">
+                                    <div class="text-muted small">Profile Completion</div>
+                                    <h3 class="mt-2 text-success"><t t-esc="'%.1f' % eligibility.profile_readiness"/>%</h3>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <div class="text-muted small">Program Specific</div>
+                                    <h3 class="mt-2 text-warning"><t t-esc="'%.1f' % eligibility.program_readiness"/>%</h3>
+                                </div>
+                            </div>
+                            
+                            <h5 class="border-bottom pb-2 mb-3">General Information</h5>
+                            <div class="row border-bottom pb-3 mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label class="font-weight-bold text-muted small">Request Name</label>
+                                    <t t-if="is_editable"><input type="text" class="form-control" name="name" t-att-value="eligibility.name" required="required"/></t>
+                                    <t t-else=""><p class="form-control-plaintext mb-0"><t t-esc="eligibility.name"/></p></t>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="font-weight-bold text-muted small">Program</label>
+                                    <t t-if="is_editable">
+                                        <select class="form-control" name="program_id" required="required">
+                                            <t t-foreach="programs" t-as="program">
+                                                <option t-att-value="program.id" t-att-selected="program.id == eligibility.program_id.id"><t t-esc="program.name"/></option>
+                                            </t>
+                                        </select>
+                                    </t>
+                                    <t t-else=""><p class="form-control-plaintext mb-0"><t t-esc="eligibility.program_id.display_name"/></p></t>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="font-weight-bold text-muted small">Accreditation Type</label>
+                                    <t t-if="is_editable">
+                                        <select class="form-control" name="accreditation_type_id" required="required">
+                                            <t t-foreach="accreditation_types" t-as="type">
+                                                <option t-att-value="type.id" t-att-selected="type.id == eligibility.accreditation_type_id.id"><t t-esc="type.name"/></option>
+                                            </t>
+                                        </select>
+                                    </t>
+                                    <t t-else=""><p class="form-control-plaintext mb-0"><t t-esc="eligibility.accreditation_type_id.name"/></p></t>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="font-weight-bold text-muted small">Accreditation Cycle</label>
+                                    <t t-if="is_editable">
+                                        <select class="form-control" name="cycle_id" required="required">
+                                            <t t-foreach="cycles" t-as="cycle">
+                                                <option t-att-value="cycle.id" t-att-selected="cycle.id == eligibility.cycle_id.id"><t t-esc="cycle.name"/></option>
+                                            </t>
+                                        </select>
+                                    </t>
+                                    <t t-else=""><p class="form-control-plaintext mb-0"><t t-esc="eligibility.cycle_id.name"/></p></t>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="font-weight-bold text-muted small">Standards Version</label>
+                                    <t t-if="is_editable">
+                                        <select class="form-control" name="standard_version_id" required="required">
+                                            <t t-foreach="standard_versions" t-as="ver">
+                                                <option t-att-value="ver.id" t-att-selected="ver.id == eligibility.standard_version_id.id"><t t-esc="ver.name"/></option>
+                                            </t>
+                                        </select>
+                                    </t>
+                                    <t t-else=""><p class="form-control-plaintext mb-0"><t t-esc="eligibility.standard_version_id.name"/></p></t>
+                                </div>
+                            </div>
+                            
+                            <h5 class="border-bottom pb-2 mb-3">Eligibility Checklist</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 50px;">Status</th>
+                                            <th>Requirement</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="eligibility.checklist_line_ids" t-as="line">
+                                            <tr>
+                                                <td class="text-center align-middle">
+                                                    <t t-if="is_editable">
+                                                        <input type="checkbox" t-attf-name="provided_#{line.id}" t-att-checked="line.provided" style="transform: scale(1.5);"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <i t-attf-class="fa #{'fa-check-circle text-success' if line.provided else 'fa-times-circle text-danger'}" style="font-size: 1.25rem;"/>
+                                                    </t>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <div class="text-muted small"><t t-esc="line.description"/></div>
+                                                </td>
+                                                <td class="align-middle">
+                                                    <span t-attf-class="badge #{'badge-warning' if line.is_required else 'badge-secondary'}">
+                                                        <t t-esc="'Yes' if line.is_required else 'No'"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="not eligibility.checklist_line_ids">
+                                            <tr><td colspan="4" class="text-center text-muted">No checklist lines found.</td></tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <t t-if="is_editable">
+                                <div class="text-right mt-3">
+                                    <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"/> Save Requirements Draft</button>
+                                </div>
+                            </t>
+                        </form>
+                        
+                        <t t-if="eligibility.note or eligibility.review_note">
+                            <h5 class="border-bottom pb-2 mt-5 mb-3">Reviewer Notes</h5>
+                            <div t-if="eligibility.note" class="mb-3">
+                                <strong>Institution Note:</strong>
+                                <div class="bg-light p-2 border rounded"><t t-esc="eligibility.note"/></div>
+                            </div>
+                            <div t-if="eligibility.review_note">
+                                <strong>Feedback &amp; Responses:</strong>
+                                <div class="bg-light p-2 border rounded"><t t-esc="eligibility.review_note"/></div>
+                            </div>
+                        </t>
+                        
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_sar_version_tree" model="ir.ui.view">
+        <field name="name">caqa.sar.version.tree</field>
+        <field name="model">caqa.sar.version</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'approved'">
+                <field name="application_id"/>
+                <field name="name"/>
+                <field name="version_no"/>
+                <field name="completion_rate" widget="progressbar"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_sar_version_form" model="ir.ui.view">
+        <field name="name">caqa.sar.version.form</field>
+        <field name="model">caqa.sar.version</field>
+        <field name="arch" type="xml">
+            <form string="SAR Version">
+                <header>
+                    <button name="action_generate_sections" type="object" string="Generate Sections" invisible="state != 'draft'"/>
+                    <button name="action_start" type="object" string="Start" invisible="state != 'draft'"/>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state not in ('draft','in_progress')"/>
+                    <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'"/>
+                    <button name="action_archive" type="object" string="Archive" invisible="state in ('archived',)"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,submitted,approved,archived"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group><field name="application_id"/><field name="name"/><field name="version_no"/></group>
+                        <group><field name="generated_on"/><field name="generated_by"/><field name="completion_rate" widget="progressbar"/></group>
+                    </group>
+                    <notebook>
+                        <page string="Sections">
+                            <field name="section_ids">
+                                <tree >
+                                    <field name="name"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="completion_rate" widget="progressbar"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes"><field name="note" nolabel="1"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_caqa_form_template_tree" model="ir.ui.view">
+        <field name="name">caqa.form.template.tree</field>
+        <field name="model">caqa.form.template</field>
+        <field name="arch" type="xml"><tree><field name="sequence" widget="handle"/><field name="code"/><field name="name"/><field name="applies_to"/><field name="question_count"/><field name="active"/></tree></field>
+    </record>
+    <record id="view_caqa_form_template_form" model="ir.ui.view">
+        <field name="name">caqa.form.template.form</field>
+        <field name="model">caqa.form.template</field>
+        <field name="arch" type="xml">
+            <form string="Form Template">
+                <sheet>
+                    <group><group><field name="sequence"/><field name="code"/><field name="name"/></group><group><field name="applies_to"/><field name="question_count" readonly="1"/><field name="active"/></group></group>
+                    <field name="question_ids">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="question_text"/>
+                            <field name="field_type"/>
+                            <field name="is_required"/>
+                            <field name="selection_options"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_caqa_form_response_tree" model="ir.ui.view">
+        <field name="name">caqa.form.response.tree</field>
+        <field name="model">caqa.form.response</field>
+        <field name="arch" type="xml"><tree><field name="name"/><field name="template_id"/><field name="application_id"/><field name="completion_rate" widget="progressbar"/><field name="state" widget="badge"/></tree></field>
+    </record>
+    <record id="view_caqa_form_response_form" model="ir.ui.view">
+        <field name="name">caqa.form.response.form</field>
+        <field name="model">caqa.form.response</field>
+        <field name="arch" type="xml">
+            <form string="Form Response">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+                </header>
+                <sheet>
+                    <group><group><field name="name"/><field name="template_id"/><field name="application_id"/></group><group><field name="application_indicator_id"/><field name="evidence_id"/><field name="completion_rate" widget="progressbar"/></group></group>
+                    <field name="answer_ids">
+                        <tree editable="bottom">
+                            <field name="question_id"/>
+                            <field name="answer_text"/>
+                            <field name="answer_number"/>
+                            <field name="answer_boolean"/>
+                            <field name="answer_selection"/>
+                            <field name="is_answered"/>
+                        </tree>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_caqa_evidence_tree" model="ir.ui.view">
+        <field name="name">caqa.evidence.tree</field>
+        <field name="model">caqa.evidence</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'accepted'" decoration-danger="state == 'rejected'">
+                <field name="name"/>
+                <field name="application_id"/>
+                <field name="application_indicator_id"/>
+                <field name="requirement_id"/>
+                <field name="attachment_count"/>
+                <field name="validation_completion_rate" widget="progressbar"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_evidence_form" model="ir.ui.view">
+        <field name="name">caqa.evidence.form</field>
+        <field name="model">caqa.evidence</field>
+        <field name="arch" type="xml">
+            <form string="Evidence">
+                <header>
+                    <button name="action_new_version" type="object" string="New Version"/>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state not in ('draft','uploaded','rejected')"/>
+                    <button name="action_under_review" type="object" string="Under Review" invisible="state != 'submitted'"/>
+                    <button name="action_accept" type="object" string="Accept" invisible="state != 'under_review'"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state != 'under_review'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,uploaded,submitted,under_review,accepted,rejected,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group><field name="name"/><field name="application_id"/><field name="application_indicator_id"/><field name="requirement_id"/></group>
+                        <group><field name="due_date"/><field name="attachment_count" readonly="1"/><field name="validation_completion_rate" widget="progressbar"/><field name="current_version_id"/></group>
+                    </group>
+                    <notebook>
+                        <page string="Summary"><field name="summary" nolabel="1"/></page>
+                        <page string="Versions"><field name="version_ids" readonly="1"><tree><field name="name"/><field name="sequence_no"/><field name="state"/></tree></field></page>
+                        <page string="Attachments"><field name="attachment_ids"><tree editable="bottom"><field name="version_id"/><field name="name"/><field name="datas_fname" column_invisible="True"/><field name="datas" filename="datas_fname" widget="binary" string="File/Download"/><field name="file_size"/><field name="attachment_state"/></tree></field></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_sar_version" model="ir.actions.act_window">
+        <field name="name">SAR Versions</field>
+        <field name="res_model">caqa.sar.version</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_caqa_form_template" model="ir.actions.act_window">
+        <field name="name">Form Templates</field>
+        <field name="res_model">caqa.form.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_caqa_form_response" model="ir.actions.act_window">
+        <field name="name">Form Responses</field>
+        <field name="res_model">caqa.form.response</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_caqa_evidence" model="ir.actions.act_window">
+        <field name="name">Evidence</field>
+        <field name="res_model">caqa.evidence</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

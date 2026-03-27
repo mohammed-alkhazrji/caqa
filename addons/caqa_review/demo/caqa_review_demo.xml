@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_review_assignment_1" model="caqa.review.assignment">
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="reviewer_id" ref="base.user_admin"/>
+        <field name="role">reviewer</field>
+        <field name="due_date">2026-06-20</field>
+        <field name="state">in_progress</field>
+    </record>
+    <record id="demo_review_1" model="caqa.review">
+        <field name="name">Technical Review 1</field>
+        <field name="assignment_id" ref="demo_review_assignment_1"/>
+        <field name="stage">technical</field>
+        <field name="state">submitted</field>
+        <field name="score">78</field>
+        <field name="summary">&lt;p&gt;The application is generally strong but requires stronger documentary evidence for mission approval and QA governance.&lt;/p&gt;</field>
+    </record>
+    <record id="demo_review_note_1" model="caqa.review.note">
+        <field name="review_id" ref="demo_review_1"/>
+        <field name="application_indicator_id" ref="caqa_application.demo_application_indicator_line_1"/>
+        <field name="title">Mission approval evidence is incomplete</field>
+        <field name="note_type">evidence</field>
+        <field name="description">&lt;p&gt;Please upload the signed mission approval document and publication proof.&lt;/p&gt;</field>
+        <field name="severity">high</field>
+    </record>
+    <record id="demo_recommendation_1" model="caqa.recommendation">
+        <field name="review_id" ref="demo_review_1"/>
+        <field name="recommendation">site_visit</field>
+        <field name="justification">&lt;p&gt;A site visit is recommended to verify governance implementation and stakeholder awareness.&lt;/p&gt;</field>
+        <field name="state">submitted</field>
+    </record>
+</odoo>

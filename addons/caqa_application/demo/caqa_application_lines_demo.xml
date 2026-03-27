@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_application_chapter_line_1" model="caqa.application.chapter">
+        <field name="application_id" ref="demo_application_1"/>
+        <field name="chapter_id" ref="caqa_standards.demo_standard_chapter_1"/>
+        <field name="name">Mission and Governance</field>
+        <field name="code">CH1</field>
+        <field name="weight">15</field>
+    </record>
+    <record id="demo_application_subchapter_line_1" model="caqa.application.subchapter">
+        <field name="application_id" ref="demo_application_1"/>
+        <field name="chapter_line_id" ref="demo_application_chapter_line_1"/>
+        <field name="subchapter_id" ref="caqa_standards.demo_standard_subchapter_1"/>
+        <field name="name">Mission Alignment</field>
+        <field name="code">SC1.1</field>
+        <field name="weight">15</field>
+    </record>
+    <record id="demo_application_indicator_line_1" model="caqa.application.indicator">
+        <field name="application_id" ref="demo_application_1"/>
+        <field name="chapter_line_id" ref="demo_application_chapter_line_1"/>
+        <field name="subchapter_line_id" ref="demo_application_subchapter_line_1"/>
+        <field name="indicator_id" ref="caqa_standards.demo_indicator_1"/>
+        <field name="name">Approved and published mission statement exists.</field>
+        <field name="code">IND1.1</field>
+        <field name="indicator_type">documentary</field>
+        <field name="weight">10</field>
+        <field name="response_state">submitted</field>
+        <field name="narrative_html">&lt;p&gt;The mission is approved by the faculty board and published in the program handbook and website.&lt;/p&gt;</field>
+        <field name="compliance_result">partially_met</field>
+    </record>
+    <record id="demo_application_checkpoint_line_1" model="caqa.application.checkpoint">
+        <field name="application_id" ref="demo_application_1"/>
+        <field name="chapter_line_id" ref="demo_application_chapter_line_1"/>
+        <field name="subchapter_line_id" ref="demo_application_subchapter_line_1"/>
+        <field name="application_indicator_id" ref="demo_application_indicator_line_1"/>
+        <field name="checkpoint_id" ref="caqa_standards.demo_checkpoint_1"/>
+        <field name="name">Mission is formally approved.</field>
+        <field name="code">CP1</field>
+        <field name="weight">5</field>
+        <field name="state">completed</field>
+        <field name="boolean_value">1</field>
+    </record>
+    <record id="demo_application_2" model="caqa.application">
+        <field name="name">Data Science Accreditation Application 2026</field>
+        <field name="institution_id" ref="caqa_institution.demo_partner_institution_2"/>
+        <field name="program_id" ref="caqa_program.demo_program_ds"/>
+        <field name="eligibility_id" ref="caqa_eligibility.demo_eligibility_2"/>
+        <field name="profile_id" ref="caqa_institution.demo_profile_2"/>
+        <field name="accreditation_type_id" ref="caqa_core.demo_caqa_accreditation_type_program"/>
+        <field name="cycle_id" ref="caqa_core.demo_caqa_cycle_2026"/>
+        <field name="standard_version_id" ref="caqa_standards.demo_standard_version_1"/>
+        <field name="state">need_more_information</field>
+    </record>
+    <record id="demo_application_3" model="caqa.application">
+        <field name="name">Information Systems Accreditation Application 2026</field>
+        <field name="institution_id" ref="caqa_institution.demo_partner_institution_1"/>
+        <field name="program_id" ref="caqa_program.demo_program_cs"/>
+        <field name="eligibility_id" ref="caqa_eligibility.demo_eligibility_1"/>
+        <field name="profile_id" ref="caqa_institution.demo_profile_1"/>
+        <field name="accreditation_type_id" ref="caqa_core.demo_caqa_accreditation_type_program"/>
+        <field name="cycle_id" ref="caqa_core.demo_caqa_cycle_2026"/>
+        <field name="standard_version_id" ref="caqa_standards.demo_standard_version_1"/>
+        <field name="state">approved</field>
+    </record>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_caqa_final_decision" model="ir.actions.report">
+        <field name="name">Committee Decision Report</field>
+        <field name="model">caqa.final.decision</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">caqa_committee.report_final_decision_document</field>
+        <field name="report_file">caqa_committee.report_final_decision_document</field>
+        <field name="binding_model_id" ref="model_caqa_final_decision"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_final_decision_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Final Decision</h2>
+                        <p><strong>Reference:</strong> <span t-field="o.reference"/></p>
+                        <p><strong>Application:</strong> <span t-field="o.application_id.reference"/></p>
+                        <p><strong>Decision:</strong> <span t-field="o.decision"/></p>
+                        <p><strong>Date:</strong> <span t-field="o.decision_date"/></p>
+                        <div t-if="o.conditions_html"><h4>Conditions</h4><div t-field="o.conditions_html"/></div>
+                        <div t-if="o.rejection_reason"><h4>Rejection Reason</h4><div t-field="o.rejection_reason"/></div>
+                        <div t-if="o.letter_html"><h4>Letter</h4><div t-field="o.letter_html"/></div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

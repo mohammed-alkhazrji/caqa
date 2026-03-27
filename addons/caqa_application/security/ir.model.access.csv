@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_caqa_application_admin,caqa.application.admin,model_caqa_application,caqa_security.group_caqa_system_administrator,1,1,1,1
+access_caqa_application_manager,caqa.application.manager,model_caqa_application,caqa_security.group_caqa_accreditation_manager,1,1,1,1
+access_caqa_application_officer,caqa.application.officer,model_caqa_application,caqa_security.group_caqa_accreditation_officer,1,1,1,0
+access_caqa_application_reviewer,caqa.application.reviewer,model_caqa_application,caqa_security.group_caqa_reviewer,1,0,0,0
+access_caqa_application_supervisor,caqa.application.supervisor,model_caqa_application,caqa_security.group_caqa_institution_supervisor,1,1,1,0
+access_caqa_application_user,caqa.application.user,model_caqa_application,caqa_security.group_caqa_institution_user,1,1,1,0
+access_caqa_application_portal,caqa.application.portal,model_caqa_application,caqa_security.group_caqa_portal_institution,1,0,0,0
+access_caqa_application_chapter_officer,caqa.application.chapter.officer,model_caqa_application_chapter,base.group_user,1,1,1,1
+access_caqa_application_subchapter_officer,caqa.application.subchapter.officer,model_caqa_application_subchapter,base.group_user,1,1,1,1
+access_caqa_application_indicator_officer,caqa.application.indicator.officer,model_caqa_application_indicator,base.group_user,1,1,1,1
+access_caqa_application_checkpoint_officer,caqa.application.checkpoint.officer,model_caqa_application_checkpoint,base.group_user,1,1,1,1
+access_caqa_application_deficiency_officer,caqa.application.deficiency.officer,model_caqa_application_deficiency,base.group_user,1,1,1,1
+access_caqa_application_state_history_officer,caqa.application.state.history.officer,model_caqa_application_state_history,base.group_user,1,1,1,1

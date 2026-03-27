@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_appeal_case_tree" model="ir.ui.view">
+        <field name="name">caqa.appeal.case.tree</field>
+        <field name="model">caqa.appeal.case</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'accepted'" decoration-danger="state == 'rejected'">
+                <field name="reference"/>
+                <field name="application_id"/>
+                <field name="decision_id"/>
+                <field name="submitted_on"/>
+                <field name="reviewer_id"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_appeal_case_form" model="ir.ui.view">
+        <field name="name">caqa.appeal.case.form</field>
+        <field name="model">caqa.appeal.case</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit" invisible="state != 'draft'"/>
+                    <button name="action_under_review" type="object" string="Under Review" invisible="state != 'submitted'"/>
+                    <button name="action_accept" type="object" string="Accept" invisible="state != 'under_review'"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state != 'under_review'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,under_review,accepted,rejected,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="reference"/>
+                        <field name="application_id"/>
+                        <field name="decision_id"/>
+                        <field name="reviewer_id"/>
+                        <field name="subject"/>
+                        <field name="submitted_on" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Reason"><field name="reason" nolabel="1"/></page>
+                        <page string="Resolution"><field name="resolution_text" nolabel="1"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_appeal_case" model="ir.actions.act_window">
+        <field name="name">Appeals</field>
+        <field name="res_model">caqa.appeal.case</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="view_caqa_followup_plan_tree" model="ir.ui.view">
+        <field name="name">caqa.followup.plan.tree</field>
+        <field name="model">caqa.followup.plan</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'completed'" decoration-warning="state == 'active'">
+                <field name="name"/>
+                <field name="application_id"/>
+                <field name="decision_id"/>
+                <field name="owner_id"/>
+                <field name="due_date"/>
+                <field name="progress_rate" widget="progressbar"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_followup_plan_form" model="ir.ui.view">
+        <field name="name">caqa.followup.plan.form</field>
+        <field name="model">caqa.followup.plan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Activate" invisible="state != 'draft'"/>
+                    <button name="action_complete" type="object" string="Complete" invisible="state != 'active'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
+<!--                    <button name="action_export_xlsx" type="object" string="Export XLSX" class="oe_highlight"/>-->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,completed,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="application_id"/>
+                        <field name="decision_id"/>
+                        <field name="owner_id"/>
+                        <field name="due_date"/>
+                        <field name="progress_rate" widget="progressbar"/>
+                    </group>
+                    <field name="note" nolabel="1"/>
+                    <field name="item_ids">
+                        <tree editable="bottom">
+                            <field name="title"/>
+                            <field name="indicator_id"/>
+                            <field name="responsible_user_id"/>
+                            <field name="due_date"/>
+                            <field name="state"/>
+                            <field name="completion_rate" widget="progressbar"/>
+                        </tree>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_followup_plan" model="ir.actions.act_window">
+        <field name="name">Follow-up Plans</field>
+        <field name="res_model">caqa.followup.plan</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

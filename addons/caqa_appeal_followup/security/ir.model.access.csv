@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_caqa_appeal_case_user,caqa.appeal.case.user,model_caqa_appeal_case,base.group_user,1,1,1,1
+access_caqa_followup_plan_user,caqa.followup.plan.user,model_caqa_followup_plan,base.group_user,1,1,1,1
+access_caqa_followup_item_user,caqa.followup.item.user,model_caqa_followup_item,base.group_user,1,1,1,1

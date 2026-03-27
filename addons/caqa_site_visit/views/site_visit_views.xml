@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_site_visit_tree" model="ir.ui.view">
+        <field name="name">caqa.site.visit.tree</field>
+        <field name="model">caqa.site.visit</field>
+        <field name="arch" type="xml"><tree><field name="reference"/><field name="application_id"/><field name="leader_id"/><field name="start_date"/><field name="end_date"/><field name="finding_count"/><field name="state" widget="badge"/></tree></field>
+    </record>
+    <record id="view_caqa_site_visit_form" model="ir.ui.view">
+        <field name="name">caqa.site.visit.form</field>
+        <field name="model">caqa.site.visit</field>
+        <field name="arch" type="xml">
+            <form string="Site Visit">
+                <header>
+                    <button name="action_approve" type="object" string="Approve" invisible="state != 'planned'"/>
+                    <button name="action_confirm_agenda" type="object" string="Confirm Agenda" invisible="state != 'approved'"/>
+                    <button name="action_start" type="object" string="Start Visit" invisible="state != 'agenda_confirmed'"/>
+                    <button name="action_complete" type="object" string="Complete Visit" invisible="state != 'in_visit'"/>
+                    <button name="action_submit_report" type="object" string="Submit Report" invisible="state != 'completed'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="planned,approved,agenda_confirmed,in_visit,completed,report_submitted,closed"/>
+                </header>
+                <sheet>
+                    <group><group><field name="reference"/><field name="name"/><field name="application_id"/><field name="leader_id"/></group><group><field name="start_date"/><field name="end_date"/><field name="finding_count"/><field name="report_id"/></group></group>
+                    <notebook>
+                        <page string="Team"><field name="team_ids"><tree editable="bottom"><field name="user_id"/><field name="role"/><field name="organization"/></tree></field></page>
+                        <page string="Agenda"><field name="agenda_ids"><tree editable="bottom"><field name="title"/><field name="start_datetime"/><field name="end_datetime"/><field name="location"/><field name="owner_id"/></tree></field></page>
+                        <page string="Sessions"><field name="session_ids"><tree editable="bottom"><field name="title"/><field name="session_type"/><field name="start_datetime"/><field name="end_datetime"/></tree></field></page>
+                        <page string="Findings"><field name="finding_ids"><tree editable="bottom"><field name="title"/><field name="application_indicator_id"/><field name="severity"/><field name="state"/></tree></field></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_caqa_site_visit_report_form" model="ir.ui.view">
+        <field name="name">caqa.site.visit.report.form</field>
+        <field name="model">caqa.site.visit.report</field>
+        <field name="arch" type="xml">
+            <form string="Site Visit Report">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'"/>
+<!--                    <button name="action_export_xlsx" type="object" string="Export XLSX" class="oe_highlight"/>-->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+                </header>
+                <sheet>
+                    <group><group><field name="name"/><field name="visit_id"/><field name="application_id"/><field name="report_date"/></group></group>
+                    <notebook>
+                        <page string="Executive Summary"><field name="executive_summary" nolabel="1"/></page>
+                        <page string="Strengths"><field name="strengths" nolabel="1"/></page>
+                        <page string="Improvement Areas"><field name="improvement_areas" nolabel="1"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_site_visit" model="ir.actions.act_window">
+        <field name="name">Site Visits</field>
+        <field name="res_model">caqa.site.visit</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_caqa_site_visit_report" model="ir.actions.act_window">
+        <field name="name">Site Visit Reports</field>
+        <field name="res_model">caqa.site.visit.report</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

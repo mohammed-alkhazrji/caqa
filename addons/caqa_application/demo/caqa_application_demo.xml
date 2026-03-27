@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_application_1" model="caqa.application">
+        <field name="name">Computer Science Accreditation Application 2026</field>
+        <field name="institution_id" ref="caqa_institution.demo_partner_institution_1"/>
+        <field name="program_id" ref="caqa_program.demo_program_cs"/>
+        <field name="eligibility_id" ref="caqa_eligibility.demo_eligibility_1"/>
+        <field name="profile_id" ref="caqa_institution.demo_profile_1"/>
+        <field name="accreditation_type_id" ref="caqa_core.demo_caqa_accreditation_type_program"/>
+        <field name="cycle_id" ref="caqa_core.demo_caqa_cycle_2026"/>
+        <field name="standard_version_id" ref="caqa_standards.demo_standard_version_1"/>
+        <field name="state">under_evaluation</field>
+        <field name="summary_note">&lt;p&gt;Primary live demo application with active review path.&lt;/p&gt;</field>
+    </record>
+</odoo>

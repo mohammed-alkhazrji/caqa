@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_caqa_program_root" name="Programs" parent="caqa_core.menu_caqa_operations_root" sequence="20"
+              groups="caqa_security.group_caqa_system_administrator,caqa_security.group_caqa_accreditation_manager,caqa_security.group_caqa_accreditation_officer,caqa_security.group_caqa_reviewer,caqa_security.group_caqa_senior_reviewer,caqa_security.group_caqa_readonly_executive,caqa_security.group_caqa_institution_supervisor,caqa_security.group_caqa_institution_user"/>
+    <menuitem id="menu_caqa_programs" name="Programs" parent="menu_caqa_program_root" sequence="10" action="action_caqa_program"/>
+    <menuitem id="menu_caqa_program_courses" name="Courses" parent="menu_caqa_program_root" sequence="20" action="action_caqa_program_course"/>
+    <menuitem id="menu_caqa_program_learning_outcomes" name="Learning Outcomes" parent="menu_caqa_program_root" sequence="30" action="action_caqa_program_learning_outcome"/>
+</odoo>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="module_category_caqa" model="ir.module.category">
+        <field name="name">CAQA</field>
+        <field name="description">Academic accreditation and quality assurance</field>
+        <field name="sequence">45</field>
+    </record>
+
+    <record id="group_caqa_system_administrator" model="res.groups">
+        <field name="name">System Administrator</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <record id="group_caqa_accreditation_manager" model="res.groups">
+        <field name="name">Accreditation Manager</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_accreditation_officer" model="res.groups">
+        <field name="name">Accreditation Officer</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_institution_supervisor" model="res.groups">
+        <field name="name">Institution Supervisor</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_institution_user" model="res.groups">
+        <field name="name">Institution User</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_reviewer" model="res.groups">
+        <field name="name">Reviewer</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_senior_reviewer" model="res.groups">
+        <field name="name">Senior Reviewer</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('caqa_security.group_caqa_reviewer'))]"/>
+    </record>
+
+    <record id="group_caqa_site_visit_leader" model="res.groups">
+        <field name="name">Site Visit Leader</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_committee_member" model="res.groups">
+        <field name="name">Committee Member</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_appeal_reviewer" model="res.groups">
+        <field name="name">Appeal Reviewer</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_readonly_executive" model="res.groups">
+        <field name="name">Readonly Executive</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_caqa_portal_institution" model="res.groups">
+        <field name="name">Institution Portal User</field>
+        <field name="category_id" ref="caqa_security.module_category_caqa"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+</odoo>

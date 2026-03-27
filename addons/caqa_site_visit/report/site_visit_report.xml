@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_caqa_site_visit" model="ir.actions.report">
+        <field name="name">Site Visit Report</field>
+        <field name="model">caqa.site.visit.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">caqa_site_visit.report_site_visit_document</field>
+        <field name="report_file">caqa_site_visit.report_site_visit_document</field>
+        <field name="binding_model_id" ref="model_caqa_site_visit_report"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_site_visit_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Site Visit Report</h2>
+                        <p><strong>Visit:</strong> <span t-field="o.visit_id.name"/></p>
+                        <p><strong>Application:</strong> <span t-field="o.application_id.reference"/></p>
+                        <p><strong>Date:</strong> <span t-field="o.report_date"/></p>
+                        <h4>Executive Summary</h4>
+                        <div t-field="o.executive_summary"/>
+                        <h4>Strengths</h4>
+                        <div t-field="o.strengths"/>
+                        <h4>Improvement Areas</h4>
+                        <div t-field="o.improvement_areas"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

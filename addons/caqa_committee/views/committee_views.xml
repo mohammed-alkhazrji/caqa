@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_committee_session_tree" model="ir.ui.view">
+        <field name="name">caqa.committee.session.tree</field>
+        <field name="model">caqa.committee.session</field>
+        <field name="arch" type="xml"><tree><field name="reference"/><field name="name"/><field name="session_date"/><field name="state" widget="badge"/></tree></field>
+    </record>
+    <record id="view_caqa_committee_session_form" model="ir.ui.view">
+        <field name="name">caqa.committee.session.form</field>
+        <field name="model">caqa.committee.session</field>
+        <field name="arch" type="xml">
+            <form string="Committee Session">
+                <header>
+                    <button name="action_start" type="object" string="Start" invisible="state != 'draft'"/>
+                    <button name="action_complete" type="object" string="Complete" invisible="state != 'in_session'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_session,completed,closed"/>
+                </header>
+                <sheet>
+                    <group><group><field name="reference"/><field name="name"/><field name="session_date"/></group></group>
+                    <notebook>
+                        <page string="Members"><field name="member_ids"><tree editable="bottom"><field name="user_id"/><field name="role"/><field name="present"/><field name="vote_weight"/></tree></field></page>
+                        <page string="Decision Packs"><field name="decision_pack_ids"><tree editable="bottom"><field name="application_id"/><field name="final_recommendation"/><field name="state"/></tree></field></page>
+                        <page string="Votes"><field name="vote_ids"><tree editable="bottom"><field name="application_id"/><field name="member_id"/><field name="vote"/><field name="justification"/></tree></field></page>
+                        <page string="Notes"><field name="note" nolabel="1"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_caqa_decision_pack_tree" model="ir.ui.view">
+        <field name="name">caqa.decision.pack.tree</field>
+        <field name="model">caqa.decision.pack</field>
+        <field name="arch" type="xml"><tree><field name="name"/><field name="application_id"/><field name="session_id"/><field name="final_recommendation" widget="badge"/><field name="state" widget="badge"/></tree></field>
+    </record>
+    <record id="view_caqa_decision_pack_form" model="ir.ui.view">
+        <field name="name">caqa.decision.pack.form</field>
+        <field name="model">caqa.decision.pack</field>
+        <field name="arch" type="xml">
+            <form string="Decision Pack">
+                <header>
+                    <button name="action_ready" type="object" string="Ready" invisible="state != 'draft'"/>
+                    <button name="action_present" type="object" string="Presented" invisible="state != 'ready'"/>
+                    <button name="action_finalize" type="object" string="Finalize" invisible="state != 'presented'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,presented,finalized"/>
+                </header>
+                <sheet>
+                    <group><group><field name="name"/><field name="application_id"/><field name="session_id"/></group><group><field name="final_recommendation"/></group></group>
+                    <notebook>
+                        <page string="Review Summary"><field name="review_summary" nolabel="1"/></page>
+                        <page string="Site Visit Summary"><field name="site_visit_summary" nolabel="1"/></page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_caqa_final_decision_tree" model="ir.ui.view">
+        <field name="name">caqa.final.decision.tree</field>
+        <field name="model">caqa.final.decision</field>
+        <field name="arch" type="xml"><tree decoration-success="decision == 'approved'" decoration-warning="decision == 'conditional_approved'" decoration-danger="decision == 'rejected'"><field name="reference"/><field name="application_id"/><field name="decision" widget="badge"/><field name="decision_date"/><field name="state" widget="badge"/></tree></field>
+    </record>
+    <record id="view_caqa_final_decision_form" model="ir.ui.view">
+        <field name="name">caqa.final.decision.form</field>
+        <field name="model">caqa.final.decision</field>
+        <field name="arch" type="xml">
+            <form string="Final Decision">
+                <header>
+                    <button name="action_issue" type="object" string="Issue" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_notify" type="object" string="Notify" invisible="state != 'issued'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
+<!--                    <button name="action_export_xlsx" type="object" string="Export XLSX" class="oe_highlight"/>-->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,issued,notified,closed"/>
+                </header>
+                <sheet>
+                    <group><group><field name="reference"/><field name="application_id"/><field name="session_id"/><field name="decision_pack_id"/></group><group><field name="decision"/><field name="decision_date"/><field name="validity_start"/><field name="validity_end"/></group></group>
+                    <group><field name="followup_required"/><field name="appeal_deadline"/></group>
+                    <notebook>
+                        <page string="Conditions"><field name="conditions_html" nolabel="1"/></page>
+                        <page string="Rejection Reason"><field name="rejection_reason" nolabel="1"/></page>
+                        <page string="Letter"><field name="letter_html" nolabel="1"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_committee_session" model="ir.actions.act_window">
+        <field name="name">Committee Sessions</field>
+        <field name="res_model">caqa.committee.session</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_caqa_decision_pack" model="ir.actions.act_window">
+        <field name="name">Decision Packs</field>
+        <field name="res_model">caqa.decision.pack</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_caqa_final_decision" model="ir.actions.act_window">
+        <field name="name">Final Decisions</field>
+        <field name="res_model">caqa.final.decision</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

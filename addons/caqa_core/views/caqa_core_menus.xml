@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_caqa_root" name="CAQA" sequence="10"
+              groups="caqa_security.group_caqa_system_administrator,caqa_security.group_caqa_accreditation_manager,caqa_security.group_caqa_accreditation_officer,caqa_security.group_caqa_reviewer,caqa_security.group_caqa_senior_reviewer,caqa_security.group_caqa_readonly_executive,caqa_security.group_caqa_institution_supervisor,caqa_security.group_caqa_institution_user"/>
+    <menuitem id="menu_caqa_reference_root" name="Reference" parent="menu_caqa_root" sequence="10"
+              groups="caqa_security.group_caqa_system_administrator,caqa_security.group_caqa_accreditation_manager,caqa_security.group_caqa_accreditation_officer,caqa_security.group_caqa_reviewer,caqa_security.group_caqa_senior_reviewer,caqa_security.group_caqa_readonly_executive,caqa_security.group_caqa_institution_supervisor,caqa_security.group_caqa_institution_user"/>
+    <menuitem id="menu_caqa_operations_root" name="Operations" parent="menu_caqa_root" sequence="20"
+              groups="caqa_security.group_caqa_system_administrator,caqa_security.group_caqa_accreditation_manager,caqa_security.group_caqa_accreditation_officer,caqa_security.group_caqa_reviewer,caqa_security.group_caqa_senior_reviewer,caqa_security.group_caqa_readonly_executive,caqa_security.group_caqa_institution_supervisor,caqa_security.group_caqa_institution_user"/>
+    <menuitem id="menu_caqa_configuration_root" name="Configuration" parent="menu_caqa_root" sequence="90"
+              groups="caqa_security.group_caqa_system_administrator,caqa_security.group_caqa_accreditation_manager,caqa_security.group_caqa_accreditation_officer"/>
+    <menuitem id="menu_caqa_framework" name="Frameworks" parent="menu_caqa_reference_root" sequence="10" action="action_caqa_framework"/>
+    <menuitem id="menu_caqa_accreditation_type" name="Accreditation Types" parent="menu_caqa_reference_root" sequence="20" action="action_caqa_accreditation_type"/>
+    <menuitem id="menu_caqa_accreditation_cycle" name="Accreditation Cycles" parent="menu_caqa_reference_root" sequence="30" action="action_caqa_accreditation_cycle"/>
+</odoo>

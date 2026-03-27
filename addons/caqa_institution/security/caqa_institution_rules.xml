@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_caqa_institution_profile_supervisor_own" model="ir.rule">
+        <field name="name">Institution Profile - Supervisor Own Institution</field>
+        <field name="model_id" ref="model_caqa_institution_profile"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_supervisor'))]"/>
+        <field name="domain_force">[('institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+    <record id="rule_caqa_institution_profile_user_own" model="ir.rule">
+        <field name="name">Institution Profile - User Own Institution</field>
+        <field name="model_id" ref="model_caqa_institution_profile"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_user'))]"/>
+        <field name="domain_force">[('institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+    <record id="rule_caqa_institution_member_supervisor_own" model="ir.rule">
+        <field name="name">Institution Member - Supervisor Own Institution</field>
+        <field name="model_id" ref="model_caqa_institution_member"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_supervisor'))]"/>
+        <field name="domain_force">[('institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+    <record id="rule_caqa_institution_member_user_own" model="ir.rule">
+        <field name="name">Institution Member - User Own Institution</field>
+        <field name="model_id" ref="model_caqa_institution_member"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_institution_user'))]"/>
+        <field name="domain_force">[('institution_id', 'in', user.caqa_institution_ids.ids)]</field>
+    </record>
+    <record id="rule_caqa_institution_profile_admin_full_access" model="ir.rule">
+        <field name="name">Institution Profile - System Administrator Full Access</field>
+        <field name="model_id" ref="model_caqa_institution_profile"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_system_administrator'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_caqa_institution_member_admin_full_access" model="ir.rule">
+        <field name="name">Institution Member - System Administrator Full Access</field>
+        <field name="model_id" ref="model_caqa_institution_member"/>
+        <field name="groups" eval="[(4, ref('caqa_security.group_caqa_system_administrator'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>   
+</odoo>

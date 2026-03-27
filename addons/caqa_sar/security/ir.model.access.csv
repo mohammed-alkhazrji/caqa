@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_caqa_sar_version_user,caqa.sar.version.user,model_caqa_sar_version,base.group_user,1,1,1,1
+access_caqa_sar_section_user,caqa.sar.section.user,model_caqa_sar_section,base.group_user,1,1,1,1
+access_caqa_form_template_user,caqa.form.template.user,model_caqa_form_template,base.group_user,1,1,1,1
+access_caqa_form_question_user,caqa.form.question.user,model_caqa_form_question,base.group_user,1,1,1,1
+access_caqa_form_response_user,caqa.form.response.user,model_caqa_form_response,base.group_user,1,1,1,1
+access_caqa_form_answer_user,caqa.form.answer.user,model_caqa_form_answer,base.group_user,1,1,1,1
+access_caqa_evidence_user,caqa.evidence.user,model_caqa_evidence,base.group_user,1,1,1,1
+access_caqa_evidence_version_user,caqa.evidence.version.user,model_caqa_evidence_version,base.group_user,1,1,1,1
+access_caqa_evidence_attachment_user,caqa.evidence.attachment.user,model_caqa_evidence_attachment,base.group_user,1,1,1,1

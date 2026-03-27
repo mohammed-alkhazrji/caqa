@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_institution_profile_tree" model="ir.ui.view">
+        <field name="name">caqa.institution.profile.tree</field>
+        <field name="model">caqa.institution.profile</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'approved'" decoration-info="state == 'submitted'">
+                <field name="name"/>
+                <field name="institution_id"/>
+                <field name="contact_person_id"/>
+                <field name="profile_completion" widget="progressbar"/>
+                <field name="state" widget="badge"/>
+                <field name="active" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_institution_profile_search" model="ir.ui.view">
+        <field name="name">caqa.institution.profile.search</field>
+        <field name="model">caqa.institution.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="institution_id"/>
+                <field name="contact_person_id"/>
+                <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_submitted" string="Submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter name="filter_approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_institution" string="Institution" context="{'group_by': 'institution_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_caqa_institution_profile_form" model="ir.ui.view">
+        <field name="name">caqa.institution.profile.form</field>
+        <field name="model">caqa.institution.profile</field>
+        <field name="arch" type="xml">
+            <form string="Institution Profile">
+                <header>
+                    <button name="action_set_in_progress" type="object" string="Set In Progress" class="btn-secondary" invisible="state != 'draft'"/>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state not in ['draft','in_progress']"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'submitted'"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,submitted,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="institution_id"/>
+                            <field name="contact_person_id"/>
+                            <field name="student_count"/>
+                            <field name="faculty_count"/>
+                        </group>
+                        <group>
+                            <field name="admin_staff_count"/>
+                            <field name="branch_count"/>
+                            <field name="profile_completion" widget="progressbar" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Overview"><field name="overview" nolabel="1"/></page>
+                        <page string="Vision"><field name="vision" nolabel="1"/></page>
+                        <page string="Mission"><field name="mission" nolabel="1"/></page>
+                        <page string="Strategy"><field name="strategic_goals" nolabel="1"/></page>
+                        <page string="Governance"><field name="governance_structure" nolabel="1"/></page>
+                        <page string="Quality System"><field name="quality_system_summary" nolabel="1"/></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_institution_profile" model="ir.actions.act_window">
+        <field name="name">Institution Profiles</field>
+        <field name="res_model">caqa.institution.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

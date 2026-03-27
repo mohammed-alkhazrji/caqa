@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_program_learning_outcome_tree" model="ir.ui.view">
+        <field name="name">caqa.program.learning.outcome.tree</field>
+        <field name="model">caqa.program.learning.outcome</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="program_id"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="outcome_type" widget="badge"/>
+                <field name="active" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_program_learning_outcome_search" model="ir.ui.view">
+        <field name="name">caqa.program.learning.outcome.search</field>
+        <field name="model">caqa.program.learning.outcome</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="program_id"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="outcome_type"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_program" string="Program" context="{'group_by': 'program_id'}"/>
+                    <filter name="group_type" string="Outcome Type" context="{'group_by': 'outcome_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_caqa_program_learning_outcome_form" model="ir.ui.view">
+        <field name="name">caqa.program.learning.outcome.form</field>
+        <field name="model">caqa.program.learning.outcome</field>
+        <field name="arch" type="xml">
+            <form string="Learning Outcome">
+                <sheet>
+                    <group>
+                        <group><field name="program_id"/><field name="code"/><field name="name"/></group>
+                        <group><field name="sequence"/><field name="outcome_type"/><field name="active"/></group>
+                    </group>
+                    <group><field name="description" widget="html"/></group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_program_learning_outcome" model="ir.actions.act_window">
+        <field name="name">Learning Outcomes</field>
+        <field name="res_model">caqa.program.learning.outcome</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_caqa_program_learning_outcome_search"/>
+    </record>
+</odoo>

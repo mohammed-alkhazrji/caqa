@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_caqa_appeal_root" name="Appeal &amp; Follow-up" parent="caqa_core.menu_caqa_operations_root" sequence="85"/>
+    <menuitem id="menu_caqa_appeal_cases" name="Appeals" parent="menu_caqa_appeal_root" action="action_caqa_appeal_case" sequence="10"/>
+    <menuitem id="menu_caqa_followup_plans" name="Follow-up Plans" parent="menu_caqa_appeal_root" action="action_caqa_followup_plan" sequence="20"/>
+</odoo>

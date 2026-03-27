@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="rule_caqa_final_decision_institution_visibility" model="ir.rule">
+    <field name="name">Final decision - institution visibility</field>
+    <field name="model_id" ref="model_caqa_final_decision"/>
+    <field name="domain_force">[('application_id.institution_id.member_ids.user_id', '=', user.id)]</field>
+    <field name="groups" eval="[
+        (4, ref('caqa_security.group_caqa_institution_supervisor')),
+        (4, ref('caqa_security.group_caqa_portal_institution'))
+    ]"/>
+</record>
+
+<record id="rule_caqa_final_decision_admin_full_access" model="ir.rule">
+    <field name="name">Final decision - system administrator full access</field>
+    <field name="model_id" ref="model_caqa_final_decision"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[
+        (4, ref('caqa_security.group_caqa_system_administrator'))
+    ]"/>
+</record>
+    
+
+    
+
+</odoo>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_caqa_reporting_root" name="Reporting" parent="caqa_core.menu_caqa_root" sequence="95"/>
+    <menuitem id="menu_caqa_operational_dashboard" name="Operational Dashboard" parent="menu_caqa_reporting_root" action="action_caqa_operational_dashboard" sequence="10"/>
+    <menuitem id="menu_caqa_executive_dashboard" name="Executive Dashboard" parent="menu_caqa_reporting_root" action="action_caqa_executive_dashboard" sequence="20"/>
+    <menuitem id="menu_caqa_reporting_applications" name="Applications Analytics" parent="menu_caqa_reporting_root" action="caqa_application.action_caqa_application" sequence="30"/>
+    <menuitem id="menu_caqa_reporting_decisions" name="Decision Analytics" parent="menu_caqa_reporting_root" action="caqa_committee.action_caqa_final_decision" sequence="40"/>
+</odoo>

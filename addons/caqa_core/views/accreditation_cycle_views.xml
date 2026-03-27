@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_accreditation_cycle_tree" model="ir.ui.view">
+        <field name="name">caqa.accreditation.cycle.tree</field>
+        <field name="model">caqa.accreditation.cycle</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'open'" decoration-muted="state == 'closed'">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="framework_id"/>
+                <field name="accreditation_type_id"/>
+                <field name="academic_year"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state" widget="badge"/>
+                <field name="is_current" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+<!--    <record id="view_caqa_accreditation_cycle_search" model="ir.ui.view">-->
+<!--        <field name="name">caqa.accreditation.cycle.search</field>-->
+<!--        <field name="model">caqa.accreditation.cycle</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search>-->
+<!--                <field name="name"/>-->
+<!--                <field name="code"/>-->
+<!--                <field name="framework_id"/>-->
+<!--                <field name="accreditation_type_id"/>-->
+<!--                <field name="academic_year"/>-->
+<!--                <filter name="state_draft" string="Draft" domain="[('state', '=', 'draft')]"/>-->
+<!--                <filter name="state_open" string="Open" domain="[('state', '=', 'open')]"/>-->
+<!--                <filter name="state_closed" string="Closed" domain="[('state', '=', 'closed')]"/>-->
+<!--                <filter name="current" string="Current" domain="[('is_current', '=', True)]"/>-->
+<!--                <group expand="0" string="Group By">-->
+<!--                    <filter name="group_framework" string="Framework" context="{'group_by': 'framework_id'}"/>-->
+<!--                    <filter name="group_type" string="Accreditation Type" context="{'group_by': 'accreditation_type_id'}"/>-->
+<!--                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>-->
+<!--                </group>-->
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <record id="view_caqa_accreditation_cycle_form" model="ir.ui.view">
+        <field name="name">caqa.accreditation.cycle.form</field>
+        <field name="model">caqa.accreditation.cycle</field>
+        <field name="arch" type="xml">
+            <form string="Accreditation Cycle">
+                <header>
+                    <button name="action_set_draft" type="object" string="Set Draft" class="btn-secondary" invisible="state == 'draft'"/>
+                    <button name="action_open_cycle" type="object" string="Open" class="btn-primary" invisible="state == 'open'"/>
+                    <button name="action_close_cycle" type="object" string="Close" class="btn-secondary" invisible="state == 'closed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted"><field name="code"/></div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="framework_id"/>
+                            <field name="accreditation_type_id"/>
+                            <field name="academic_year"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="is_current" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caqa_accreditation_cycle" model="ir.actions.act_window">
+        <field name="name">Accreditation Cycles</field>
+        <field name="res_model">caqa.accreditation.cycle</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_operational_dashboard_form" model="ir.ui.view">
+        <field name="name">caqa.operational.dashboard.form</field>
+        <field name="model">caqa.operational.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Operational Dashboard" create="false" edit="false">
+                <sheet>
+                    <field name="summary_html" widget="html" nolabel="1"/>
+                    <group>
+                        <field name="total_applications"/>
+                        <field name="pending_initial_review"/>
+                        <field name="under_evaluation"/>
+                        <field name="under_site_visit"/>
+                        <field name="open_deficiencies"/>
+                        <field name="avg_completion"/>
+                    </group>
+                    <footer><button name="action_open_applications" type="object" string="Open Applications" class="btn-primary"/></footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_operational_dashboard" model="ir.actions.act_window">
+        <field name="name">Operational Dashboard</field>
+        <field name="res_model">caqa.operational.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+    <record id="view_caqa_executive_dashboard_form" model="ir.ui.view">
+        <field name="name">caqa.executive.dashboard.form</field>
+        <field name="model">caqa.executive.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Executive Dashboard" create="false" edit="false">
+                <sheet>
+                    <field name="summary_html" widget="html" nolabel="1"/>
+                    <group>
+                        <field name="institution_count"/>
+                        <field name="approved_count"/>
+                        <field name="conditional_count"/>
+                        <field name="rejected_count"/>
+                        <field name="approval_rate"/>
+                        <field name="avg_readiness"/>
+                    </group>
+                    <footer><button name="action_open_decisions" type="object" string="Open Decisions" class="btn-primary"/></footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_executive_dashboard" model="ir.actions.act_window">
+        <field name="name">Executive Dashboard</field>
+        <field name="res_model">caqa.executive.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+    <record id="view_caqa_application_graph_reporting" model="ir.ui.view">
+        <field name="name">caqa.application.graph.reporting</field>
+        <field name="model">caqa.application</field>
+        <field name="arch" type="xml">
+            <graph string="Application State Distribution" type="bar">
+                <field name="state"/>
+                <field name="id" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="view_caqa_application_pivot_reporting" model="ir.ui.view">
+        <field name="name">caqa.application.pivot.reporting</field>
+        <field name="model">caqa.application</field>
+        <field name="arch" type="xml">
+            <pivot string="Application Readiness Pivot">
+                <field name="institution_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="readiness_score" type="measure"/>
+                <field name="completion_rate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+</odoo>

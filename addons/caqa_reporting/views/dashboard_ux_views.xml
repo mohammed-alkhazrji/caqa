@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_operational_dashboard_form_ux" model="ir.ui.view">
+        <field name="name">caqa.operational.dashboard.form.ux</field>
+        <field name="model">caqa.operational.dashboard</field>
+        <field name="inherit_id" ref="caqa_reporting.view_caqa_operational_dashboard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="alert alert-secondary">Operational dashboard emphasizes flow bottlenecks, open deficiencies, and current visit load.</div>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_caqa_executive_dashboard_form_ux" model="ir.ui.view">
+        <field name="name">caqa.executive.dashboard.form.ux</field>
+        <field name="model">caqa.executive.dashboard</field>
+        <field name="inherit_id" ref="caqa_reporting.view_caqa_executive_dashboard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="alert alert-secondary">Executive dashboard focuses on decision outcomes, readiness quality, and institutional coverage.</div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

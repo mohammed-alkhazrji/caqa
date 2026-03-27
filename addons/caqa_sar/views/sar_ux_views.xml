@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_evidence_form_ux" model="ir.ui.view">
+        <field name="name">caqa.evidence.form.ux</field>
+        <field name="model">caqa.evidence</field>
+        <field name="inherit_id" ref="caqa_sar.view_caqa_evidence_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="alert alert-light border">
+                    Evidence records should include a concise summary, a linked requirement, and at least one validated attachment.
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

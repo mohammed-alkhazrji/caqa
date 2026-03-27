@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_program_tree" model="ir.ui.view">
+        <field name="name">caqa.program.tree</field>
+        <field name="model">caqa.program</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'active'" decoration-danger="state == 'suspended'" decoration-muted="state == 'closed'">
+                <field name="reference"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="institution_id"/>
+                <field name="degree_level" widget="badge"/>
+                <field name="delivery_mode" widget="badge"/>
+                <field name="profile_completion" widget="progressbar"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_program_search" model="ir.ui.view">
+        <field name="name">caqa.program.search</field>
+        <field name="model">caqa.program</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="code"/>
+                <field name="institution_id"/>
+                <field name="degree_level"/>
+                <field name="state"/>
+                <filter name="state_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="state_active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="state_suspended" string="Suspended" domain="[('state', '=', 'suspended')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_institution" string="Institution" context="{'group_by': 'institution_id'}"/>
+                    <filter name="group_degree" string="Degree Level" context="{'group_by': 'degree_level'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_caqa_program_form" model="ir.ui.view">
+        <field name="name">caqa.program.form</field>
+        <field name="model">caqa.program</field>
+        <field name="arch" type="xml">
+            <form string="Program">
+                <header>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state == 'active'"/>
+                    <button name="action_suspend" type="object" string="Suspend" class="btn-secondary" invisible="state != 'active'"/>
+                    <button name="action_close" type="object" string="Close" class="btn-secondary" invisible="state == 'closed'"/>
+                    <button name="action_reset_draft" type="object" string="Reset Draft" class="btn-secondary" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,suspended,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_courses" class="oe_stat_button" icon="fa-book">
+                            <field name="course_count" widget="statinfo" string="Courses"/>
+                        </button>
+                        <button type="object" name="action_view_learning_outcomes" class="oe_stat_button" icon="fa-bullseye">
+                            <field name="learning_outcome_count" widget="statinfo" string="Outcomes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted"><field name="reference"/> - <field name="code"/></div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="institution_id"/>
+                            <field name="degree_level"/>
+                            <field name="delivery_mode"/>
+                            <field name="language"/>
+                            <field name="coordinator_id"/>
+                        </group>
+                        <group>
+                            <field name="college_name"/>
+                            <field name="department_name"/>
+                            <field name="duration_years"/>
+                            <field name="credit_hours"/>
+                            <field name="profile_completion" widget="progressbar" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Overview"><field name="description" widget="html"/></page>
+                        <page string="Vision &amp; Mission"><group><field name="vision" widget="html"/><field name="mission" widget="html"/></group></page>
+                        <page string="Courses"><field name="course_ids" readonly="0"><tree><field name="code"/><field name="name"/><field name="semester_no"/><field name="credit_hours"/><field name="state" widget="badge"/></tree></field></page>
+                        <page string="Learning Outcomes"><field name="learning_outcome_ids" readonly="0"><tree><field name="code"/><field name="name"/><field name="outcome_type" widget="badge"/></tree></field></page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_program" model="ir.actions.act_window">
+        <field name="name">Programs</field>
+        <field name="res_model">caqa.program</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_caqa_program_search"/>
+    </record>
+<!--    <record id="view_partner_form_caqa_program_button" model="ir.ui.view">-->
+<!--        <field name="name">res.partner.form.caqa.program.button</field>-->
+<!--        <field name="model">res.partner</field>-->
+<!--        <field name="inherit_id" ref="caqa_institution.view_partner_form_caqa_institution"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//div[@name='button_box']" position="inside">-->
+<!--                <button type="object" name="action_view_programs" class="oe_stat_button" icon="fa-graduation-cap" invisible="not is_caqa_institution">-->
+<!--                    <field name="caqa_program_count" widget="statinfo" string="Programs"/>-->
+<!--                </button>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+</odoo>

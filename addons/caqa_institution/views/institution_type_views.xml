@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_institution_type_tree" model="ir.ui.view">
+        <field name="name">caqa.institution.type.tree</field>
+        <field name="model">caqa.institution.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="institution_count"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_institution_type_form" model="ir.ui.view">
+        <field name="name">caqa.institution.type.form</field>
+        <field name="model">caqa.institution.type</field>
+        <field name="arch" type="xml">
+            <form string="Institution Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="code"/>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="institution_count" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_institution_type" model="ir.actions.act_window">
+        <field name="name">Institution Types</field>
+        <field name="res_model">caqa.institution.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

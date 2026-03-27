@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_appeal_case_1" model="caqa.appeal.case">
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="decision_id" ref="caqa_committee.demo_final_decision_1"/>
+        <field name="subject">Appeal on conditional approval conditions</field>
+        <field name="reason">&lt;p&gt;The institution requests additional time to satisfy one condition.&lt;/p&gt;</field>
+        <field name="state">submitted</field>
+    </record>
+</odoo>

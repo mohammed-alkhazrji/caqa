@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_institution_tree" model="ir.ui.view">
+        <field name="name">res.partner.caqa.institution.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="institution_state == 'archived'" decoration-danger="institution_state == 'suspended'">
+                <field name="caqa_institution_code"/>
+                <field name="name"/>
+                <field name="institution_type_id"/>
+                <field name="city"/>
+                <field name="country_id"/>
+                <field name="email"/>
+                <field name="institution_state" widget="badge"/>
+                <field name="caqa_profile_count" string="Profiles"/>
+                <field name="caqa_member_count" string="Members"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_institution_search" model="ir.ui.view">
+        <field name="name">res.partner.caqa.institution.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="caqa_institution_code"/>
+                <field name="institution_type_id"/>
+                <field name="city"/>
+                <field name="country_id"/>
+                <filter name="filter_active" string="Active" domain="[('institution_state', '=', 'active')]"/>
+                <filter name="filter_suspended" string="Suspended" domain="[('institution_state', '=', 'suspended')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_type" string="Type" context="{'group_by': 'institution_type_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'institution_state'}"/>
+                    <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_partner_form_caqa_institution" model="ir.ui.view">
+        <field name="name">res.partner.form.caqa.institution</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object" name="action_view_profiles" class="oe_stat_button" icon="fa-id-card-o" invisible="not is_caqa_institution">
+                    <field name="caqa_profile_count" widget="statinfo" string="Profiles"/>
+                </button>
+                <button type="object" name="action_view_members" class="oe_stat_button" icon="fa-users" invisible="not is_caqa_institution">
+                    <field name="caqa_member_count" widget="statinfo" string="Members"/>
+                </button>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="CAQA Institution" invisible="not is_caqa_institution">
+                    <group>
+                        <group>
+                            <field name="is_caqa_institution"/>
+                            <field name="caqa_institution_code"/>
+                            <field name="institution_type_id"/>
+                            <field name="institution_state" widget="badge"/>
+                        </group>
+                        <group>
+                            <field name="establishment_year"/>
+                            <field name="license_no"/>
+                            <field name="commercial_registration"/>
+                            <field name="official_website" widget="url"/>
+                        </group>
+                    </group>
+                    <group string="Profile Summary">
+                        <field name="active_profile_id" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_caqa_institutions" model="ir.actions.act_window">
+        <field name="name">Institutions</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_caqa_institution', '=', True)]</field>
+        <field name="context">{'default_is_caqa_institution': True}</field>
+        <field name="search_view_id" ref="view_caqa_institution_search"/>
+    </record>
+</odoo>

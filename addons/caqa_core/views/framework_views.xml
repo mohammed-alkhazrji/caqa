@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_framework_tree" model="ir.ui.view">
+        <field name="name">caqa.framework.tree</field>
+        <field name="model">caqa.framework</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="owner_organization"/>
+                <field name="is_default" widget="boolean_toggle"/>
+                <field name="type_count" string="Types"/>
+                <field name="cycle_count" string="Cycles"/>
+                <field name="active" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_caqa_framework_search" model="ir.ui.view">
+        <field name="name">caqa.framework.search</field>
+        <field name="model">caqa.framework</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="owner_organization"/>
+                <filter name="filter_default" string="Default" domain="[('is_default', '=', True)]"/>
+                <filter name="filter_archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_owner" string="Owner Organization" context="{'group_by': 'owner_organization'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_caqa_framework_form" model="ir.ui.view">
+        <field name="name">caqa.framework.form</field>
+        <field name="model">caqa.framework</field>
+        <field name="arch" type="xml">
+            <form string="Framework">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_types" class="oe_stat_button" icon="fa-sitemap">
+                            <field name="type_count" widget="statinfo" string="Types"/>
+                        </button>
+                        <button type="object" name="action_view_cycles" class="oe_stat_button" icon="fa-refresh">
+                            <field name="cycle_count" widget="statinfo" string="Cycles"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                        <div class="text-muted"><field name="code"/></div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="owner_organization"/>
+                        </group>
+                        <group>
+                            <field name="is_default"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Overview">
+                            <field name="description" widget="html"/>
+                        </page>
+                        <page string="Accreditation Types">
+                            <field name="type_ids" readonly="1">
+                                <tree>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="scope" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Cycles">
+                            <field name="cycle_ids" readonly="1">
+                                <tree decoration-success="state == 'open'" decoration-muted="state == 'closed'">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="academic_year"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="state" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caqa_framework" model="ir.actions.act_window">
+        <field name="name">Frameworks</field>
+        <field name="res_model">caqa.framework</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_caqa_framework_search"/>
+    </record>
+</odoo>

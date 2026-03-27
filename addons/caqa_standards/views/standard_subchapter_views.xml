@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_standard_subchapter_tree" model="ir.ui.view">
+        <field name="name">caqa.standard.subchapter.tree</field>
+        <field name="model">caqa.standard.subchapter</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="chapter_id"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="weight"/>
+                <field name="indicator_count"/>
+                <field name="active" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_standard_subchapter_search" model="ir.ui.view">
+        <field name="name">caqa.standard.subchapter.search</field>
+        <field name="model">caqa.standard.subchapter</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="chapter_id"/>
+                <field name="code"/>
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_caqa_standard_subchapter_form" model="ir.ui.view">
+        <field name="name">caqa.standard.subchapter.form</field>
+        <field name="model">caqa.standard.subchapter</field>
+        <field name="arch" type="xml">
+            <form string="Standard Subchapter">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="chapter_id"/>
+                            <field name="sequence"/>
+                            <field name="code"/>
+                            <field name="weight"/>
+                        </group>
+                        <group>
+                            <field name="indicator_count" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description"><field name="description" nolabel="1"/></page>
+                        <page string="Indicators"><field name="indicator_ids"><tree><field name="code"/><field name="name"/><field name="indicator_type"/><field name="weight"/></tree></field></page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_standard_subchapter" model="ir.actions.act_window">
+        <field name="name">Standard Subchapters</field>
+        <field name="res_model">caqa.standard.subchapter</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

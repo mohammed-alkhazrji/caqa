@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_followup_plan_1" model="caqa.followup.plan">
+        <field name="name">Conditional Approval Follow-up Plan</field>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="decision_id" ref="caqa_committee.demo_final_decision_1"/>
+        <field name="owner_id" ref="base.user_admin"/>
+        <field name="due_date">2026-07-15</field>
+        <field name="state">active</field>
+    </record>
+    <record id="demo_followup_item_1" model="caqa.followup.item">
+        <field name="plan_id" ref="demo_followup_plan_1"/>
+        <field name="title">Upload signed mission document</field>
+        <field name="indicator_id" ref="caqa_application.demo_application_indicator_line_1"/>
+        <field name="due_date">2026-07-01</field>
+        <field name="state">in_progress</field>
+        <field name="completion_rate">50</field>
+    </record>
+</odoo>

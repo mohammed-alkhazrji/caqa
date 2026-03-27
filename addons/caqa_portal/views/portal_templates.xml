@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_caqa_layout">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4 caqa-portal-shell">
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <div class="card caqa-portal-nav shadow-sm">
+                            <div class="card-body">
+                                <h5 class="mb-3">CAQA Portal</h5>
+                                <div class="list-group list-group-flush">
+                                    <a href="/my/caqa/dashboard" class="list-group-item list-group-item-action">Dashboard</a>
+                                    <a href="/my/caqa/profile" class="list-group-item list-group-item-action">Institution Profile</a>
+                                    <a href="/my/caqa/eligibilities" class="list-group-item list-group-item-action">Eligibility</a>
+                                    <a href="/my/caqa/programs" class="list-group-item list-group-item-action">Programs</a>
+                                    <a href="/my/caqa/applications" class="list-group-item list-group-item-action">Applications</a>
+                                    <a href="/my/caqa/evidences" class="list-group-item list-group-item-action">Evidence</a>
+                                    <a href="/my/caqa/deficiencies" class="list-group-item list-group-item-action">Deficiencies</a>
+                                    <a href="/my/caqa/decisions" class="list-group-item list-group-item-action">Decisions</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <!-- Breadcrumb Navigation -->
+                        <t t-if="breadcrumbs">
+                            <nav aria-label="breadcrumb" class="mb-3">
+                                <ol class="breadcrumb bg-white shadow-sm px-3 py-2 rounded">
+                                    <li class="breadcrumb-item">
+                                        <a href="/my/caqa/applications"><i class="fa fa-home"/> Applications</a>
+                                    </li>
+                                    <t t-foreach="breadcrumbs" t-as="bc">
+                                        <li t-attf-class="breadcrumb-item #{'active' if bc_last else ''}">
+                                            <t t-if="bc.get('url') and not bc_last">
+                                                <a t-att-href="bc['url']"><t t-out="bc['name']"/></a>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-out="bc['name']"/>
+                                            </t>
+                                        </li>
+                                    </t>
+                                </ol>
+                            </nav>
+                        </t>
+                        <t t-out="0"/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_caqa_dashboard">
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <div class="row g-3 mb-4">
+                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Programs</div><div class="display-6"><t t-esc="caqa_program_count or 0"/></div></div></div></div>
+                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Applications</div><div class="display-6"><t t-esc="caqa_application_count or 0"/></div></div></div></div>
+                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Eligibility</div><div class="display-6"><t t-esc="caqa_eligibility_count or 0"/></div></div></div></div>
+                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Avg Completion</div><div class="display-6"><t t-esc="'%.1f' % avg_completion"/>%</div></div></div></div>
+                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Avg Readiness</div><div class="display-6"><t t-esc="'%.1f' % avg_readiness"/>%</div></div></div></div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Accreditation Journey</strong>
+                    <span class="badge text-bg-primary">Live Progress</span>
+                </div>
+                <div class="card-body">
+                    <t t-if="applications">
+                        <t t-foreach="applications" t-as="app">
+                            <div class="mb-4 border rounded p-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-0"><t t-esc="app.reference"/> — <t t-esc="app.name"/></h5>
+                                        <div class="text-muted"><t t-esc="app.program_id.display_name"/></div>
+                                    </div>
+                                    <span class="badge text-bg-secondary"><t t-esc="dict(app._fields['state'].selection).get(app.state)"/></span>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="small text-muted">Completion</div>
+                                    <div class="progress"><div class="progress-bar" role="progressbar" t-attf-style="width:#{app.completion_rate}%;"><t t-esc="'%.1f' % app.completion_rate"/>%</div></div>
+                                </div>
+                                <div class="mt-3">
+                                    <a t-att-href="'/my/caqa/application/%s' % app.id" class="btn btn-sm btn-primary">Open Application</a>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                    <t t-else=""><div class="alert alert-info">No accreditation applications yet.</div></t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_caqa_profile">
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <div class="card shadow-sm">
+                <div class="card-header"><strong>Institution Profile</strong></div>
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="row g-3">
+                            <div class="col-12"><label class="form-label">Overview</label><textarea class="form-control" name="overview" rows="4"><t t-esc="profile.overview if profile else ''"/></textarea></div>
+                            <div class="col-md-6"><label class="form-label">Vision</label><textarea class="form-control" name="vision" rows="4"><t t-esc="profile.vision if profile else ''"/></textarea></div>
+                            <div class="col-md-6"><label class="form-label">Mission</label><textarea class="form-control" name="mission" rows="4"><t t-esc="profile.mission if profile else ''"/></textarea></div>
+                            <div class="col-md-6"><label class="form-label">Strategic Goals</label><textarea class="form-control" name="strategic_goals" rows="4"><t t-esc="profile.strategic_goals if profile else ''"/></textarea></div>
+                            <div class="col-md-6"><label class="form-label">Governance Structure</label><textarea class="form-control" name="governance_structure" rows="4"><t t-esc="profile.governance_structure if profile else ''"/></textarea></div>
+                            <div class="col-12"><label class="form-label">Quality System Summary</label><textarea class="form-control" name="quality_system_summary" rows="4"><t t-esc="profile.quality_system_summary if profile else ''"/></textarea></div>
+                        </div>
+                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                            <div class="text-muted">Completion: <strong><t t-esc="'%.1f' % (profile.profile_completion if profile else 0.0)"/>%</strong></div>
+                            <button type="submit" class="btn btn-primary">Save Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_caqa_eligibilities">
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>Eligibility Requests</strong>
+                    <a href="/my/caqa/eligibility/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"/> Request Eligibility</a>
+                </div>
+                <div class="card-body">
+                <t t-if="eligibilities">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead><tr><th>Reference</th><th>Program</th><th>State</th><th>Readiness</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="eligibilities" t-as="e">
+                                    <td><a t-att-href="'/my/caqa/eligibility/%s' % e.id"><t t-esc="e.reference"/></a></td>
+                                    <td><t t-esc="e.program_id.display_name"/></td>
+                                    <td><span class="badge text-bg-secondary"><t t-esc="dict(e._fields['state'].selection).get(e.state)"/></span></td>
+                                    <td><t t-esc="'%.1f' % e.readiness_score"/>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else=""><div class="alert alert-info">No eligibility requests found.</div></t>
+            </div></div>
+        </t>
+    </template>
+
+
+
+    <template id="portal_caqa_applications">
+        <t t-call="caqa_portal.portal_caqa_layout">
+        
+            <!-- Create Application Card -->
+            <div class="card shadow-sm mb-4 border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fa fa-file-text-o"/> Accreditation Applications</h5>
+                    <a href="#createAppForm" class="btn btn-light btn-sm shadow-sm" data-bs-toggle="collapse" role="button">
+                        <i class="fa fa-plus"/> New Application
+                    </a>
+                </div>
+                
+                <!-- Create Form (Collapsible) -->
+                <div t-attf-class="collapse #{'show' if show_create else ''}" id="createAppForm">
+                    <div class="card-body bg-light border-bottom">
+                        <h6 class="fw-bold mb-4 text-primary"><i class="fa fa-edit"/> Submit New Accreditation Application</h6>
+                        <form action="/my/caqa/applications" method="post" class="row g-3">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            
+                            <!-- Application Name -->
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Application Title <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control" t-att-value="post and post.get('name') or ''" placeholder="e.g. Bachelor of Computer Science Accreditation 2025"/>
+                                <t t-if="errors and errors.get('name')">
+                                    <div class="invalid-feedback d-block text-danger small">Application name is required.</div>
+                                </t>
+                            </div>
+
+                            <!-- Program -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Academic Program <span class="text-danger">*</span></label>
+                                <select name="program_id" t-attf-class="form-select #{'is-invalid' if errors and errors.get('program_id') else ''}">
+                                    <option value="">-- Select Program --</option>
+                                    <t t-foreach="programs" t-as="prog">
+                                        <option t-att-value="prog.id" t-att-selected="post and post.get('program_id') == str(prog.id)"><t t-esc="prog.display_name"/></option>
+                                    </t>
+                                </select>
+                                <t t-if="errors and errors.get('program_id')">
+                                    <div class="invalid-feedback">Please select an academic program.</div>
+                                </t>
+                            </div>
+
+                            <!-- Accreditation Type -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Accreditation Type <span class="text-danger">*</span></label>
+                                <select name="accreditation_type_id" t-attf-class="form-select #{'is-invalid' if errors and errors.get('accreditation_type_id') else ''}">
+                                    <option value="">-- Select Type --</option>
+                                    <t t-foreach="acc_types" t-as="at">
+                                        <option t-att-value="at.id" t-att-selected="post and post.get('accreditation_type_id') == str(at.id)"><t t-esc="at.name"/></option>
+                                    </t>
+                                </select>
+                                <t t-if="errors and errors.get('accreditation_type_id')">
+                                    <div class="invalid-feedback">Please select an accreditation type.</div>
+                                </t>
+                            </div>
+
+                            <!-- Accreditation Cycle -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Accreditation Cycle <span class="text-danger">*</span></label>
+                                <select name="cycle_id" t-attf-class="form-select #{'is-invalid' if errors and errors.get('cycle_id') else ''}">
+                                    <option value="">-- Select Cycle --</option>
+                                    <t t-foreach="cycles" t-as="cy">
+                                        <option t-att-value="cy.id" t-att-selected="post and post.get('cycle_id') == str(cy.id)"><t t-esc="cy.name"/></option>
+                                    </t>
+                                </select>
+                                <t t-if="errors and errors.get('cycle_id')">
+                                    <div class="invalid-feedback">Please select an accreditation cycle.</div>
+                                </t>
+                            </div>
+                            
+                            <!-- Standards Version -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Standards Version <span class="text-danger">*</span></label>
+                                <select name="standard_version_id" t-attf-class="form-select #{'is-invalid' if errors and errors.get('standard_version_id') else ''}">
+                                    <option value="">-- Select Version --</option>
+                                    <t t-foreach="std_versions" t-as="sv">
+                                        <option t-att-value="sv.id" t-att-selected="post and post.get('standard_version_id') == str(sv.id)"><t t-esc="sv.name"/></option>
+                                    </t>
+                                </select>
+                                <t t-if="errors and errors.get('standard_version_id')">
+                                    <div class="invalid-feedback">Please select a standards version.</div>
+                                </t>
+                            </div>
+
+                            <!-- Eligibility (Optional) -->
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Link to Approved Eligibility (Optional)</label>
+                                <select name="eligibility_id" class="form-select">
+                                    <option value="">-- None --</option>
+                                    <t t-foreach="eligibilities" t-as="el">
+                                        <option t-att-value="el.id" t-att-selected="post and post.get('eligibility_id') == str(el.id)"><t t-esc="el.reference"/> — <t t-esc="el.program_id.display_name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow shadow-sm">
+                                    <i class="fa fa-paper-plane"/> Submit Application
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Applications List -->
+                <div class="card-body p-0">
+                    <t t-if="applications">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Application Title</th>
+                                        <th>Program</th>
+                                        <th>Status</th>
+                                        <th>Progress</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="applications" t-as="app">
+                                        <td class="fw-bold text-primary small"><t t-esc="app.reference"/></td>
+                                        <td><t t-esc="app.name"/></td>
+                                        <td class="text-muted small"><t t-esc="app.program_id.display_name"/></td>
+                                        <td>
+                                            <span t-attf-class="badge #{'bg-warning text-dark' if app.state == 'draft' else 'bg-success' if app.state in ['approved', 'conditional_approved'] else 'bg-info'}">
+                                                <t t-esc="dict(app._fields['state'].selection).get(app.state)"/>
+                                            </span>
+                                        </td>
+                                        <td style="min-width: 100px;">
+                                            <div class="progress" style="height: 7px;">
+                                                <div class="progress-bar" t-attf-style="width:#{app.completion_rate}%;"></div>
+                                            </div>
+                                            <small class="text-muted"><t t-esc="'%.0f' % app.completion_rate"/>%</small>
+                                        </td>
+                                        <td class="text-end">
+                                            <a t-att-href="'/my/caqa/application/%s' % app.id" class="btn btn-sm btn-outline-primary">
+                                                <i class="fa fa-folder-open"/> Open
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="alert alert-info border-0 rounded-0 mb-0 p-4">
+                            <i class="fa fa-info-circle me-2"/> No accreditation applications yet. Click <strong>New Application</strong> to get started.
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+
+    <template id="portal_caqa_indicator_detail">
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+                    <div>
+                        <h5 class="mb-0"><i class="fa fa-list"/> <t t-esc="indicator.code"/> — <t t-esc="indicator.name"/></h5>
+                        <small class="opacity-75"><t t-esc="dict(indicator._fields['indicator_type'].selection).get(indicator.indicator_type)"/></small>
+                    </div>
+                    <span t-attf-class="badge #{'bg-success' if indicator.response_state in ['submitted','reviewed'] else 'bg-warning text-dark' if indicator.response_state == 'in_progress' else 'bg-secondary'}">
+                        <t t-esc="dict(indicator._fields['response_state'].selection).get(indicator.response_state)"/>
+                    </span>
+                </div>
+                
+                <!-- Progress bar -->
+                <div class="progress" style="height: 6px; border-radius: 0;">
+                    <div class="progress-bar bg-info" t-attf-style="width:#{indicator.completion_rate}%;"></div>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        
+                        <!-- Narrative Section -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold h6"><i class="fa fa-pencil-square-o text-primary"/> Narrative Response</label>
+                            <textarea name="narrative_html" class="form-control" rows="6" placeholder="Write your narrative response here..."><t t-esc="indicator.narrative_html or ''"/></textarea>
+                        </div>
+
+                        <!-- Checkpoints Section -->
+                        <t t-if="indicator.checkpoint_ids">
+                            <h6 class="fw-bold border-bottom pb-2 mb-3"><i class="fa fa-check-square-o text-primary"/> Checkpoints</h6>
+                            <t t-foreach="indicator.checkpoint_ids" t-as="cp">
+                                <div class="card mb-3 border-0 shadow-sm bg-light">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <span class="badge bg-secondary me-2"><t t-esc="cp.code"/></span>
+                                                <strong><t t-esc="cp.name"/></strong>
+                                                <small class="text-muted ms-2">(Max: <t t-esc="cp.max_score"/> pts)</small>
+                                            </div>
+                                            <span t-attf-class="badge #{'bg-success' if cp.state == 'completed' else 'bg-info' if cp.state == 'in_progress' else 'bg-secondary'}">
+                                                <t t-esc="dict(cp._fields['state'].selection).get(cp.state)"/>
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="row g-2">
+                                            <!-- Boolean Value -->
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch">
+                                                    <!-- Hidden field to detect checkbox was rendered -->
+                                                    <input type="hidden" t-attf-name="cp_boolean_submitted_#{cp.id}" value="1"/>
+                                                    <input class="form-check-input" type="checkbox"
+                                                           t-attf-name="cp_boolean_#{cp.id}"
+                                                           value="1"
+                                                           t-att-checked="cp.boolean_value"/>
+                                                    <label class="form-check-label">Compliant (Yes/No)</label>
+                                                </div>
+                                            </div>
+                                            <!-- Numeric Score -->
+                                            <div class="col-md-4">
+                                                <label class="form-label small fw-bold">Score</label>
+                                                <input type="number" step="0.01"
+                                                       t-attf-name="cp_numeric_#{cp.id}"
+                                                       t-att-value="cp.numeric_value"
+                                                       t-att-max="cp.max_score"
+                                                       class="form-control form-control-sm"
+                                                       placeholder="0.0"/>
+                                            </div>
+                                            <!-- Checkpoint State -->
+                                            <div class="col-md-4">
+                                                <label class="form-label small fw-bold">Status</label>
+                                                <select t-attf-name="cp_state_#{cp.id}" class="form-select form-select-sm">
+                                                    <option value="draft" t-att-selected="cp.state == 'draft'">Draft</option>
+                                                    <option value="in_progress" t-att-selected="cp.state == 'in_progress'">In Progress</option>
+                                                    <option value="completed" t-att-selected="cp.state == 'completed'">Completed</option>
+                                                </select>
+                                            </div>
+                                            <!-- Text Value -->
+                                            <div class="col-12">
+                                                <label class="form-label small fw-bold">Text Response</label>
+                                                <textarea t-attf-name="cp_text_#{cp.id}" class="form-control form-control-sm" rows="2" placeholder="Describe evidence or compliance details..."><t t-esc="cp.text_value or ''"/></textarea>
+                                            </div>
+                                            <!-- Note -->
+                                            <div class="col-12">
+                                                <label class="form-label small fw-bold">Notes</label>
+                                                <input type="text" t-attf-name="cp_note_#{cp.id}" class="form-control form-control-sm" t-att-value="cp.note or ''" placeholder="Additional notes..."/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <div class="alert alert-secondary border-0 small"><i class="fa fa-info-circle"/> No checkpoints defined for this indicator.</div>
+                        </t>
+                        
+                        <!-- Response State & Save -->
+                        <div class="row mt-4 align-items-center border-top pt-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Response State</label>
+                                <select name="response_state" class="form-select">
+                                    <option value="draft" t-att-selected="indicator.response_state == 'draft'">Draft</option>
+                                    <option value="in_progress" t-att-selected="indicator.response_state == 'in_progress'">In Progress</option>
+                                    <option value="submitted" t-att-selected="indicator.response_state == 'submitted'">Submitted</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 text-muted small">
+                                Evidence Completion: <strong><t t-esc="'%.1f' % indicator.evidence_completion_rate"/>%</strong><br/>
+                                Overall: <strong><t t-esc="'%.1f' % indicator.completion_rate"/>%</strong>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
+                                    <i class="fa fa-save"/> Save All Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Linked Evidence -->
+                    <t t-if="indicator.evidence_ids">
+                        <div class="mt-4 border-top pt-3">
+                            <h6 class="fw-bold"><i class="fa fa-folder-open text-info"/> Linked Evidence</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item px-0 d-flex justify-content-between align-items-center" t-foreach="indicator.evidence_ids" t-as="ev">
+                                    <a t-att-href="'/my/caqa/evidence/%s' % ev.id"><t t-esc="ev.name"/></a>
+                                    <span class="badge text-bg-secondary"><t t-esc="dict(ev._fields['state'].selection).get(ev.state)"/></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_caqa_evidences">
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <div class="card shadow-sm"><div class="card-header"><strong>Evidence</strong></div><div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead><tr><th>Name</th><th>Application</th><th>Requirement</th><th>Completion</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="evidences" t-as="ev">
+                                <td><a t-att-href="'/my/caqa/evidence/%s' % ev.id"><t t-esc="ev.name"/></a></td>
+                                <td><t t-esc="ev.application_id.reference"/></td>
+                                <td><t t-esc="ev.requirement_id.name if ev.requirement_id else ''"/></td>
+                                <td><t t-esc="'%.1f' % ev.validation_completion_rate"/>%</td>
+                                <td><span class="badge text-bg-secondary"><t t-esc="dict(ev._fields['state'].selection).get(ev.state)"/></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_caqa_evidence_detail">
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between">
+                    <strong><t t-esc="evidence.name"/></strong>
+                    <span class="badge text-bg-secondary"><t t-esc="dict(evidence._fields['state'].selection).get(evidence.state)"/></span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Requirement:</strong> <t t-esc="evidence.requirement_id.name if evidence.requirement_id else ''"/></p>
+                    <p><strong>Validation:</strong> <t t-esc="'%.1f' % evidence.validation_completion_rate"/>%</p>
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Evidence Summary</label>
+                            <textarea name="summary" class="form-control" rows="4" placeholder="Briefly describe the contents or relevance of this evidence..."><t t-esc="evidence.summary or ''"/></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Upload Attachment</label>
+                            <input type="file" class="form-control" name="attachment"/>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" type="submit">Upload</button>
+                            <button class="btn btn-primary" type="submit" name="submit_now" value="1">Upload &amp; Submit</button>
+                        </div>
+                    </form>
+                    <div class="mt-4">
+                        <h6>Attachments</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item" t-foreach="evidence.attachment_ids" t-as="att">
+                                <t t-esc="att.datas_fname"/> <span class="text-muted">(<t t-esc="att.file_size"/> bytes)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_caqa_deficiencies">
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <div class="card shadow-sm">
+                <div class="card-header"><strong>Deficiencies</strong></div>
+                <div class="card-body">
+                    <t t-if="deficiencies">
+                        <div class="accordion" id="defAccordion">
+                            <div class="accordion-item" t-foreach="deficiencies" t-as="d">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" t-att-data-bs-target="'#def%s' % d.id">
+                                        <t t-esc="d.title"/> — <t t-esc="dict(d._fields['severity'].selection).get(d.severity)"/>
+                                    </button>
+                                </h2>
+                                <div class="accordion-collapse collapse" t-att-id="'def%s' % d.id">
+                                    <div class="accordion-body">
+                                        <div t-field="d.description"/>
+                                        <form method="post" t-att-action="'/my/caqa/deficiency/%s/respond' % d.id">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <label class="form-label mt-3">Response</label>
+                                            <textarea class="form-control" name="institution_response" rows="4"><t t-esc="d.institution_response or ''"/></textarea>
+                                            <button type="submit" class="btn btn-primary mt-2">Send Response</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else=""><div class="alert alert-success">No open deficiencies.</div></t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_caqa_decisions">
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header"><strong>Final Decisions</strong></div>
+                <div class="card-body">
+                    <t t-if="decisions">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead><tr><th>Reference</th><th>Decision</th><th>Date</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="decisions" t-as="dec">
+                                        <td><t t-esc="dec.reference"/></td>
+                                        <td><span class="badge text-bg-secondary"><t t-esc="dict(dec._fields['decision'].selection).get(dec.decision)"/></span></td>
+                                        <td><t t-esc="dec.decision_date"/></td>
+                                        <td><span class="badge text-bg-secondary"><t t-esc="dict(dec._fields['state'].selection).get(dec.state)"/></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                    <t t-else=""><div class="alert alert-info">No final decisions yet.</div></t>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-header"><strong>Follow-up Plans</strong></div>
+                <div class="card-body">
+                    <t t-if="followups">
+                        <ul class="list-group">
+                            <li class="list-group-item" t-foreach="followups" t-as="f">
+                                <div class="d-flex justify-content-between">
+                                    <span><strong><t t-esc="f.name"/></strong> — <t t-esc="'%.1f' % f.progress_rate"/>%</span>
+                                    <span class="badge text-bg-secondary"><t t-esc="dict(f._fields['state'].selection).get(f.state)"/></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </t>
+                    <t t-else=""><div class="alert alert-secondary">No follow-up plans assigned.</div></t>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

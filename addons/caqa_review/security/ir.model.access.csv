@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_caqa_review_assignment_user,caqa.review.assignment.user,model_caqa_review_assignment,base.group_user,1,1,1,1
+access_caqa_review_user,caqa.review.user,model_caqa_review,base.group_user,1,1,1,1
+access_caqa_review_note_user,caqa.review.note.user,model_caqa_review_note,base.group_user,1,1,1,1
+access_caqa_recommendation_user,caqa.recommendation.user,model_caqa_recommendation,base.group_user,1,1,1,1
+access_caqa_moderation_log_user,caqa.moderation.log.user,model_caqa_moderation_log,base.group_user,1,1,1,1
+access_caqa_reviewer_cockpit_user,caqa.reviewer.cockpit.user,model_caqa_reviewer_cockpit,base.group_user,1,1,1,1

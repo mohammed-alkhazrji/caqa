@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_committee_session_1" model="caqa.committee.session">
+        <field name="name">June 2026 Accreditation Session</field>
+        <field name="session_date">2026-06-30 10:00:00</field>
+        <field name="state">completed</field>
+    </record>
+    <record id="demo_committee_member_1" model="caqa.committee.member">
+        <field name="session_id" ref="demo_committee_session_1"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="role">chair</field>
+    </record>
+    <record id="demo_decision_pack_1" model="caqa.decision.pack">
+        <field name="name">CS Decision Pack</field>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="session_id" ref="demo_committee_session_1"/>
+        <field name="review_summary">&lt;p&gt;Review indicates a mostly compliant application with two moderate concerns.&lt;/p&gt;</field>
+        <field name="site_visit_summary">&lt;p&gt;Site visit confirms governance strength and highlights mission communication gap.&lt;/p&gt;</field>
+        <field name="final_recommendation">conditional</field>
+        <field name="state">finalized</field>
+    </record>
+    <record id="demo_committee_vote_1" model="caqa.committee.vote">
+        <field name="session_id" ref="demo_committee_session_1"/>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="member_id" ref="demo_committee_member_1"/>
+        <field name="vote">conditional</field>
+        <field name="justification">Conditions should be completed within 90 days.</field>
+    </record>
+    <record id="demo_final_decision_1" model="caqa.final.decision">
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="session_id" ref="demo_committee_session_1"/>
+        <field name="decision_pack_id" ref="demo_decision_pack_1"/>
+        <field name="decision">conditional_approved</field>
+        <field name="state">issued</field>
+        <field name="decision_date">2026-06-30</field>
+        <field name="validity_start">2026-07-01</field>
+        <field name="validity_end">2031-06-30</field>
+        <field name="conditions_html">&lt;ul&gt;&lt;li&gt;Upload signed mission approval evidence&lt;/li&gt;&lt;li&gt;Document mission awareness survey&lt;/li&gt;&lt;/ul&gt;</field>
+        <field name="letter_html">&lt;p&gt;The committee issues a conditional approval subject to completion of the listed conditions.&lt;/p&gt;</field>
+        <field name="appeal_deadline">2026-07-15</field>
+        <field name="followup_required">1</field>
+    </record>
+</odoo>

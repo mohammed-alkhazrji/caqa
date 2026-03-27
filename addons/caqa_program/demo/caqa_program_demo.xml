@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_program_cs" model="caqa.program">
+        <field name="institution_id" ref="caqa_institution.demo_partner_institution_1"/>
+        <field name="name">Computer Science</field>
+        <field name="code">CS-BSC</field>
+        <field name="degree_level">bachelor</field>
+        <field name="department_name">Faculty of Computing</field>
+        <field name="duration_years">4</field>
+        <field name="credit_hours">132</field>
+        <field name="state">active</field>
+        <field name="mission">&lt;p&gt;Graduating practice-ready computing professionals.&lt;/p&gt;</field>
+    </record>
+    <record id="demo_program_ds" model="caqa.program">
+        <field name="institution_id" ref="caqa_institution.demo_partner_institution_2"/>
+        <field name="name">Data Science</field>
+        <field name="code">DS-BSC</field>
+        <field name="degree_level">bachelor</field>
+        <field name="department_name">Faculty of Applied Computing</field>
+        <field name="duration_years">4</field>
+        <field name="credit_hours">128</field>
+        <field name="state">active</field>
+    </record>
+    <record id="demo_program_course_prog1" model="caqa.program.course">
+        <field name="program_id" ref="demo_program_cs"/>
+        <field name="name">Programming I</field>
+        <field name="code">CS101</field>
+        <field name="level_no">1</field>
+        <field name="semester_no">1</field>
+        <field name="credit_hours">3</field>
+        <field name="contact_hours">4</field>
+        <field name="state">active</field>
+    </record>
+    <record id="demo_program_lo_1" model="caqa.program.learning.outcome">
+        <field name="program_id" ref="demo_program_cs"/>
+        <field name="code">PLO1</field>
+        <field name="name">Apply core computing principles to solve problems.</field>
+        <field name="outcome_type">knowledge</field>
+    </record>
+</odoo>

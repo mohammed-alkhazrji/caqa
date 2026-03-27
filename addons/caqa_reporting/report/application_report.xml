@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_application_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Accreditation Application</h2>
+                        <p><strong>Reference:</strong> <span t-field="o.reference"/></p>
+                        <p><strong>Name:</strong> <span t-field="o.name"/></p>
+                        <p><strong>Institution:</strong> <span t-field="o.institution_id.name"/></p>
+                        <p><strong>Program:</strong> <span t-field="o.program_id.name"/></p>
+                        <p><strong>State:</strong> <span t-field="o.state"/></p>
+                        <p><strong>Completion:</strong> <span t-field="o.completion_rate"/>%</p>
+                        <p><strong>Readiness:</strong> <span t-field="o.readiness_score"/>%</p>
+                        <h4>Decision Summary</h4>
+                        <div t-field="o.decision_summary"/>
+                        <h4>Review Summary</h4>
+                        <div t-field="o.review_summary"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_site_visit_1" model="caqa.site.visit">
+        <field name="name">Computer Science Site Visit</field>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="leader_id" ref="base.user_admin"/>
+        <field name="start_date">2026-06-25 08:00:00</field>
+        <field name="end_date">2026-06-26 16:00:00</field>
+        <field name="state">completed</field>
+    </record>
+    <record id="demo_site_visit_team_1" model="caqa.site.visit.team">
+        <field name="visit_id" ref="demo_site_visit_1"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="role">leader</field>
+    </record>
+    <record id="demo_site_visit_agenda_1" model="caqa.site.visit.agenda">
+        <field name="visit_id" ref="demo_site_visit_1"/>
+        <field name="title">Opening Meeting</field>
+        <field name="start_datetime">2026-06-25 09:00:00</field>
+        <field name="end_datetime">2026-06-25 10:00:00</field>
+        <field name="location">Main Campus</field>
+        <field name="owner_id" ref="base.user_admin"/>
+    </record>
+    <record id="demo_site_visit_finding_1" model="caqa.site.visit.finding">
+        <field name="visit_id" ref="demo_site_visit_1"/>
+        <field name="application_indicator_id" ref="caqa_application.demo_application_indicator_line_1"/>
+        <field name="title">Mission communication needs broader evidence</field>
+        <field name="description">&lt;p&gt;Students interviewed were only partially aware of the official mission statement.&lt;/p&gt;</field>
+        <field name="severity">medium</field>
+        <field name="state">open</field>
+    </record>
+    <record id="demo_site_visit_report_1" model="caqa.site.visit.report">
+        <field name="name">Computer Science Site Visit Report</field>
+        <field name="visit_id" ref="demo_site_visit_1"/>
+        <field name="application_id" ref="caqa_application.demo_application_1"/>
+        <field name="state">submitted</field>
+        <field name="executive_summary">&lt;p&gt;The program demonstrates solid governance and quality practices with a few evidence gaps.&lt;/p&gt;</field>
+        <field name="strengths">&lt;ul&gt;&lt;li&gt;Committed leadership&lt;/li&gt;&lt;li&gt;Documented QA processes&lt;/li&gt;&lt;/ul&gt;</field>
+        <field name="improvement_areas">&lt;ul&gt;&lt;li&gt;Expand publication evidence&lt;/li&gt;&lt;li&gt;Improve mission awareness measurement&lt;/li&gt;&lt;/ul&gt;</field>
+    </record>
+</odoo>

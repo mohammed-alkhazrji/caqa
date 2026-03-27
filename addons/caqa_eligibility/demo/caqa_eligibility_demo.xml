@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_eligibility_1" model="caqa.eligibility.request">
+        <field name="name">Eligibility – Computer Science 2026</field>
+        <field name="institution_id" ref="caqa_institution.demo_partner_institution_1"/>
+        <field name="program_id" ref="caqa_program.demo_program_cs"/>
+        <field name="accreditation_type_id" ref="caqa_core.demo_caqa_accreditation_type_program"/>
+        <field name="cycle_id" ref="caqa_core.demo_caqa_cycle_2026"/>
+        <field name="standard_version_id" ref="caqa_standards.demo_standard_version_1"/>
+        <field name="state">eligible</field>
+        <field name="review_note">&lt;p&gt;Institution is eligible to proceed with the accreditation application.&lt;/p&gt;</field>
+    </record>
+    <record id="demo_eligibility_2" model="caqa.eligibility.request">
+        <field name="name">Eligibility – Data Science 2026</field>
+        <field name="institution_id" ref="caqa_institution.demo_partner_institution_2"/>
+        <field name="program_id" ref="caqa_program.demo_program_ds"/>
+        <field name="accreditation_type_id" ref="caqa_core.demo_caqa_accreditation_type_program"/>
+        <field name="cycle_id" ref="caqa_core.demo_caqa_cycle_2026"/>
+        <field name="standard_version_id" ref="caqa_standards.demo_standard_version_1"/>
+        <field name="state">under_review</field>
+    </record>
+</odoo>

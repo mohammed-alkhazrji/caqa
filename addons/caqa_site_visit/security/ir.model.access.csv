@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_caqa_site_visit_user,caqa.site.visit.user,model_caqa_site_visit,base.group_user,1,1,1,1
+access_caqa_site_visit_team_user,caqa.site.visit.team.user,model_caqa_site_visit_team,base.group_user,1,1,1,1
+access_caqa_site_visit_agenda_user,caqa.site.visit.agenda.user,model_caqa_site_visit_agenda,base.group_user,1,1,1,1
+access_caqa_site_visit_session_user,caqa.site.visit.session.user,model_caqa_site_visit_session,base.group_user,1,1,1,1
+access_caqa_site_visit_finding_user,caqa.site.visit.finding.user,model_caqa_site_visit_finding,base.group_user,1,1,1,1
+access_caqa_site_visit_report_user,caqa.site.visit.report.user,model_caqa_site_visit_report,base.group_user,1,1,1,1

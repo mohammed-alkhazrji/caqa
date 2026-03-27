@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_caqa_framework_1" model="caqa.framework">
+        <field name="name">National Academic Accreditation Framework</field>
+        <field name="code">NAAF</field>
+        <field name="owner_organization">CAQA Authority</field>
+        <field name="is_default">1</field>
+    </record>
+    <record id="demo_caqa_accreditation_type_program" model="caqa.accreditation.type">
+        <field name="framework_id" ref="demo_caqa_framework_1"/>
+        <field name="name">Program Accreditation</field>
+        <field name="code">PROG</field>
+        <field name="scope">programmatic</field>
+        <field name="description">&lt;p&gt;Accreditation for academic programs.&lt;/p&gt;</field>
+    </record>
+    <record id="demo_caqa_cycle_2026" model="caqa.accreditation.cycle">
+        <field name="framework_id" ref="demo_caqa_framework_1"/>
+        <field name="accreditation_type_id" ref="demo_caqa_accreditation_type_program"/>
+        <field name="name">2026 Accreditation Cycle</field>
+        <field name="code">CYCLE-2026</field>
+        <field name="start_date">2026-01-01</field>
+        <field name="end_date">2026-12-31</field>
+        <field name="academic_year">2025/2026</field>
+        <field name="state">open</field>
+    </record>
+</odoo>

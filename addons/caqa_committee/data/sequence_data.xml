@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_caqa_committee_session" model="ir.sequence">
+        <field name="name">CAQA Committee Session</field>
+        <field name="code">caqa.committee.session</field>
+        <field name="prefix">COM/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+    <record id="seq_caqa_final_decision" model="ir.sequence">
+        <field name="name">CAQA Final Decision</field>
+        <field name="code">caqa.final.decision</field>
+        <field name="prefix">DEC/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_caqa_application_root" name="Applications" parent="caqa_core.menu_caqa_operations_root" sequence="40"
+              groups="caqa_security.group_caqa_system_administrator,caqa_security.group_caqa_accreditation_manager,caqa_security.group_caqa_accreditation_officer,caqa_security.group_caqa_reviewer,caqa_security.group_caqa_senior_reviewer,caqa_security.group_caqa_institution_supervisor,caqa_security.group_caqa_institution_user"/>
+    <menuitem id="menu_caqa_application" name="Applications" parent="menu_caqa_application_root" action="action_caqa_application" sequence="10"/>
+    <menuitem id="menu_caqa_application_indicators" name="Indicators" parent="menu_caqa_application_root" action="action_caqa_application_indicator" sequence="20"/>
+    <menuitem id="menu_caqa_application_deficiencies" name="Deficiencies" parent="menu_caqa_application_root" action="action_caqa_application_deficiency" sequence="30"/>
+    <menuitem id="menu_caqa_application_state_history" name="State History" parent="menu_caqa_application_root" action="action_caqa_application_state_history" sequence="40"/>
+</odoo>

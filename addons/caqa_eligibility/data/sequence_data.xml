@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_caqa_eligibility_request" model="ir.sequence">
+        <field name="name">CAQA Eligibility Request</field>
+        <field name="code">caqa.eligibility.request</field>
+        <field name="prefix">ELG/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

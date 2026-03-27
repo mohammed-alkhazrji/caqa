@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_caqa_review_assignment" model="ir.sequence">
+        <field name="name">CAQA Review Assignment</field>
+        <field name="code">caqa.review.assignment</field>
+        <field name="prefix">REV/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

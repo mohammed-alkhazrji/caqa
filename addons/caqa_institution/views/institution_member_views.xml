@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_institution_member_tree" model="ir.ui.view">
+        <field name="name">caqa.institution.member.tree</field>
+        <field name="model">caqa.institution.member</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="institution_id"/>
+                <field name="user_id"/>
+                <field name="role" widget="badge"/>
+                <field name="note"/>
+                <field name="active" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_caqa_institution_member_search" model="ir.ui.view">
+        <field name="name">caqa.institution.member.search</field>
+        <field name="model">caqa.institution.member</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="institution_id"/>
+                <field name="user_id"/>
+                <field name="role"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_institution" string="Institution" context="{'group_by': 'institution_id'}"/>
+                    <filter name="group_role" string="Role" context="{'group_by': 'role'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_caqa_institution_member_form" model="ir.ui.view">
+        <field name="name">caqa.institution.member.form</field>
+        <field name="model">caqa.institution.member</field>
+        <field name="arch" type="xml">
+            <form string="Institution Member">
+                <sheet>
+                    <group>
+                        <group><field name="institution_id"/><field name="user_id"/></group>
+                        <group><field name="role"/><field name="active"/></group>
+                    </group>
+                    <group><field name="note"/></group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_caqa_institution_member" model="ir.actions.act_window">
+        <field name="name">Institution Members</field>
+        <field name="res_model">caqa.institution.member</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_caqa_institution_member_search"/>
+    </record>
+</odoo>

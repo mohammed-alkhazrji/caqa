@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_caqa_followup_plan" model="ir.actions.report">
+        <field name="name">Follow-up Plan Report</field>
+        <field name="model">caqa.followup.plan</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">caqa_appeal_followup.report_followup_plan_document</field>
+        <field name="report_file">caqa_appeal_followup.report_followup_plan_document</field>
+        <field name="binding_model_id" ref="model_caqa_followup_plan"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_followup_plan_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Follow-up Plan</h2>
+                        <p><strong>Name:</strong> <span t-field="o.name"/></p>
+                        <p><strong>Application:</strong> <span t-field="o.application_id.reference"/></p>
+                        <p><strong>State:</strong> <span t-field="o.state"/></p>
+                        <p><strong>Progress:</strong> <span t-field="o.progress_rate"/>%</p>
+                        <h4>Items</h4>
+                        <table class="table table-sm">
+                            <thead><tr><th>Title</th><th>Due</th><th>Status</th><th>Progress</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.item_ids" t-as="item">
+                                    <td><span t-field="item.title"/></td>
+                                    <td><span t-field="item.due_date"/></td>
+                                    <td><span t-field="item.state"/></td>
+                                    <td><span t-field="item.completion_rate"/>%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

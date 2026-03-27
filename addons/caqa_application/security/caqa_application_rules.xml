@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_caqa_application_supervisor_own_institution" model="ir.rule">
+        <field name="name">Application - institution supervisor own institution</field>
+        <field name="model_id" ref="model_caqa_application"/>
+        <field name="domain_force">[('institution_id.member_ids.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[
+            (4, ref('caqa_security.group_caqa_institution_supervisor')),
+            (4, ref('caqa_security.group_caqa_institution_user')),
+            (4, ref('caqa_security.group_caqa_portal_institution'))
+        ]"/>
+    </record>
+
+    <record id="rule_caqa_application_admin_full_access" model="ir.rule">
+        <field name="name">Application - system administrator full access</field>
+        <field name="model_id" ref="model_caqa_application"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[
+            (4, ref('caqa_security.group_caqa_system_administrator'))
+        ]"/>
+    </record>
+
+    <record id="rule_caqa_application_indicator_supervisor_own_institution" model="ir.rule">
+        <field name="name">Application indicators - institution supervisor own institution</field>
+        <field name="model_id" ref="model_caqa_application_indicator"/>
+        <field name="domain_force">[('application_id.institution_id.member_ids.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[
+            (4, ref('caqa_security.group_caqa_institution_supervisor')),
+            (4, ref('caqa_security.group_caqa_institution_user')),
+            (4, ref('caqa_security.group_caqa_portal_institution'))
+        ]"/>
+    </record>
+
+    <record id="rule_caqa_application_indicator_admin_full_access" model="ir.rule">
+        <field name="name">Application indicators - system administrator full access</field>
+        <field name="model_id" ref="model_caqa_application_indicator"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[
+            (4, ref('caqa_security.group_caqa_system_administrator'))
+        ]"/>
+    </record>
+</odoo>

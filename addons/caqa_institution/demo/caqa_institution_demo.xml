@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="demo_institution_type_university" model="caqa.institution.type">
+        <field name="name">University</field>
+        <field name="code">UNI</field>
+    </record>
+    <record id="demo_institution_type_college" model="caqa.institution.type">
+        <field name="name">College</field>
+        <field name="code">COL</field>
+    </record>
+
+    <record id="demo_partner_institution_1" model="res.partner">
+        <field name="name">Al Noor University</field>
+        <field name="is_company">1</field>
+        <field name="is_caqa_institution">1</field>
+        <field name="institution_type_id" ref="demo_institution_type_university"/>
+        <field name="caqa_institution_code">INST-001</field>
+        <field name="institution_state">active</field>
+        <field name="official_website">https://alnoor.example.com</field>
+        <field name="email">quality@alnoor.example.com</field>
+        <field name="phone">+967700000001</field>
+    </record>
+    <record id="demo_partner_institution_2" model="res.partner">
+        <field name="name">Future Applied College</field>
+        <field name="is_company">1</field>
+        <field name="is_caqa_institution">1</field>
+        <field name="institution_type_id" ref="demo_institution_type_college"/>
+        <field name="caqa_institution_code">INST-002</field>
+        <field name="institution_state">active</field>
+        <field name="official_website">https://futurecollege.example.com</field>
+        <field name="email">qa@futurecollege.example.com</field>
+        <field name="phone">+967700000002</field>
+    </record>
+
+    <record id="demo_profile_1" model="caqa.institution.profile">
+        <field name="name">Institutional Profile 2026</field>
+        <field name="institution_id" ref="demo_partner_institution_1"/>
+        <field name="state">approved</field>
+        <field name="overview">&lt;p&gt;Comprehensive research-led university with strong governance.&lt;/p&gt;</field>
+        <field name="vision">&lt;p&gt;To become a regional leader in quality higher education.&lt;/p&gt;</field>
+        <field name="mission">&lt;p&gt;Deliver accredited, student-centered academic programs.&lt;/p&gt;</field>
+        <field name="strategic_goals">&lt;p&gt;Quality assurance, employability, digital learning.&lt;/p&gt;</field>
+        <field name="governance_structure">&lt;p&gt;University council, dean councils, QA committee.&lt;/p&gt;</field>
+        <field name="student_count">4200</field>
+        <field name="faculty_count">180</field>
+        <field name="admin_staff_count">95</field>
+        <field name="branch_count">2</field>
+    </record>
+    <record id="demo_profile_2" model="caqa.institution.profile">
+        <field name="name">Institutional Profile 2026</field>
+        <field name="institution_id" ref="demo_partner_institution_2"/>
+        <field name="state">in_progress</field>
+        <field name="overview">&lt;p&gt;Applied college focused on workforce readiness.&lt;/p&gt;</field>
+        <field name="vision">&lt;p&gt;Leading applied education in emerging fields.&lt;/p&gt;</field>
+        <field name="mission">&lt;p&gt;Provide industry-aligned diploma and bachelor programs.&lt;/p&gt;</field>
+    </record>
+
+    <record id="demo_partner_quality_director" model="res.partner">
+        <field name="name">Maha Al-Hakimi</field>
+        <field name="email">maha.quality@example.com</field>
+    </record>
+    <record id="demo_user_institution_supervisor" model="res.users">
+        <field name="name">Maha Al-Hakimi</field>
+        <field name="login">maha.quality@example.com</field>
+        <field name="email">maha.quality@example.com</field>
+        <field name="partner_id" ref="demo_partner_quality_director"/>
+        <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('caqa_security.group_caqa_institution_supervisor')])]"/>
+    </record>
+    <record id="demo_partner_portal_officer" model="res.partner">
+        <field name="name">Rana Portal</field>
+        <field name="email">rana.portal@example.com</field>
+    </record>
+    <record id="demo_user_portal" model="res.users">
+        <field name="name">Rana Portal</field>
+        <field name="login">rana.portal@example.com</field>
+        <field name="email">rana.portal@example.com</field>
+        <field name="partner_id" ref="demo_partner_portal_officer"/>
+        <field name="groups_id" eval="[(6,0,[ref('base.group_portal'), ref('caqa_security.group_caqa_portal_institution')])]"/>
+    </record>
+    <record id="demo_member_supervisor_1" model="caqa.institution.member">
+        <field name="institution_id" ref="demo_partner_institution_1"/>
+        <field name="user_id" ref="demo_user_institution_supervisor"/>
+        <field name="role">supervisor</field>
+    </record>
+    <record id="demo_member_portal_1" model="caqa.institution.member">
+        <field name="institution_id" ref="demo_partner_institution_1"/>
+        <field name="user_id" ref="demo_user_portal"/>
+        <field name="role">user</field>
+    </record>
+</odoo>

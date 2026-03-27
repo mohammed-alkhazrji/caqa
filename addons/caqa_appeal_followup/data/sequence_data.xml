@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_caqa_appeal_case" model="ir.sequence">
+        <field name="name">CAQA Appeal Case</field>
+        <field name="code">caqa.appeal.case</field>
+        <field name="prefix">APL/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>
