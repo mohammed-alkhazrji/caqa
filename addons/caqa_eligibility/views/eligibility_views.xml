@@ -68,6 +68,8 @@
                                     <field name="is_required"/>
                                     <field name="provided"/>
                                     <field name="reviewer_verified"/>
+                                    <field name="attachment" filename="attachment_name" widget="binary"/>
+                                    <field name="attachment_name" column_invisible="True"/>
                                     <field name="note"/>
                                 </tree>
                             </field>

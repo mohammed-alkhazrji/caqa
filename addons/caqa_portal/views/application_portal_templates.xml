@@ -2,101 +2,124 @@
 <odoo>
 
     <!-- Application Detail Template with Tabs -->
+    <!-- Application Detail Template with Tabs -->
     <template id="portal_caqa_application_detail">
         <t t-call="caqa_portal.portal_caqa_layout">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
-                    <div>
-                        <h5 class="mb-0"><t t-esc="application.reference"/> — <t t-esc="application.name"/></h5>
+            
+            <!-- Elite Header Section -->
+            <div class="card border-0 shadow-sm mb-4 rounded-3 overflow-hidden">
+                <div class="card-header card-header-gradient p-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap">
+                        <div>
+                            <span class="badge bg-white text-caqa-primary mb-2 shadow-sm rounded-pill px-3 py-1"><i class="fa fa-institution me-1"/> <t t-esc="application.program_id.display_name"/></span>
+                            <h3 class="mb-0 fw-bold text-white"><t t-esc="application.reference"/> — <t t-esc="application.name"/></h3>
+                        </div>
+                        <div class="mt-2 mt-md-0 text-end">
+                            <span t-attf-class="badge #{'bg-warning text-dark' if application.state in ['draft', 'in_progress'] else 'bg-success'} shadow-sm px-4 py-2 rounded-pill fs-6 fw-bold">
+                                <t t-esc="dict(application._fields['state'].selection).get(application.state)"/>
+                            </span>
+                        </div>
                     </div>
-                    <span t-attf-class="badge #{'bg-primary' if application.state in ['draft', 'in_progress'] else 'bg-success'}">
-                        <t t-esc="dict(application._fields['state'].selection).get(application.state)"/>
-                    </span>
                 </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <div class="small fw-bold text-muted">Application Progress</div>
-                            <div class="progress mt-1" style="height: 20px;">
-                                <div class="progress-bar bg-info" t-attf-style="width:#{application.completion_rate}%;">
-                                    <t t-esc="'%.1f' % application.completion_rate"/>%
-                                </div>
+                
+                <div class="card-body p-4 bg-white">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-5">
+                            <div class="d-flex justify-content-between small fw-bold text-muted mb-2">
+                                <span><i class="fa fa-tasks me-1"/> Overall Progress</span>
+                                <span class="text-caqa-primary"><t t-esc="'%.1f' % application.completion_rate"/>%</span>
+                            </div>
+                            <div class="progress rounded-pill shadow-sm" style="height: 12px; background-color: #f1f5f9;">
+                                <div class="progress-bar progress-bar-accent rounded-pill" t-attf-style="width:#{application.completion_rate}%;"></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="small fw-bold text-muted">Readiness Score</div>
-                            <div class="progress mt-1" style="height: 20px;">
-                                <div class="progress-bar bg-success" t-attf-style="width:#{application.readiness_score}%;">
-                                    <t t-esc="'%.1f' % application.readiness_score"/>%
-                                </div>
+                        <div class="col-md-4 border-start border-light ps-md-4">
+                            <div class="d-flex justify-content-between small fw-bold text-muted mb-2">
+                                <span><i class="fa fa-shield me-1"/> Readiness Score</span>
+                                <span class="text-success"><t t-esc="'%.1f' % application.readiness_score"/>%</span>
+                            </div>
+                            <div class="progress rounded-pill shadow-sm" style="height: 12px; background-color: #f1f5f9;">
+                                <div class="progress-bar bg-success rounded-pill" t-attf-style="width:#{application.readiness_score}%;"></div>
                             </div>
                         </div>
-                        <div class="col-md-4 text-center">
-                            <div class="small fw-bold text-muted">Open Deficiencies</div>
-                            <h3 class="mb-0 text-danger"><t t-esc="application.open_deficiency_count"/></h3>
+                        <div class="col-md-3 text-center border-start border-light">
+                            <div class="small fw-bold text-muted mb-1">Open Deficiencies</div>
+                            <h2 class="mb-0 text-danger fw-bold"><t t-esc="application.open_deficiency_count"/></h2>
                         </div>
                     </div>
-                    <div class="mt-4 d-flex justify-content-end gap-2 align-items-center">
-                        <!-- Lock message for in_progress (data is locked, only evidences/forms allowed) -->
+                    
+                    <div class="d-flex flex-wrap justify-content-end gap-3 align-items-center pt-4 mt-4 border-top border-light">
+                        <!-- Lock message for in_progress -->
                         <t t-if="application.state == 'in_progress'">
-                            <span class="text-muted small me-auto"><i class="fa fa-lock"/> Application data is locked. You can only upload evidence and fill forms.</span>
+                            <div class="me-auto text-muted small fw-bold bg-light px-3 py-2 rounded-3 border"><i class="fa fa-lock text-caqa-primary me-2"/> Application is locked for review. Only Evidences/Forms are active.</div>
                         </t>
                         <t t-if="application.state == 'draft'">
-                            <!-- Info: still in draft, can edit data -->
-                            <span class="text-warning small me-auto"><i class="fa fa-exclamation-triangle"/> Draft mode — click Start to lock data and generate the accreditation structure.</span>
+                            <div class="me-auto text-warning small fw-bold bg-light px-3 py-2 rounded-3 border"><i class="fa fa-exclamation-triangle text-caqa-accent me-2"/> Draft mode. Start accreditation to generate required forms.</div>
                         </t>
                         <!-- START: generates structure and locks the data -->
-                        <form t-if="application.state == 'draft'" method="post" t-att-action="'/my/caqa/application/%s/start' % application.id">
+                        <form t-if="application.state == 'draft'" method="post" t-att-action="'/my/caqa/application/%s/start' % application.id" class="m-0">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <button type="submit" class="btn btn-success px-4 fw-bold shadow-sm" onclick="return confirm('Are you sure you want to start accreditation? This will lock the application data and generate the evaluation structure.')">
-                                <i class="fa fa-play-circle"/> Start Accreditation
+                            <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" onclick="return confirm('Start accreditation? This locks data and generates the evaluation structure.')">
+                                <i class="fa fa-play-circle me-1"/> Start Accreditation
                             </button>
                         </form>
                         <!-- Submit for review -->
-                        <form t-if="application.state == 'in_progress'" method="post" t-att-action="'/my/caqa/application/%s/submit' % application.id">
+                        <form t-if="application.state == 'in_progress'" method="post" t-att-action="'/my/caqa/application/%s/submit' % application.id" class="m-0">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <button type="submit" class="btn btn-primary px-4 fw-bold"><i class="fa fa-paper-plane"/> Submit Application</button>
+                            <button type="submit" class="btn btn-caqa-primary rounded-pill px-5 py-2 fw-bold shadow-sm"><i class="fa fa-paper-plane me-2"/> Submit Final Application</button>
                         </form>
                         <!-- Resubmit if more info was needed -->
-                        <form t-if="application.state == 'need_more_information'" method="post" t-att-action="'/my/caqa/application/%s/resubmit' % application.id">
+                        <form t-if="application.state == 'need_more_information'" method="post" t-att-action="'/my/caqa/application/%s/resubmit' % application.id" class="m-0">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <button type="submit" class="btn btn-warning px-4 fw-bold"><i class="fa fa-refresh"/> Resubmit Fixes</button>
+                            <button type="submit" class="btn text-white rounded-pill px-4 fw-bold shadow-sm" style="background-color:#d97706;"><i class="fa fa-refresh me-1"/> Resubmit Fixes</button>
                         </form>
                     </div>
                 </div>
             </div>
             
             <!-- Tabs Navigation -->
-            <ul class="nav nav-tabs" id="applicationTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active fw-bold text-dark" id="indicators-tab" data-bs-toggle="tab" data-bs-target="#indicators" type="button" role="tab" aria-controls="indicators" aria-selected="true">
-                        <i class="fa fa-list"/> Indicators
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-bold text-dark" id="sar-tab" data-bs-toggle="tab" data-bs-target="#sar" type="button" role="tab" aria-controls="sar" aria-selected="false">
-                        <i class="fa fa-file-text-o"/> Self Assessment (SAR)
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-bold text-dark" id="deficiencies-tab" data-bs-toggle="tab" data-bs-target="#deficiencies" type="button" role="tab" aria-controls="deficiencies" aria-selected="false">
-                        <i class="fa fa-exclamation-circle text-danger"/> Deficiencies
-                        <t t-if="application.open_deficiency_count">
-                            <span class="badge bg-danger ms-1 rounded-pill"><t t-esc="application.open_deficiency_count"/></span>
-                        </t>
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-bold text-dark" id="evidences-tab" data-bs-toggle="tab" data-bs-target="#evidences" type="button" role="tab" aria-controls="evidences" aria-selected="false">
-                        <i class="fa fa-folder-open"/> Evidences Tracker
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-bold text-dark" id="forms-tab" data-bs-toggle="tab" data-bs-target="#forms" type="button" role="tab" aria-controls="forms" aria-selected="false">
-                        <i class="fa fa-wpforms"/> Evaluation Forms
-                    </button>
-                </li>
-            </ul>
+            <div class="card border-0 shadow-sm rounded-3 mb-4 overflow-hidden">
+                <div class="card-header bg-white border-bottom-0 p-0">
+                    <ul class="nav nav-tabs nav-justified border-0" id="applicationTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-bold text-caqa-primary py-3 border-0 border-bottom border-caqa-primary border-3 bg-light" style="border-radius:0;" id="indicators-tab" data-bs-toggle="tab" data-bs-target="#indicators" type="button" role="tab" aria-controls="indicators" aria-selected="true" onclick="document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('bg-light')); this.classList.add('bg-light');">
+                                <i class="fa fa-list text-caqa-primary me-1"/> Indicators
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold text-muted py-3 border-0 border-bottom border-transparent border-3" style="border-radius:0;" id="sar-tab" data-bs-toggle="tab" data-bs-target="#sar" type="button" role="tab" aria-controls="sar" aria-selected="false" onclick="document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('bg-light')); this.classList.add('bg-light');">
+                                <i class="fa fa-file-text-o me-1"/> SAR Review
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold text-muted py-3 border-0 border-bottom border-transparent border-3" style="border-radius:0;" id="evidences-tab" data-bs-toggle="tab" data-bs-target="#evidences" type="button" role="tab" aria-controls="evidences" aria-selected="false" onclick="document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('bg-light')); this.classList.add('bg-light');">
+                                <i class="fa fa-folder-open me-1"/> Evidences
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold text-muted py-3 border-0 border-bottom border-transparent border-3" style="border-radius:0;" id="forms-tab" data-bs-toggle="tab" data-bs-target="#forms" type="button" role="tab" aria-controls="forms" aria-selected="false" onclick="document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('bg-light')); this.classList.add('bg-light');">
+                                <i class="fa fa-wpforms me-1"/> Required Forms
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold text-danger py-3 border-0 border-bottom border-transparent border-3" style="border-radius:0;" id="deficiencies-tab" data-bs-toggle="tab" data-bs-target="#deficiencies" type="button" role="tab" aria-controls="deficiencies" aria-selected="false" onclick="document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('bg-light')); this.classList.add('bg-light');">
+                                <i class="fa fa-exclamation-circle me-1"/> Deficiencies
+                                <t t-if="application.open_deficiency_count">
+                                    <span class="badge bg-danger ms-1 rounded-pill"><t t-esc="application.open_deficiency_count"/></span>
+                                </t>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold text-muted py-3 border-0 border-bottom border-transparent border-3" style="border-radius:0;" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false" onclick="document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('bg-light')); this.classList.add('bg-light');">
+                                <i class="fa fa-star me-1"/> Evaluator Reviews
+                                <t t-if="review_count">
+                                    <span class="badge ms-1 rounded-pill" style="background-color:var(--caqa-accent);"><t t-esc="review_count"/></span>
+                                </t>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             
             <!-- Tabs Content -->
             <div class="tab-content bg-white border border-top-0 p-4 mb-5 shadow-sm" id="applicationTabsContent">
@@ -250,82 +273,98 @@
                 <!-- Deficiencies Tab -->
                 <div class="tab-pane fade" id="deficiencies" role="tabpanel" aria-labelledby="deficiencies-tab">
                     <t t-if="application.deficiency_ids">
-                        <div class="alert alert-info border-0 small mb-3">
-                            <i class="fa fa-info-circle"/> <strong>Action Required:</strong> Review each deficiency and submit your institution's response. Open deficiencies must be addressed before final approval.
+                        <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center mb-4 px-4 py-3 rounded-3">
+                            <i class="fa fa-exclamation-triangle fa-2x text-warning me-3"/>
+                            <div>
+                                <h6 class="mb-1 text-dark fw-bold">Action Required: Open Deficiencies</h6>
+                                <p class="mb-0 text-muted small">Please review and submit your institution's response to the items below. Open deficiencies must be resolved before final approval.</p>
+                            </div>
                         </div>
-                        <div class="accordion" id="deficiencyAccordion">
+                        
+                        <div class="row g-4 mb-4">
                             <t t-foreach="application.deficiency_ids" t-as="def_rec">
-                                <div t-attf-class="accordion-item border #{'border-success' if def_rec.state in ['resolved','closed'] else 'border-primary' if def_rec.state == 'responded' else 'border-danger'} mb-2 rounded">
-                                    <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed fw-bold"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                t-attf-data-bs-target="#def_collapse_#{def_rec.id}"
-                                                aria-expanded="false">
-                                            <div class="d-flex justify-content-between w-100 align-items-center me-3">
-                                                <span>
-                                                    <span t-attf-class="badge me-2 #{'bg-danger' if def_rec.severity == 'critical' else 'bg-warning text-dark' if def_rec.severity == 'high' else 'bg-info' if def_rec.severity == 'medium' else 'bg-secondary'}">
-                                                        <t t-esc="dict(def_rec._fields['severity'].selection).get(def_rec.severity)"/>
-                                                    </span>
-                                                    <t t-esc="def_rec.title"/>
+                                <div class="col-12">
+                                    <div t-attf-class="card border-0 shadow-sm rounded-3 overflow-hidden transition" t-attf-style="border-left: 5px solid #{'#10b981' if def_rec.state in ['resolved','closed'] else '#1A365D' if def_rec.state == 'responded' else '#ef4444'} !important;">
+                                        <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-start flex-wrap">
+                                            <div class="mb-2 mb-md-0">
+                                                <span t-attf-class="badge bg-light border text-uppercase mb-2 shadow-sm #{'border-danger text-danger' if def_rec.severity == 'critical' else 'border-warning text-warning' if def_rec.severity == 'high' else 'border-info text-info' if def_rec.severity == 'medium' else 'border-secondary text-secondary'}">
+                                                    Severity: <t t-esc="dict(def_rec._fields['severity'].selection).get(def_rec.severity)"/>
                                                 </span>
-                                                <span t-attf-class="badge #{'bg-success' if def_rec.state in ['resolved','closed'] else 'bg-primary' if def_rec.state == 'responded' else 'bg-danger'}">
-                                                    <t t-esc="dict(def_rec._fields['state'].selection).get(def_rec.state)"/>
-                                                </span>
-                                            </div>
-                                        </button>
-                                    </h2>
-                                    <div t-attf-id="def_collapse_#{def_rec.id}" class="accordion-collapse collapse" data-bs-parent="#deficiencyAccordion">
-                                        <div class="accordion-body">
-                                            <!-- Deficiency Details -->
-                                            <div class="row g-2 mb-3 text-muted small">
-                                                <div class="col-md-4">
-                                                    <i class="fa fa-tag"/> <strong>Indicator:</strong>
-                                                    <t t-esc="def_rec.application_indicator_id.code if def_rec.application_indicator_id else '—'"/>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <i class="fa fa-calendar"/> <strong>Due:</strong>
-                                                    <t t-esc="def_rec.due_date or '—'"/>
+                                                <h5 class="fw-bold mb-1 text-caqa-primary"><t t-esc="def_rec.title"/></h5>
+                                                <div class="text-muted small">
+                                                    <i class="fa fa-tag me-1"/> Indicator: <t t-esc="def_rec.application_indicator_id.code if def_rec.application_indicator_id else '—'"/>
+                                                    <span class="mx-2">|</span>
+                                                    <i class="fa fa-calendar me-1"/> Due: <t t-esc="def_rec.due_date or '—'"/>
                                                 </div>
                                             </div>
-
-                                            <!-- Description (HTML) -->
+                                            <span t-attf-class="badge shadow-sm rounded-pill px-3 py-2 #{'bg-success' if def_rec.state in ['resolved','closed'] else 'bg-caqa-primary' if def_rec.state == 'responded' else 'bg-danger'}">
+                                                <t t-esc="dict(def_rec._fields['state'].selection).get(def_rec.state)"/>
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="card-body px-4 pb-4">
+                                            <!-- Evaluator's Note -->
                                             <t t-if="def_rec.description">
-                                                <div class="bg-light border rounded p-3 mb-3 small">
-                                                    <strong>Description:</strong>
-                                                    <t t-esc="def_rec.description"/>
+                                                <div class="bg-light border rounded-3 p-4 mb-4 mt-3">
+                                                    <h6 class="text-caqa-primary fw-bold mb-2"><i class="fa fa-file-text-o me-2"/> Evaluator's Note</h6>
+                                                    <div class="text-muted small"><t t-esc="def_rec.description"/></div>
                                                 </div>
                                             </t>
 
-                                            <!-- Existing Institution Response (if already responded) -->
+                                            <!-- Existing Institution Response -->
                                             <t t-if="def_rec.institution_response and def_rec.state != 'open'">
-                                                <div class="alert alert-secondary border-0 mb-3 small">
-                                                    <strong><i class="fa fa-reply"/> Your Response:</strong>
-                                                    <t t-esc="def_rec.institution_response"/>
+                                                <div class="border rounded-3 p-4 mb-4" style="background-color: rgba(26,54,93,0.03); border-color: rgba(26,54,93,0.1) !important;">
+                                                    <h6 class="text-caqa-primary fw-bold mb-2"><i class="fa fa-reply me-2"/> Submitted Response</h6>
+                                                    <div class="text-muted small mb-3"><t t-esc="def_rec.institution_response"/></div>
+                                                    
+                                                    <t t-if="def_rec.attachment">
+                                                        <a t-attf-href="/web/content/caqa.application.deficiency/#{def_rec.id}/attachment/#{def_rec.attachment_name}?download=1" class="btn btn-sm btn-light border fw-bold text-caqa-primary rounded-pill shadow-sm">
+                                                            <i class="fa fa-download me-1"/> Download Attachment: <t t-esc="def_rec.attachment_name"/>
+                                                        </a>
+                                                    </t>
                                                 </div>
                                             </t>
 
-                                            <!-- Response Form (only if not resolved/closed) -->
+                                            <!-- Response Form (if open) -->
                                             <t t-if="def_rec.state not in ['resolved', 'closed']">
-                                                <form method="post"
-                                                      t-att-action="'/my/caqa/deficiency/%s/respond' % def_rec.id">
+                                                <hr class="border-light my-4"/>
+                                                <form method="post" t-att-action="'/my/caqa/deficiency/%s/respond' % def_rec.id" enctype="multipart/form-data">
                                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold"><i class="fa fa-pencil"/> Institution Response <span class="text-danger">*</span></label>
-                                                        <textarea name="institution_response" class="form-control" rows="4"
-                                                                  placeholder="Describe the corrective actions taken or explain the situation..."
+                                                    
+                                                    <div class="mb-4">
+                                                        <label class="form-label fw-bold text-dark"><i class="fa fa-pencil text-caqa-accent me-2"/> Provide Correction Strategy <span class="text-danger">*</span></label>
+                                                        <textarea name="institution_response" class="form-control bg-white" rows="4"
+                                                                  placeholder="Describe the corrective actions taken or provide missing evidence context..."
                                                                   required="required"><t t-esc="def_rec.institution_response or ''"/></textarea>
+                                                        <div class="form-text mt-2"><i class="fa fa-info-circle me-1"/> Be thorough. Clearly outline the actions your institution has taken to resolve this deficiency.</div>
                                                     </div>
-                                                    <div class="d-flex gap-2">
-                                                        <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">
-                                                            <i class="fa fa-reply"/> Submit Response
-                                                        </button>
+                                                    
+                                                    <div class="row align-items-center mb-4">
+                                                        <div class="col-md-7">
+                                                            <label class="form-label fw-bold text-dark"><i class="fa fa-paperclip text-caqa-accent me-2"/> Upload Supporting Evidence (Optional)</label>
+                                                            <input type="file" name="attachment" class="form-control"/>
+                                                            <t t-if="def_rec.attachment">
+                                                                <div class="mt-2 small text-muted">
+                                                                    <i class="fa fa-check-circle text-success me-1"/> Current file: <t t-esc="def_rec.attachment_name"/> (Uploading a new file will replace this)
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                        <div class="col-md-5 text-md-end mt-4 mt-md-0">
+                                                            <label class="form-label d-none d-md-block">&#160;</label>
+                                                            <button type="submit" class="btn btn-caqa-primary px-4 fw-bold shadow-sm w-100">
+                                                                <i class="fa fa-paper-plane me-2"/> Submit Response
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </form>
                                             </t>
                                             <t t-else="">
-                                                <div class="alert alert-success border-0 mb-0 small">
-                                                    <i class="fa fa-lock"/> This deficiency is <strong><t t-esc="dict(def_rec._fields['state'].selection).get(def_rec.state)"/></strong> and no further action is required.
+                                                <div class="alert alert-success border-0 mb-0 px-4 py-3 rounded-3 shadow-sm d-flex align-items-center">
+                                                    <i class="fa fa-check-circle fa-2x text-success opacity-75 me-3"/>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold text-success">Deficiency Resolved</h6>
+                                                        <p class="mb-0 small text-success">This item has been closed by the evaluators. No further action is necessary.</p>
+                                                    </div>
                                                 </div>
                                             </t>
                                         </div>
@@ -335,34 +374,166 @@
                         </div>
                     </t>
                     <t t-else="">
-                        <div class="alert alert-success border-0 mb-0"><i class="fa fa-check-circle"/> No deficiencies recorded for this application. Great work!</div>
+                        <div class="text-center py-5 bg-white border rounded-3 shadow-sm my-4">
+                            <i class="fa fa-check-circle-o fa-4x text-success opacity-50 mb-3"/>
+                            <h4 class="fw-bold text-success">No Deficiencies Found</h4>
+                            <p class="text-muted mb-0">Your application currently meets all standards without any outstanding deficiencies.</p>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Reviews Tab -->
+                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    <t t-if="review_ids">
+                        <!-- Summary banner -->
+                        <div class="alert border-0 shadow-sm d-flex align-items-center mb-4 px-4 py-3 rounded-3" style="background-color: rgba(26,54,93,0.05); border-left: 4px solid var(--caqa-primary) !important;">
+                            <i class="fa fa-star-half-o fa-2x me-3" style="color:var(--caqa-accent);"/>
+                            <div>
+                                <h6 class="mb-1 fw-bold text-caqa-primary">Evaluator Reviews — Read Only</h6>
+                                <p class="mb-0 text-muted small">These are the official evaluator reviews submitted for your application. Reviews include scores, summaries, notes, and formal recommendations.</p>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            <t t-foreach="review_ids" t-as="rev">
+                                <div class="col-12">
+                                    <div class="card border-0 shadow rounded-3 overflow-hidden">
+                                        <!-- Review Header -->
+                                        <div class="card-header p-4 d-flex justify-content-between align-items-start flex-wrap" style="background: linear-gradient(135deg, #1A365D 0%, #2A4A7A 100%);">
+                                            <div>
+                                                <span class="badge bg-white text-caqa-primary rounded-pill px-3 py-1 mb-2 shadow-sm small fw-bold text-uppercase"><t t-esc="dict(rev._fields['stage'].selection).get(rev.stage)"/> Review</span>
+                                                <h5 class="text-white fw-bold mb-1"><i class="fa fa-user-circle me-2 opacity-75"/><t t-esc="rev.name"/></h5>
+                                                <span class="text-white-50 small"><i class="fa fa-user me-1"/><t t-esc="rev.reviewer_id.name"/></span>
+                                            </div>
+                                            <div class="text-end mt-2 mt-md-0">
+                                                <span t-attf-class="badge rounded-pill px-3 py-2 shadow-sm #{'bg-success' if rev.state == 'closed' else 'bg-warning text-dark' if rev.state == 'submitted' else 'bg-info text-dark'}">
+                                                    <t t-esc="dict(rev._fields['state'].selection).get(rev.state)"/>
+                                                </span>
+                                                <t t-if="rev.score">
+                                                    <div class="text-white mt-2 fs-4 fw-bold"><t t-esc="'%.1f' % rev.score"/><span class="small opacity-75"> / 100</span></div>
+                                                </t>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body p-4">
+                                            <!-- Summary -->
+                                            <t t-if="rev.summary">
+                                                <div class="bg-light border rounded-3 p-4 mb-4">
+                                                    <h6 class="text-caqa-primary fw-bold mb-3"><i class="fa fa-file-text-o me-2"/>Review Summary</h6>
+                                                    <div class="text-dark"><t t-esc="rev.summary"/></div>
+                                                </div>
+                                            </t>
+
+                                            <!-- Recommendations -->
+                                            <t t-if="rev.recommendation_ids">
+                                                <h6 class="fw-bold text-caqa-primary mb-3"><i class="fa fa-gavel me-2 text-caqa-accent"/>Formal Recommendations</h6>
+                                                <div class="row g-3 mb-4">
+                                                    <t t-foreach="rev.recommendation_ids" t-as="rec">
+                                                        <div class="col-md-6">
+                                                            <div t-attf-class="card border-0 shadow-sm rounded-3 overflow-hidden h-100" t-attf-style="border-left: 4px solid #{'#10b981' if rec.recommendation == 'approve' else '#ef4444' if rec.recommendation == 'reject' else '#B87C19'} !important;">
+                                                                <div class="card-body p-4">
+                                                                    <div class="d-flex align-items-center mb-3">
+                                                                        <i t-attf-class="fa fa-2x me-3 #{'fa-check-circle text-success' if rec.recommendation == 'approve' else 'fa-times-circle text-danger' if rec.recommendation == 'reject' else 'fa-exclamation-circle'}" t-attf-style="{'color:var(--caqa-accent)' if rec.recommendation not in ['approve','reject'] else ''}"/>
+                                                                        <div>
+                                                                            <div class="fw-bold text-dark"><t t-esc="dict(rec._fields['recommendation'].selection).get(rec.recommendation)"/></div>
+                                                                            <small t-attf-class="badge mt-1 rounded-pill #{'bg-success' if rec.state == 'accepted' else 'bg-secondary'}"><t t-esc="dict(rec._fields['state'].selection).get(rec.state)"/></small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <t t-if="rec.justification">
+                                                                        <div class="text-muted small"><t t-esc="rec.justification"/></div>
+                                                                    </t>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </t>
+
+                                            <!-- Review Notes (exclude internal_only) -->
+                                            <t t-set="public_notes" t-value="rev.note_ids.filtered(lambda n: not n.internal_only)"/>
+                                            <t t-if="public_notes">
+                                                <h6 class="fw-bold text-caqa-primary mb-3"><i class="fa fa-sticky-note-o me-2 text-caqa-accent"/>Review Notes</h6>
+                                                <div class="row g-3">
+                                                    <t t-foreach="public_notes" t-as="note">
+                                                        <div class="col-12">
+                                                            <div t-attf-class="card border-0 shadow-sm rounded-3" t-attf-style="border-left: 4px solid #{'#ef4444' if note.severity == 'critical' else '#f59e0b' if note.severity == 'high' else '#3b82f6' if note.severity == 'medium' else '#6b7280'} !important;">
+                                                                <div class="card-body px-4 py-3">
+                                                                    <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
+                                                                        <h6 class="fw-bold mb-0 text-dark"><t t-esc="note.title"/></h6>
+                                                                        <div class="d-flex gap-2 flex-wrap mt-1 mt-md-0">
+                                                                            <span t-attf-class="badge bg-light border text-uppercase small #{'border-danger text-danger' if note.severity == 'critical' else 'border-warning text-warning' if note.severity == 'high' else 'border-info text-info' if note.severity == 'medium' else 'border-secondary text-secondary'}">
+                                                                                <t t-esc="dict(note._fields['severity'].selection).get(note.severity)"/>
+                                                                            </span>
+                                                                            <span t-attf-class="badge rounded-pill #{'bg-success' if note.state in ['accepted','closed'] else 'bg-caqa-primary' if note.state == 'responded' else 'bg-secondary'}">
+                                                                                <t t-esc="dict(note._fields['state'].selection).get(note.state)"/>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="small text-muted mb-1"><i class="fa fa-tag me-1"/><t t-esc="dict(note._fields['note_type'].selection).get(note.note_type)"/></div>
+                                                                    <t t-if="note.description">
+                                                                        <div class="text-dark small mt-2"><t t-esc="note.description"/></div>
+                                                                    </t>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="text-center py-5 bg-white border rounded-3 shadow-sm my-4">
+                            <i class="fa fa-star-o fa-4x opacity-25 mb-3" style="color:var(--caqa-accent);"/>
+                            <h4 class="fw-bold" style="color:var(--caqa-primary);">No Reviews Available</h4>
+                            <p class="text-muted mb-0">Evaluator reviews will appear here once the assessment panel has submitted their findings.</p>
+                        </div>
                     </t>
                 </div>
 
             </div>
-            
         </t>
     </template>
 
-    <!-- Dynamic Form Portal Response Template -->
+    <!-- Dynamic Form Portal Response Template (Elite Focus Mode) -->
     <template id="portal_caqa_form_response_detail">
         <t t-call="portal.portal_layout">
             <t t-set="is_draft" t-value="form_response.state == 'draft'"/>
-            <div class="container mt-4 mb-5 pb-5">
-                <div class="card shadow border-0">
-                    <div class="card-header bg-gradient bg-primary text-white p-4">
-                        <h3 class="mb-1"><t t-esc="form_response.template_id.name"/></h3>
-                        <p class="mb-0 text-white-50"><t t-esc="form_response.name"/></p>
-                    </div>
-                    
-                    <t t-if="not is_draft">
-                        <div class="alert alert-success border-0 rounded-0 mb-0 px-4 py-3">
-                            <i class="fa fa-lock fa-lg me-2"/> <strong>Submitted:</strong> This evaluation form has been permanently submitted and is locked from further edits.
+            
+            <!-- Sticky Top Contextual Nav -->
+            <div class="sticky-top bg-white border-bottom shadow-sm px-4 py-3 d-flex justify-content-between align-items-center mb-5" style="z-index: 1020;">
+                <div>
+                    <a t-att-href="'/my/caqa/application/%s' % form_response.application_id.id" class="btn btn-light rounded-pill fw-bold text-secondary shadow-sm border px-3">
+                        <i class="fa fa-arrow-left me-2"/> Back to Application
+                    </a>
+                </div>
+                <div class="fw-bold text-caqa-primary d-none d-md-block fs-5">
+                    <i class="fa fa-wpforms me-2 text-caqa-accent"/> <t t-esc="form_response.application_id.reference"/>
+                </div>
+            </div>
+
+            <div class="focus-mode-container pb-5 mb-5">
+                <div class="text-center mb-5 mt-3">
+                    <span class="badge" style="background-color:rgba(184,124,25,0.1); color:var(--caqa-accent); border: 1px solid var(--caqa-accent);"><i class="fa fa-info-circle me-1"/> Evaluation Form Validation</span>
+                    <h2 class="fw-bold text-caqa-primary mt-3 display-6"><t t-esc="form_response.template_id.name"/></h2>
+                    <p class="text-muted fs-5"><t t-esc="form_response.name"/></p>
+                </div>
+                
+                <t t-if="not is_draft">
+                    <div class="alert alert-success border-0 rounded-3 shadow-sm px-4 py-3 mb-5 d-flex align-items-center" style="background-color: #f0fdf4;">
+                        <i class="fa fa-lock fa-2x me-3 text-success opacity-50"/>
+                        <div>
+                            <h6 class="mb-1 text-success fw-bold">Submitted Permanently</h6>
+                            <p class="mb-0 text-success small">This evaluation form has been permanently submitted and is locked from further edits by the institution.</p>
                         </div>
-                    </t>
-                    
-                    <div class="card-body p-4 bg-light">
-                        <form t-attf-action="/my/caqa/form/#{form_response.id}" method="post" id="dynamicForm">
+                    </div>
+                </t>
+                
+                <div class="bg-transparent border-0">
+                        <form t-attf-action="/my/caqa/form/#{form_response.id}" method="post" id="dynamicForm" enctype="multipart/form-data">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             
                             <t t-foreach="form_response.answer_ids" t-as="ans">
@@ -421,7 +592,8 @@
                                         
                                         <!-- SELECTION -->
                                         <t t-if="q.field_type == 'selection'">
-                                            <t t-set="options" t-value="(q.selection_options or '').split(',')"/>
+                                            <t t-set="opt_raw" t-value="q.selection_options or ''"/>
+                                            <t t-set="options" t-value="opt_raw.split(',') if ',' in opt_raw else opt_raw.split()"/>
                                             <t t-if="is_draft">
                                                 <select t-attf-name="answer_selection_#{ans.id}" class="form-select w-50" t-att-required="q.is_required">
                                                     <option value="">-- Choose Option --</option>
@@ -433,6 +605,24 @@
                                             </t>
                                             <t t-else="">
                                                 <div class="p-3 bg-white border rounded fw-bold text-dark"><t t-esc="ans.answer_selection or 'No Selection made.'"/></div>
+                                            </t>
+                                        </t>
+                                        
+                                        <!-- ATTACHMENT -->
+                                        <t t-if="q.field_type == 'attachment'">
+                                            <t t-if="is_draft">
+                                                <input type="file" t-attf-name="answer_attachment_#{ans.id}" class="form-control w-50" t-att-required="q.is_required"/>
+                                                <t t-if="ans.answer_attachment">
+                                                    <p class="mt-2 mb-0 text-muted small"><i class="fa fa-file"/> Current file: <span class="fw-bold"><t t-esc="ans.answer_attachment_name"/></span> (Uploading a new file will replace it)</p>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-if="ans.answer_attachment">
+                                                    <a t-attf-href="/web/content/caqa.form.answer/#{ans.id}/answer_attachment/#{ans.answer_attachment_name}?download=1" class="btn btn-outline-primary btn-sm"><i class="fa fa-download"/> Download Attachment (<t t-esc="ans.answer_attachment_name"/>)</a>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="p-3 bg-white border rounded text-dark fst-italic">No attachment provided.</div>
+                                                </t>
                                             </t>
                                         </t>
                                         
@@ -462,7 +652,6 @@
                         </form>
                     </div>
                 </div>
-            </div>
         </t>
     </template>
 

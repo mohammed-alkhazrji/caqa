@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu for Scoring Engine -->
+    <menuitem id="menu_caqa_scoring_root" 
+              name="Scoring Engine" 
+              web_icon="fa,balance-scale"
+              sequence="35"
+              groups="caqa_scoring.group_caqa_score_reviewer"/>
+
+    <!-- Operational Menus -->
+    <menuitem id="menu_caqa_scoring_operations" 
+              name="Operations" 
+              parent="menu_caqa_scoring_root" 
+              sequence="10"/>
+
+    <menuitem id="menu_caqa_score_cycle" 
+              name="Evaluation Cycles" 
+              parent="menu_caqa_scoring_operations" 
+              action="action_caqa_score_cycle" 
+              sequence="10"/>
+
+    <!-- Configuration Menus -->
+    <menuitem id="menu_caqa_scoring_configuration" 
+              name="Configuration" 
+              parent="menu_caqa_scoring_root" 
+              sequence="100"
+              groups="caqa_scoring.group_caqa_score_manager"/>
+
+    <menuitem id="menu_caqa_score_rubric" 
+              name="Evaluation Rubrics" 
+              parent="menu_caqa_scoring_configuration" 
+              action="action_caqa_score_rubric" 
+              sequence="10"/>
+</odoo>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- caqa.score.cycle List View -->
+    <record id="view_caqa_score_cycle_tree" model="ir.ui.view">
+        <field name="name">caqa.score.cycle.tree</field>
+        <field name="model">caqa.score.cycle</field>
+        <field name="arch" type="xml">
+            <tree string="Evaluation Cycles" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='frozen'">
+                <field name="name"/>
+                <field name="application_id"/>
+                <field name="cycle_type"/>
+                <field name="final_score"/>
+                <field name="decision_status"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state=='draft'" 
+                       decoration-warning="state=='in_progress'" 
+                       decoration-success="state=='frozen'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- caqa.score.cycle Form View -->
+    <record id="view_caqa_score_cycle_form" model="ir.ui.view">
+        <field name="name">caqa.score.cycle.form</field>
+        <field name="model">caqa.score.cycle</field>
+        <field name="arch" type="xml">
+            <form string="Evaluation Cycle">
+                <header>
+                    <button name="action_start_progress" type="object" string="Start Scoring" class="btn-primary" states="draft" groups="caqa_scoring.group_caqa_score_manager"/>
+                    <button name="action_submit" type="object" string="Submit to Moderation" class="btn-success" states="in_progress"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,submitted,moderated,frozen"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group name="info">
+                            <field name="application_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="program_id"/>
+                            <field name="standard_version_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="cycle_type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group name="status">
+                            <field name="reviewer_ids" widget="many2many_tags" attrs="{'readonly': [('state', 'in', ('submitted', 'moderated', 'frozen'))]}"/>
+                            <field name="final_score"/>
+                            <field name="decision_status"/>
+                            <field name="snapshot_id" attrs="{'invisible': [('snapshot_id', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Score Lines">
+                            <field name="line_ids" context="{'default_cycle_id': active_id}" attrs="{'readonly': [('state', 'in', ('submitted', 'moderated', 'frozen'))]}">
+                                <tree editable="bottom" decoration-danger="variance_flag==True">
+                                    <field name="reviewer_id"/>
+                                    <field name="indicator_id"/>
+                                    <field name="rubric_level_id"/>
+                                    <field name="indicator_weight" readonly="1"/>
+                                    <field name="weighted_score" readonly="1"/>
+                                    <field name="justification"/>
+                                    <field name="variance_flag" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Moderation Logs">
+                            <field name="moderation_ids" readonly="1">
+                                <tree>
+                                    <field name="indicator_id"/>
+                                    <field name="reviewer_1_score"/>
+                                    <field name="reviewer_2_score"/>
+                                    <field name="variance_value"/>
+                                    <field name="final_agreed_score"/>
+                                    <field name="moderated_at"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_caqa_score_cycle" model="ir.actions.act_window">
+        <field name="name">Evaluation Cycles</field>
+        <field name="res_model">caqa.score.cycle</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Evaluation Cycle.
+            </p>
+            <p>
+                Manage self-assessments, desk reviews, or site visits scores for applications.
+            </p>
+        </field>
+    </record>
+</odoo>

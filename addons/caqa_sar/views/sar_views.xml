@@ -97,6 +97,8 @@
                             <field name="answer_number"/>
                             <field name="answer_boolean"/>
                             <field name="answer_selection"/>
+                            <field name="answer_attachment" filename="answer_attachment_name" widget="binary"/>
+                            <field name="answer_attachment_name" column_invisible="True"/>
                             <field name="is_answered"/>
                         </tree>
                     </field>
@@ -169,4 +171,45 @@
         <field name="res_model">caqa.evidence</field>
         <field name="view_mode">tree,form</field>
     </record>
+
+    <!-- Inherited Application View to show SAR Components -->
+    <record id="view_caqa_application_form_sar_inherit" model="ir.ui.view">
+        <field name="name">caqa.application.form.sar.inherit</field>
+        <field name="model">caqa.application</field>
+        <field name="inherit_id" ref="caqa_application.view_caqa_application_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="SAR Versions" name="sar_versions">
+                    <field name="sar_version_ids" readonly="1">
+                        <tree>
+                            <field name="name"/>
+                            <field name="version_no"/>
+                            <field name="completion_rate" widget="progressbar"/>
+                            <field name="state" widget="badge" decoration-info="state == 'in_progress'" decoration-success="state == 'approved'"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Evidences" name="sar_evidences">
+                    <field name="evidence_ids" readonly="1">
+                        <tree>
+                            <field name="name"/>
+                            <field name="application_indicator_id"/>
+                            <field name="state" widget="badge"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Forms" name="sar_forms">
+                    <field name="form_response_ids" readonly="1">
+                        <tree>
+                            <field name="name"/>
+                            <field name="template_id"/>
+                            <field name="completion_rate" widget="progressbar"/>
+                            <field name="state" widget="badge"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

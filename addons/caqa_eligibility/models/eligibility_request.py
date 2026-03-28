@@ -125,7 +125,6 @@ class CaqaEligibilityRequest(models.Model):
             'context': {'default_eligibility_id': self.id},
         }
 
-
 class CaqaEligibilityChecklistLine(models.Model):
     _name = 'caqa.eligibility.checklist.line'
     _description = 'Eligibility Checklist Line'
@@ -139,3 +138,6 @@ class CaqaEligibilityChecklistLine(models.Model):
     provided = fields.Boolean()
     reviewer_verified = fields.Boolean()
     note = fields.Char()
+    attachment = fields.Binary(string='Attachment')
+    attachment_name = fields.Char(string='Attachment Name')
+

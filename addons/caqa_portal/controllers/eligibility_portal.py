@@ -1,3 +1,4 @@
+import base64
 from odoo import http, _
 from odoo.http import request
 from .portal import CaqaCustomerPortal
@@ -82,7 +83,18 @@ class CaqaEligibilityPortal(CaqaCustomerPortal):
                 # The form will send the provided lines as a list of ids
                 for line in eligibility.checklist_line_ids:
                     provided = post.get('provided_%s' % line.id) == 'on'
-                    line.sudo().write({'provided': provided})
+                    update_vals = {}
+                    update_vals['provided'] = provided
+                    
+                    file = post.get('attachment_%s' % line.id)
+                    if file and getattr(file, 'filename', False):
+                        file_bytes = file.read()
+                        update_vals.update({
+                            'attachment': base64.b64encode(file_bytes),
+                            'attachment_name': file.filename
+                        })
+                        
+                    line.sudo().write(update_vals)
                     
             return request.redirect('/my/caqa/eligibility/%s' % eligibility.id)
 
@@ -111,7 +123,18 @@ class CaqaEligibilityPortal(CaqaCustomerPortal):
                 # If checklist was also posted during submit, save it first
                 for line in eligibility.checklist_line_ids:
                     provided = post.get('provided_%s' % line.id) == 'on'
-                    line.sudo().write({'provided': provided})
+                    update_vals = {}
+                    update_vals['provided'] = provided
+                    
+                    file = post.get('attachment_%s' % line.id)
+                    if file and getattr(file, 'filename', False):
+                        file_bytes = file.read()
+                        update_vals.update({
+                            'attachment': base64.b64encode(file_bytes),
+                            'attachment_name': file.filename
+                        })
+                        
+                    line.sudo().write(update_vals)
                     
                 eligibility.sudo().action_submit()
             except Exception as e:

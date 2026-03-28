@@ -1,413 +1,763 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Programs List View -->
+    <!-- ═══════════════════════════════════════════════════════
+         PROGRAMS LIST — Elite Card Grid (matches Applications)
+         ═══════════════════════════════════════════════════════ -->
     <template id="portal_caqa_programs" name="My Programs">
-        <t t-call="portal.portal_layout">
-            <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            <t t-call="portal.portal_searchbar">
-                <t t-set="title">Programs</t>
-            </t>
-            <t t-if="not programs">
-                <p class="mt-3">There are currently no programs for your institution.</p>
-            </t>
-            <div class="mb-3 mt-3 text-right">
-                <a href="/my/caqa/program/new" class="btn btn-primary"><i class="fa fa-plus-circle"/> Request New Program</a>
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <t t-set="breadcrumbs" t-value="[{'name': 'Programs'}]"/>
+
+            <!-- Page header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="text-caqa-primary fw-bold mb-0">
+                        <i class="fa fa-graduation-cap me-2"/>Programs
+                    </h3>
+                    <p class="text-muted small mb-0">Manage your institution's academic programs.</p>
+                </div>
+                <a href="/my/caqa/program/new"
+                   class="btn btn-caqa-primary rounded-pill px-4 fw-bold shadow-sm">
+                    <i class="fa fa-plus-circle me-1"/> New Program
+                </a>
             </div>
+
+            <!-- Empty state -->
+            <t t-if="not programs">
+                <div class="card border-0 shadow-sm text-center py-5">
+                    <div class="card-body">
+                        <i class="fa fa-graduation-cap fa-3x text-muted mb-3"/>
+                        <h5 class="text-muted">No programs found</h5>
+                        <p class="text-muted">Your institution has no programs registered yet.</p>
+                        <a href="/my/caqa/program/new" class="btn btn-caqa-primary rounded-pill px-4 fw-bold">
+                            <i class="fa fa-plus me-1"/> Request New Program
+                        </a>
+                    </div>
+                </div>
+            </t>
+
+            <!-- Program cards grid -->
             <t t-if="programs">
-                <div class="table-responsive">
-                    <table class="table table-sm table-striped table-hover mt-4">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Name</th>
-                                <th>Arabic Name</th>
-                                <th>Code</th>
-                                <th>Degree Level</th>
-                                <th>State</th>
-                                <th>Profile Completion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <t t-foreach="programs" t-as="program">
-                                <tr>
-                                    <td>
-                                        <a t-attf-href="/my/caqa/program/#{program.id}">
-                                            <t t-esc="program.name"/>
-                                        </a>
-                                    </td>
-                                    <td><span t-esc="program.arabic_name"/></td>
-                                    <td><span t-esc="program.code"/></td>
-                                    <td><span t-esc="dict(program.fields_get(allfields=['degree_level'])['degree_level']['selection'])[program.degree_level]"/></td>
-                                    <td>
-                                        <span t-attf-class="badge badge-pill #{'badge-info' if program.state == 'draft' else 'badge-success' if program.state == 'active' else 'badge-secondary'}">
-                                            <t t-esc="dict(program.fields_get(allfields=['state'])['state']['selection'])[program.state]"/>
+                <div class="row g-4">
+                    <t t-foreach="programs" t-as="program">
+                        <div class="col-md-6 col-xl-4">
+                            <a t-attf-href="/my/caqa/program/#{program.id}" class="text-decoration-none">
+                                <div class="card border-0 shadow-sm h-100 rounded-3 overflow-hidden caqa-record-card">
+                                    <!-- Card gradient header -->
+                                    <div class="card-header-gradient p-3 d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <span class="badge bg-white text-caqa-primary rounded-pill px-2 py-1 small mb-1">
+                                                <i class="fa fa-tag me-1"/>
+                                                <t t-esc="program.code or '—'"/>
+                                            </span>
+                                            <h6 class="text-white fw-bold mb-0 mt-1">
+                                                <t t-esc="program.name"/>
+                                            </h6>
+                                        </div>
+                                        <span t-attf-class="badge rounded-pill shadow-sm #{'bg-warning text-dark' if program.state == 'draft' else 'bg-success text-white' if program.state == 'active' else 'bg-secondary'}">
+                                            <t t-esc="dict(program._fields['state'].selection).get(program.state, program.state)"/>
                                         </span>
-                                    </td>
-                                    <td>
-                                        <div class="progress" style="height: 20px;">
-                                            <div t-attf-class="progress-bar #{'bg-success' if program.profile_completion >= 100 else 'bg-warning'}" 
-                                                 role="progressbar" 
-                                                 t-attf-style="width:#{program.profile_completion}%;"
-                                                 t-att-aria-valuenow="program.profile_completion" aria-valuemin="0" aria-valuemax="100">
-                                                <t t-esc="int(program.profile_completion)"/>%
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <!-- Info row -->
+                                        <div class="row g-2 mb-3 text-center">
+                                            <div class="col-4">
+                                                <div class="small text-muted">Degree</div>
+                                                <div class="fw-bold small text-caqa-primary">
+                                                    <t t-esc="dict(program._fields['degree_level'].selection).get(program.degree_level, '—')"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 border-start border-end">
+                                                <div class="small text-muted">Duration</div>
+                                                <div class="fw-bold small">
+                                                    <t t-esc="str(program.duration_years) + ' yr' if program.duration_years else '—'"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="small text-muted">Credits</div>
+                                                <div class="fw-bold small">
+                                                    <t t-esc="program.credit_hours or '—'"/>
+                                                </div>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
+                                        <!-- Profile completion progress -->
+                                        <div class="d-flex justify-content-between small fw-bold text-muted mb-1">
+                                            <span><i class="fa fa-tasks me-1"/>Profile Completion</span>
+                                            <span class="text-caqa-primary">
+                                                <t t-esc="'%.0f' % (program.profile_completion or 0)"/>%
+                                            </span>
+                                        </div>
+                                        <div class="progress rounded-pill" style="height: 8px; background-color: #f1f5f9;">
+                                            <div class="progress-bar progress-bar-accent rounded-pill"
+                                                 t-attf-style="width:#{program.profile_completion or 0}%;"/>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-white border-top-0 pt-0 pb-3 px-3 text-end">
+                                        <span class="small text-caqa-primary fw-bold">
+                                            View Details <i class="fa fa-arrow-right ms-1"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </t>
                 </div>
             </t>
         </t>
     </template>
 
-    <!-- Program Creation Form -->
+    <!-- ═══════════════════════════════════════════════════════
+         PROGRAM CREATION FORM — Unified style
+         ═══════════════════════════════════════════════════════ -->
     <template id="portal_caqa_program_form_new" name="New Program Request">
-        <t t-call="portal.portal_layout">
-            <div class="container mt-4 mb-4">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Request New Program</h4>
-                    </div>
-                    <div class="card-body">
-                        <form action="/my/caqa/program/new" method="post">
-                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="name">Program Name (English) *</label>
-                                    <input type="text" class="form-control" name="name" required="required"/>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="arabic_name">Program Name (Arabic)</label>
-                                    <input type="text" class="form-control" name="arabic_name" dir="rtl"/>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="code">Program Code *</label>
-                                    <input type="text" class="form-control" name="code" required="required"/>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="degree_level">Degree Level</label>
-                                    <select class="form-control" name="degree_level">
-                                        <option value="diploma">Diploma</option>
-                                        <option value="bachelor" selected="selected">Bachelor</option>
-                                        <option value="master">Master</option>
-                                        <option value="doctorate">Doctorate</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="delivery_mode">Delivery Mode</label>
-                                    <select class="form-control" name="delivery_mode">
-                                        <option value="onsite" selected="selected">Onsite</option>
-                                        <option value="online">Online</option>
-                                        <option value="blended">Blended</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="language">Language of Instruction</label>
-                                    <select class="form-control" name="language">
-                                        <option value="ar" selected="selected">Arabic</option>
-                                        <option value="en">English</option>
-                                        <option value="bilingual">Bilingual</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="college_name">College Name</label>
-                                    <input type="text" class="form-control" name="college_name"/>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="department_name">Department Name</label>
-                                    <input type="text" class="form-control" name="department_name"/>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="duration_years">Duration (Years)</label>
-                                    <input type="number" step="0.5" class="form-control" name="duration_years" value="4.0"/>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="credit_hours">Total Credit Hours</label>
-                                    <input type="number" step="1" class="form-control" name="credit_hours" value="120"/>
-                                </div>
+        <t t-call="caqa_portal.portal_caqa_layout">
+            <t t-set="breadcrumbs" t-value="[{'name': 'Programs', 'url': '/my/caqa/programs'}, {'name': 'New Program'}]"/>
+
+            <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                <div class="card-header card-header-gradient p-4">
+                    <h4 class="text-white fw-bold mb-0"><i class="fa fa-plus-circle me-2"/>Request New Program</h4>
+                    <p class="text-white-50 small mb-0">Fill in the details to register a new academic program.</p>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/my/caqa/program/new" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">Program Name (English) *</label>
+                                <input type="text" class="form-control rounded-3" name="name" required="required"
+                                       placeholder="e.g. Bachelor of Computer Science"/>
                             </div>
-                            <div class="mt-4 text-center">
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"/> Create Program Request</button>
-                                <a href="/my/caqa/programs" class="btn btn-secondary">Cancel</a>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted">Program Name (Arabic)</label>
+                                <input type="text" class="form-control rounded-3" name="arabic_name" dir="rtl"
+                                       placeholder="اسم البرنامج بالعربي"/>
                             </div>
-                        </form>
-                    </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">Program Code *</label>
+                                <input type="text" class="form-control rounded-3" name="code" required="required"
+                                       placeholder="e.g. CS-BSC"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">Degree Level</label>
+                                <select class="form-select rounded-3" name="degree_level">
+                                    <option value="diploma">Diploma</option>
+                                    <option value="bachelor" selected="selected">Bachelor</option>
+                                    <option value="master">Master</option>
+                                    <option value="doctorate">Doctorate</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">Delivery Mode</label>
+                                <select class="form-select rounded-3" name="delivery_mode">
+                                    <option value="onsite" selected="selected">Onsite</option>
+                                    <option value="online">Online</option>
+                                    <option value="blended">Blended</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">Language</label>
+                                <select class="form-select rounded-3" name="language">
+                                    <option value="ar" selected="selected">Arabic</option>
+                                    <option value="en">English</option>
+                                    <option value="bilingual">Bilingual</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">College Name</label>
+                                <input type="text" class="form-control rounded-3" name="college_name"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">Department Name</label>
+                                <input type="text" class="form-control rounded-3" name="department_name"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">Duration (Years)</label>
+                                <input type="number" step="0.5" class="form-control rounded-3" name="duration_years" value="4.0"/>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold small text-muted">Total Credit Hours</label>
+                                <input type="number" step="1" class="form-control rounded-3" name="credit_hours" value="120"/>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 justify-content-end mt-4 pt-3 border-top">
+                            <a href="/my/caqa/programs" class="btn btn-outline-secondary rounded-pill px-4">
+                                <i class="fa fa-times me-1"/> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-caqa-primary rounded-pill px-5 fw-bold shadow-sm">
+                                <i class="fa fa-save me-1"/> Create Program
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </t>
     </template>
 
-    <!-- Program Detail / Edit Form -->
+    <!-- ═══════════════════════════════════════════════════════
+         PROGRAM DETAIL — Full Elite Layout (matches Applications)
+         Left side-nav + Right main content + Breadcrumb
+         ═══════════════════════════════════════════════════════ -->
     <template id="portal_caqa_program_detail" name="Program Detail">
         <t t-call="portal.portal_layout">
             <t t-set="is_editable" t-value="program.state == 'draft'"/>
-            <div class="container mt-4 mb-4">
-                <div class="card">
-                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0"><t t-esc="program.name"/> - <t t-esc="program.reference"/></h4>
-                        <span t-attf-class="badge badge-pill #{'badge-info' if program.state == 'draft' else 'badge-success'}">
-                            <t t-esc="dict(program.fields_get(allfields=['state'])['state']['selection'])[program.state]"/>
-                        </span>
-                    </div>
-                    
-                    <t t-if="is_editable">
-                        <div class="alert alert-info border-0 rounded-0 mb-0">
-                            <i class="fa fa-info-circle"/> <strong>Draft Mode:</strong> You can edit the program details. Ensure all data is saved before submitting an application. Active programs cannot be modified by the institution.
-                        </div>
-                    </t>
-                    <t t-else="">
-                        <div class="alert alert-warning border-0 rounded-0 mb-0">
-                            <i class="fa fa-lock"/> <strong>Locked:</strong> This program is no longer in Draft status. Modifications must be requested through your Accreditation manager.
-                        </div>
-                    </t>
+            <div class="container my-4 caqa-portal-shell">
+                <div class="row g-4">
 
-                    <div class="card-body">
-                        
-                        <form t-attf-action="/my/caqa/program/#{program.id}" method="post">
-                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            
-                            <!-- MAIN OVERVIEW -->
-                            <h5 class="border-bottom pb-2 mb-3">General Information</h5>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="font-weight-bold">Program Name (English) *</label>
-                                    <t t-if="is_editable"><input type="text" class="form-control" name="name" t-att-value="program.name" required="required"/></t>
-                                    <t t-else=""><p class="form-control-plaintext"><t t-esc="program.name"/></p></t>
+                    <!-- ── Left Side Navigation ── -->
+                    <div class="col-lg-3">
+                        <div class="card caqa-portal-nav shadow-sm sticky-top" style="top: 80px;">
+                            <div class="card-body p-0">
+                                <!-- Back link -->
+                                <div class="p-3 border-bottom">
+                                    <a href="/my/caqa/programs"
+                                       class="d-flex align-items-center gap-2 text-muted small fw-bold text-decoration-none hover-primary">
+                                        <i class="fa fa-arrow-left text-caqa-primary"/>
+                                        <span>All Programs</span>
+                                    </a>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="font-weight-bold">Program Name (Arabic)</label>
-                                    <t t-if="is_editable"><input type="text" class="form-control" name="arabic_name" t-att-value="program.arabic_name" dir="rtl"/></t>
-                                    <t t-else=""><p class="form-control-plaintext" dir="rtl"><t t-esc="program.arabic_name"/></p></t>
+                                <!-- Section navigation -->
+                                <div class="p-3">
+                                    <div class="small text-muted fw-bold text-uppercase mb-2 px-1">Sections</div>
+                                    <nav class="nav flex-column caqa-section-nav" id="programSideNav">
+                                        <a class="nav-link caqa-sidenav-link active" href="#section-overview">
+                                            <i class="fa fa-info-circle me-2"/>Overview
+                                        </a>
+                                        <a class="nav-link caqa-sidenav-link" href="#section-strategic">
+                                            <i class="fa fa-bullseye me-2"/>Vision &amp; Mission
+                                        </a>
+                                        <a class="nav-link caqa-sidenav-link" href="#section-courses">
+                                            <i class="fa fa-book me-2"/>Courses
+                                            <span class="badge bg-light text-caqa-primary ms-auto rounded-pill small">
+                                                <t t-esc="program.course_count"/>
+                                            </span>
+                                        </a>
+                                        <a class="nav-link caqa-sidenav-link" href="#section-outcomes">
+                                            <i class="fa fa-star me-2"/>Learning Outcomes
+                                            <span class="badge bg-light text-caqa-primary ms-auto rounded-pill small">
+                                                <t t-esc="program.learning_outcome_count"/>
+                                            </span>
+                                        </a>
+                                    </nav>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="font-weight-bold">Program Code *</label>
-                                    <t t-if="is_editable"><input type="text" class="form-control" name="code" t-att-value="program.code" required="required"/></t>
-                                    <t t-else=""><p class="form-control-plaintext"><t t-esc="program.code"/></p></t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Right Main Content ── -->
+                    <div class="col-lg-9">
+                        <!-- Breadcrumb -->
+                        <nav aria-label="breadcrumb" class="mb-3">
+                            <ol class="breadcrumb bg-white shadow-sm px-3 py-2 rounded">
+                                <li class="breadcrumb-item">
+                                    <a href="/my/caqa/dashboard"><i class="fa fa-home"/> Dashboard</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="/my/caqa/programs">Programs</a>
+                                </li>
+                                <li class="breadcrumb-item active">
+                                    <t t-esc="program.name"/>
+                                </li>
+                            </ol>
+                        </nav>
+
+                        <!-- Elite Header Card -->
+                        <div class="card border-0 shadow-sm mb-4 rounded-3 overflow-hidden">
+                            <div class="card-header card-header-gradient p-4">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap">
+                                    <div>
+                                        <span class="badge bg-white text-caqa-primary mb-2 shadow-sm rounded-pill px-3 py-1">
+                                            <i class="fa fa-graduation-cap me-1"/>
+                                            <t t-esc="dict(program._fields['degree_level'].selection).get(program.degree_level, '')"/>
+                                        </span>
+                                        <h3 class="mb-0 fw-bold text-white">
+                                            <t t-esc="program.reference"/> — <t t-esc="program.name"/>
+                                        </h3>
+                                        <p class="text-white-50 small mb-0 mt-1" t-if="program.arabic_name">
+                                            <t t-esc="program.arabic_name"/>
+                                        </p>
+                                    </div>
+                                    <span t-attf-class="badge #{'bg-warning text-dark' if program.state == 'draft' else 'bg-success text-white'} shadow-sm px-4 py-2 rounded-pill fs-6 fw-bold mt-2 mt-md-0">
+                                        <t t-esc="dict(program._fields['state'].selection).get(program.state, '')"/>
+                                    </span>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="font-weight-bold">Degree Level</label>
+                            </div>
+                            <!-- Profile completion bar -->
+                            <div class="card-body p-4 bg-white">
+                                <div class="row g-4 align-items-center">
+                                    <div class="col-md-7">
+                                        <div class="d-flex justify-content-between small fw-bold text-muted mb-2">
+                                            <span><i class="fa fa-tasks me-1"/>Profile Completion</span>
+                                            <span class="text-caqa-primary">
+                                                <t t-esc="'%.1f' % (program.profile_completion or 0)"/>%
+                                            </span>
+                                        </div>
+                                        <div class="progress rounded-pill shadow-sm" style="height: 12px; background-color: #f1f5f9;">
+                                            <div class="progress-bar progress-bar-accent rounded-pill"
+                                                 t-attf-style="width:#{program.profile_completion or 0}%;"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 text-center border-start">
+                                        <div class="small fw-bold text-muted mb-1">Courses</div>
+                                        <h4 class="mb-0 text-caqa-primary fw-bold">
+                                            <t t-esc="program.course_count"/>
+                                        </h4>
+                                    </div>
+                                    <div class="col-md-3 text-center border-start">
+                                        <div class="small fw-bold text-muted mb-1">Learning Outcomes</div>
+                                        <h4 class="mb-0 text-caqa-primary fw-bold">
+                                            <t t-esc="program.learning_outcome_count"/>
+                                        </h4>
+                                    </div>
+                                </div>
+                                <!-- Status banner -->
+                                <div class="mt-4 pt-3 border-top">
                                     <t t-if="is_editable">
-                                        <select class="form-control" name="degree_level">
-                                            <option value="diploma" t-att-selected="program.degree_level == 'diploma'">Diploma</option>
-                                            <option value="bachelor" t-att-selected="program.degree_level == 'bachelor'">Bachelor</option>
-                                            <option value="master" t-att-selected="program.degree_level == 'master'">Master</option>
-                                            <option value="doctorate" t-att-selected="program.degree_level == 'doctorate'">Doctorate</option>
-                                        </select>
+                                        <div class="alert alert-info border-0 rounded-3 mb-0 d-flex align-items-center gap-2">
+                                            <i class="fa fa-pencil fa-lg text-caqa-primary"/>
+                                            <span><strong>Draft Mode:</strong> You can edit this program. Changes are only visible to your institution.</span>
+                                        </div>
                                     </t>
-                                    <t t-else=""><p class="form-control-plaintext"><t t-esc="dict(program.fields_get(allfields=['degree_level'])['degree_level']['selection'])[program.degree_level]"/></p></t>
+                                    <t t-else="">
+                                        <div class="alert alert-warning border-0 rounded-3 mb-0 d-flex align-items-center gap-2">
+                                            <i class="fa fa-lock fa-lg"/>
+                                            <span><strong>Locked:</strong> This program is active. Contact your Accreditation Manager to request changes.</span>
+                                        </div>
+                                    </t>
                                 </div>
-                                
-                                <div class="col-md-6 mb-3">
-                                    <label class="font-weight-bold">College Name</label>
-                                    <t t-if="is_editable"><input type="text" class="form-control" name="college_name" t-att-value="program.college_name"/></t>
-                                    <t t-else=""><p class="form-control-plaintext"><t t-esc="program.college_name or '-'"/></p></t>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="font-weight-bold">Department Name</label>
-                                    <t t-if="is_editable"><input type="text" class="form-control" name="department_name" t-att-value="program.department_name"/></t>
-                                    <t t-else=""><p class="form-control-plaintext"><t t-esc="program.department_name or '-'"/></p></t>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="font-weight-bold">Duration (Years)</label>
-                                    <t t-if="is_editable"><input type="number" step="0.5" class="form-control" name="duration_years" t-att-value="program.duration_years"/></t>
-                                    <t t-else=""><p class="form-control-plaintext"><t t-esc="program.duration_years"/></p></t>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label class="font-weight-bold">Credit Hours</label>
-                                    <t t-if="is_editable"><input type="number" step="1" class="form-control" name="credit_hours" t-att-value="program.credit_hours"/></t>
-                                    <t t-else=""><p class="form-control-plaintext"><t t-esc="program.credit_hours"/></p></t>
-                                </div>
-                            </div>
-                            
-                            <h5 class="border-bottom pb-2 mt-4 mb-3">Strategic Context</h5>
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <label class="font-weight-bold">Description</label>
-                                    <t t-if="is_editable"><textarea class="form-control" name="description" rows="3"><t t-raw="program.description"/></textarea></t>
-                                    <t t-else=""><div class="form-control-plaintext border p-2 bg-light"><t t-raw="program.description or '-'"/></div></t>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="font-weight-bold">Vision</label>
-                                    <t t-if="is_editable"><textarea class="form-control" name="vision" rows="4"><t t-raw="program.vision"/></textarea></t>
-                                    <t t-else=""><div class="form-control-plaintext border p-2 bg-light"><t t-raw="program.vision or '-'"/></div></t>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="font-weight-bold">Mission</label>
-                                    <t t-if="is_editable"><textarea class="form-control" name="mission" rows="4"><t t-raw="program.mission"/></textarea></t>
-                                    <t t-else=""><div class="form-control-plaintext border p-2 bg-light"><t t-raw="program.mission or '-'"/></div></t>
-                                </div>
-                            </div>
-                            
-                            <t t-if="is_editable">
-                                <div class="text-right mt-3 mb-4">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"/> Save Changes</button>
-                                </div>
-                            </t>
-                        </form>
-                        
-                        <!-- TABBED CONTENT (Courses & Learning Outcomes) -->
-                        <ul class="nav nav-tabs mt-5" id="programTabs" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="courses-tab" data-bs-toggle="tab" data-toggle="tab" href="#courses" role="tab">Courses (<t t-esc="program.course_count"/>)</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="lo-tab" data-bs-toggle="tab" data-toggle="tab" href="#lo" role="tab">Learning Outcomes (<t t-esc="program.learning_outcome_count"/>)</a>
-                            </li>
-                        </ul>
-                        
-                        <div class="tab-content border border-top-0 p-3" id="programTabsContent">
-                            <!-- Courses Tab -->
-                            <div class="tab-pane fade show active" id="courses" role="tabpanel">
-                                <t t-if="is_editable">
-                                    <div class="text-right mb-3">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-bs-toggle="modal" data-target="#courseModal" data-bs-target="#courseModal">
-                                            <i class="fa fa-plus"/> Add Course
-                                        </button>
-                                    </div>
-                                </t>
-                                
-                                <table class="table table-sm table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Code</th>
-                                            <th>Course Name</th>
-                                            <th>Credits</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <t t-foreach="program.course_ids" t-as="course">
-                                            <tr>
-                                                <td><t t-esc="course.code"/></td>
-                                                <td><t t-esc="course.name"/></td>
-                                                <td><t t-esc="course.credit_hours"/></td>
-                                            </tr>
-                                        </t>
-                                        <t t-if="not program.course_ids">
-                                            <tr><td colspan="3" class="text-center text-muted">No courses added yet.</td></tr>
-                                        </t>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <!-- Learning Outcomes Tab -->
-                            <div class="tab-pane fade" id="lo" role="tabpanel">
-                                <t t-if="is_editable">
-                                    <div class="text-right mb-3">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-bs-toggle="modal" data-target="#loModal" data-bs-target="#loModal">
-                                            <i class="fa fa-plus"/> Add Learning Outcome
-                                        </button>
-                                    </div>
-                                </t>
-                                
-                                <table class="table table-sm table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Code</th>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <t t-foreach="program.learning_outcome_ids" t-as="lo">
-                                            <tr>
-                                                <td><t t-esc="lo.code"/></td>
-                                                <td><t t-esc="lo.name"/></td>
-                                                <td><t t-esc="dict(lo.fields_get(allfields=['outcome_type'])['outcome_type']['selection'])[lo.outcome_type]"/></td>
-                                                <td><t t-raw="lo.description"/></td>
-                                            </tr>
-                                        </t>
-                                        <t t-if="not program.learning_outcome_ids">
-                                            <tr><td colspan="4" class="text-center text-muted">No learning outcomes added yet.</td></tr>
-                                        </t>
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
 
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Modals for Add Course and Add LO (only in draft) -->
+                        <!-- ── Section: Overview ── -->
+                        <div id="section-overview" class="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
+                            <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center gap-2">
+                                <i class="fa fa-info-circle text-caqa-primary"/>
+                                <h6 class="mb-0 fw-bold">General Information</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <form t-attf-action="/my/caqa/program/#{program.id}" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold small text-muted">Program Name (English)</label>
+                                            <t t-if="is_editable">
+                                                <input type="text" class="form-control rounded-3" name="name"
+                                                       t-att-value="program.name" required="required"/>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0">
+                                                    <t t-esc="program.name"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold small text-muted">Program Name (Arabic)</label>
+                                            <t t-if="is_editable">
+                                                <input type="text" class="form-control rounded-3" name="arabic_name"
+                                                       t-att-value="program.arabic_name" dir="rtl"/>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0" dir="rtl">
+                                                    <t t-esc="program.arabic_name or '—'"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold small text-muted">Code</label>
+                                            <t t-if="is_editable">
+                                                <input type="text" class="form-control rounded-3" name="code"
+                                                       t-att-value="program.code" required="required"/>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0">
+                                                    <t t-esc="program.code or '—'"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold small text-muted">Degree Level</label>
+                                            <t t-if="is_editable">
+                                                <select class="form-select rounded-3" name="degree_level">
+                                                    <option value="diploma" t-att-selected="program.degree_level == 'diploma'">Diploma</option>
+                                                    <option value="bachelor" t-att-selected="program.degree_level == 'bachelor'">Bachelor</option>
+                                                    <option value="master" t-att-selected="program.degree_level == 'master'">Master</option>
+                                                    <option value="doctorate" t-att-selected="program.degree_level == 'doctorate'">Doctorate</option>
+                                                </select>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0">
+                                                    <t t-esc="dict(program._fields['degree_level'].selection).get(program.degree_level, '—')"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold small text-muted">Duration (Years)</label>
+                                            <t t-if="is_editable">
+                                                <input type="number" step="0.5" class="form-control rounded-3"
+                                                       name="duration_years" t-att-value="program.duration_years"/>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0">
+                                                    <t t-esc="str(program.duration_years) + ' yr' if program.duration_years else '—'"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold small text-muted">Credit Hours</label>
+                                            <t t-if="is_editable">
+                                                <input type="number" class="form-control rounded-3"
+                                                       name="credit_hours" t-att-value="program.credit_hours"/>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0">
+                                                    <t t-esc="program.credit_hours or '—'"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold small text-muted">College</label>
+                                            <t t-if="is_editable">
+                                                <input type="text" class="form-control rounded-3" name="college_name"
+                                                       t-att-value="program.college_name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0">
+                                                    <t t-esc="program.college_name or '—'"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold small text-muted">Department</label>
+                                            <t t-if="is_editable">
+                                                <input type="text" class="form-control rounded-3" name="department_name"
+                                                       t-att-value="program.department_name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0">
+                                                    <t t-esc="program.department_name or '—'"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold small text-muted">Delivery Mode</label>
+                                            <t t-if="is_editable">
+                                                <select class="form-select rounded-3" name="delivery_mode">
+                                                    <option value="onsite" t-att-selected="program.delivery_mode == 'onsite'">Onsite</option>
+                                                    <option value="online" t-att-selected="program.delivery_mode == 'online'">Online</option>
+                                                    <option value="blended" t-att-selected="program.delivery_mode == 'blended'">Blended</option>
+                                                </select>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="form-control-plaintext fw-semibold mb-0">
+                                                    <t t-esc="dict(program._fields['delivery_mode'].selection).get(program.delivery_mode, '—')"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <t t-if="is_editable">
+                                        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                                            <button type="submit"
+                                                    class="btn btn-caqa-primary rounded-pill px-5 fw-bold shadow-sm">
+                                                <i class="fa fa-save me-1"/> Save Changes
+                                            </button>
+                                        </div>
+                                    </t>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- ── Section: Vision & Mission ── -->
+                        <div id="section-strategic" class="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
+                            <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center gap-2">
+                                <i class="fa fa-bullseye text-caqa-primary"/>
+                                <h6 class="mb-0 fw-bold">Strategic Context — Vision &amp; Mission</h6>
+                            </div>
+                            <div class="card-body p-4">
+                                <form t-attf-action="/my/caqa/program/#{program.id}" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold small text-muted">Description</label>
+                                            <t t-if="is_editable">
+                                                <textarea class="form-control rounded-3" name="description" rows="3">
+                                                    <t t-raw="program.description"/>
+                                                </textarea>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="bg-light rounded-3 p-3 border">
+                                                    <t t-raw="program.description or '—'"/>
+                                                </div>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold small text-muted">Vision</label>
+                                            <t t-if="is_editable">
+                                                <textarea class="form-control rounded-3" name="vision" rows="5">
+                                                    <t t-raw="program.vision"/>
+                                                </textarea>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="bg-light rounded-3 p-3 border h-100">
+                                                    <t t-raw="program.vision or '—'"/>
+                                                </div>
+                                            </t>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold small text-muted">Mission</label>
+                                            <t t-if="is_editable">
+                                                <textarea class="form-control rounded-3" name="mission" rows="5">
+                                                    <t t-raw="program.mission"/>
+                                                </textarea>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="bg-light rounded-3 p-3 border h-100">
+                                                    <t t-raw="program.mission or '—'"/>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <t t-if="is_editable">
+                                        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                                            <button type="submit"
+                                                    class="btn btn-caqa-primary rounded-pill px-5 fw-bold shadow-sm">
+                                                <i class="fa fa-save me-1"/> Save Changes
+                                            </button>
+                                        </div>
+                                    </t>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- ── Section: Courses ── -->
+                        <div id="section-courses" class="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
+                            <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa fa-book text-caqa-primary"/>
+                                    <h6 class="mb-0 fw-bold">Courses</h6>
+                                    <span class="badge rounded-pill" style="background-color:var(--caqa-accent);">
+                                        <t t-esc="program.course_count"/>
+                                    </span>
+                                </div>
+                                <t t-if="is_editable">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-caqa-primary rounded-pill"
+                                            data-bs-toggle="modal" data-bs-target="#courseModal">
+                                        <i class="fa fa-plus me-1"/> Add Course
+                                    </button>
+                                </t>
+                            </div>
+                            <div class="card-body p-0">
+                                <t t-if="program.course_ids">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th class="px-4">Code</th>
+                                                    <th>Course Name</th>
+                                                    <th class="text-center">Credits</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="program.course_ids" t-as="course">
+                                                    <tr>
+                                                        <td class="px-4">
+                                                            <span class="badge bg-light text-caqa-primary border fw-bold">
+                                                                <t t-esc="course.code"/>
+                                                            </span>
+                                                        </td>
+                                                        <td class="fw-semibold"><t t-esc="course.name"/></td>
+                                                        <td class="text-center">
+                                                            <span class="badge rounded-pill bg-light text-muted border">
+                                                                <t t-esc="course.credit_hours"/> cr
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center py-5 text-muted">
+                                        <i class="fa fa-book fa-2x mb-2"/>
+                                        <p class="mb-0">No courses added yet.</p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- ── Section: Learning Outcomes ── -->
+                        <div id="section-outcomes" class="card border-0 shadow-sm rounded-3 overflow-hidden mb-5">
+                            <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa fa-star text-caqa-primary"/>
+                                    <h6 class="mb-0 fw-bold">Learning Outcomes</h6>
+                                    <span class="badge rounded-pill" style="background-color:var(--caqa-accent);">
+                                        <t t-esc="program.learning_outcome_count"/>
+                                    </span>
+                                </div>
+                                <t t-if="is_editable">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-caqa-primary rounded-pill"
+                                            data-bs-toggle="modal" data-bs-target="#loModal">
+                                        <i class="fa fa-plus me-1"/> Add Learning Outcome
+                                    </button>
+                                </t>
+                            </div>
+                            <div class="card-body p-0">
+                                <t t-if="program.learning_outcome_ids">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th class="px-4">Code</th>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="program.learning_outcome_ids" t-as="lo">
+                                                    <tr>
+                                                        <td class="px-4">
+                                                            <span class="badge bg-light text-caqa-primary border fw-bold">
+                                                                <t t-esc="lo.code"/>
+                                                            </span>
+                                                        </td>
+                                                        <td class="fw-semibold"><t t-esc="lo.name"/></td>
+                                                        <td>
+                                                            <span t-attf-class="badge rounded-pill #{'bg-primary' if lo.outcome_type == 'knowledge' else 'bg-success' if lo.outcome_type == 'skill' else 'bg-info'} text-white">
+                                                                <t t-esc="dict(lo._fields['outcome_type'].selection).get(lo.outcome_type, lo.outcome_type)"/>
+                                                            </span>
+                                                        </td>
+                                                        <td class="small text-muted">
+                                                            <t t-raw="lo.description or '—'"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center py-5 text-muted">
+                                        <i class="fa fa-star fa-2x mb-2"/>
+                                        <p class="mb-0">No learning outcomes added yet.</p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                    </div><!-- col-lg-9 -->
+                </div><!-- row -->
+            </div><!-- container -->
+
+            <!-- ── Modals (only in draft) ── -->
             <t t-if="is_editable">
-                <!-- Add Course Modal -->
-                <div class="modal fade" id="courseModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="courseModal" tabindex="-1">
+                    <div class="modal-dialog">
                         <form t-attf-action="/my/caqa/program/#{program.id}/course/add" method="post">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Add Course</h5>
-                                    <button type="button" class="close btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-content rounded-4">
+                                <div class="modal-header card-header-gradient text-white">
+                                    <h5 class="modal-title fw-bold"><i class="fa fa-book me-2"/>Add Course</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"/>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="form-group mb-2">
-                                        <label>Course Code *</label>
-                                        <input type="text" class="form-control" name="code" required="required"/>
+                                <div class="modal-body p-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-muted">Course Code *</label>
+                                        <input type="text" class="form-control rounded-3" name="code" required="required"/>
                                     </div>
-                                    <div class="form-group mb-2">
-                                        <label>Course Name *</label>
-                                        <input type="text" class="form-control" name="name" required="required"/>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-muted">Course Name *</label>
+                                        <input type="text" class="form-control rounded-3" name="name" required="required"/>
                                     </div>
-                                    <div class="form-group mb-2">
-                                        <label>Credit Hours</label>
-                                        <input type="number" step="0.5" class="form-control" name="credit_hours" value="3.0"/>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-muted">Credit Hours</label>
+                                        <input type="number" step="0.5" class="form-control rounded-3" name="credit_hours" value="3.0"/>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-plus"/> Add Course</button>
+                                <div class="modal-footer border-top">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-caqa-primary rounded-pill px-4 fw-bold">
+                                        <i class="fa fa-plus me-1"/> Add Course
+                                    </button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-
-                <!-- Add Learning Outcome Modal -->
-                <div class="modal fade" id="loModal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="loModal" tabindex="-1">
+                    <div class="modal-dialog">
                         <form t-attf-action="/my/caqa/program/#{program.id}/lo/add" method="post">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Add Learning Outcome</h5>
-                                    <button type="button" class="close btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-content rounded-4">
+                                <div class="modal-header card-header-gradient text-white">
+                                    <h5 class="modal-title fw-bold"><i class="fa fa-star me-2"/>Add Learning Outcome</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"/>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="form-group mb-2">
-                                        <label>Outcome Code * (e.g., K1, S1, V1)</label>
-                                        <input type="text" class="form-control" name="code" required="required"/>
+                                <div class="modal-body p-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-muted">Outcome Code *</label>
+                                        <input type="text" class="form-control rounded-3" name="code" required="required" placeholder="e.g. K1, S1, V1"/>
                                     </div>
-                                    <div class="form-group mb-2">
-                                        <label>Outcome Name *</label>
-                                        <input type="text" class="form-control" name="name" required="required"/>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-muted">Outcome Name *</label>
+                                        <input type="text" class="form-control rounded-3" name="name" required="required"/>
                                     </div>
-                                    <div class="form-group mb-2">
-                                        <label>Domain Type</label>
-                                        <select class="form-control" name="outcome_type">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-muted">Domain Type</label>
+                                        <select class="form-select rounded-3" name="outcome_type">
                                             <option value="knowledge">Knowledge</option>
                                             <option value="skill">Skill</option>
                                             <option value="value">Value</option>
                                         </select>
                                     </div>
-                                    <div class="form-group mb-2">
-                                        <label>Description</label>
-                                        <textarea class="form-control" name="description" rows="3"></textarea>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-muted">Description</label>
+                                        <textarea class="form-control rounded-3" name="description" rows="3"/>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-plus"/> Add Outcome</button>
+                                <div class="modal-footer border-top">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-caqa-primary rounded-pill px-4 fw-bold">
+                                        <i class="fa fa-plus me-1"/> Add Outcome
+                                    </button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </t>
-            
+
+            <!-- Smooth scroll + sidenav active state JS -->
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Smooth scroll
+                    document.querySelectorAll('.caqa-sidenav-link').forEach(link => {
+                        link.addEventListener('click', function(e) {
+                            const target = document.querySelector(this.getAttribute('href'));
+                            if (target) {
+                                e.preventDefault();
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        });
+                    });
+                    // Intersection observer for active state
+                    const sections = document.querySelectorAll('[id^="section-"]');
+                    const links = document.querySelectorAll('.caqa-sidenav-link');
+                    const obs = new IntersectionObserver(entries => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                links.forEach(l => l.classList.remove('active'));
+                                const active = document.querySelector('.caqa-sidenav-link[href="#' + entry.target.id + '"]');
+                                if (active) active.classList.add('active');
+                            }
+                        });
+                    }, { threshold: 0.3 });
+                    sections.forEach(s => obs.observe(s));
+                });
+            </script>
+
         </t>
     </template>
 

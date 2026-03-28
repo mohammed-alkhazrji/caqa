@@ -51,40 +51,91 @@
 
     <template id="portal_caqa_dashboard">
         <t t-call="caqa_portal.portal_caqa_layout">
-            <div class="row g-3 mb-4">
-                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Programs</div><div class="display-6"><t t-esc="caqa_program_count or 0"/></div></div></div></div>
-                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Applications</div><div class="display-6"><t t-esc="caqa_application_count or 0"/></div></div></div></div>
-                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Eligibility</div><div class="display-6"><t t-esc="caqa_eligibility_count or 0"/></div></div></div></div>
-                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Avg Completion</div><div class="display-6"><t t-esc="'%.1f' % avg_completion"/>%</div></div></div></div>
-                <div class="col"><div class="card shadow-sm"><div class="card-body"><div class="text-muted">Avg Readiness</div><div class="display-6"><t t-esc="'%.1f' % avg_readiness"/>%</div></div></div></div>
+            <div class="mb-4">
+                <h3 class="text-caqa-primary fw-bold mb-1">Institution Dashboard</h3>
+                <p class="text-muted">Overview of your real-time accreditation metrics and active tasks.</p>
             </div>
-            <div class="card shadow-sm">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <strong>Accreditation Journey</strong>
-                    <span class="badge text-bg-primary">Live Progress</span>
+            
+            <!-- KPI Array -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-3 col-sm-6">
+                    <div class="card h-100 border-0 p-3" style="border-left: 4px solid var(--caqa-primary) !important;">
+                        <div class="card-body p-2">
+                            <div class="text-muted fw-bold text-uppercase small mb-2"><i class="fa fa-graduation-cap text-caqa-primary me-2"/>Programs</div>
+                            <div class="display-5 text-caqa-primary fw-bold"><t t-esc="caqa_program_count or 0"/></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
+                <div class="col-md-3 col-sm-6">
+                    <div class="card h-100 border-0 p-3" style="border-left: 4px solid var(--caqa-accent) !important;">
+                        <div class="card-body p-2">
+                            <div class="text-muted fw-bold text-uppercase small mb-2"><i class="fa fa-file-text text-caqa-accent me-2"/>Applications</div>
+                            <div class="display-5 text-caqa-primary fw-bold"><t t-esc="caqa_application_count or 0"/></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card h-100 border-0 p-3" style="border-left: 4px solid var(--caqa-primary) !important;">
+                        <div class="card-body p-2">
+                            <div class="text-muted fw-bold text-uppercase small mb-2"><i class="fa fa-ticket text-caqa-primary me-2"/>Eligibility</div>
+                            <div class="display-5 text-caqa-primary fw-bold"><t t-esc="caqa_eligibility_count or 0"/></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card h-100 border-0 p-3 bg-light">
+                        <div class="card-body p-2">
+                            <div class="text-muted fw-bold text-uppercase small mb-2"><i class="fa fa-line-chart text-secondary me-2"/>Avg Completion</div>
+                            <div class="display-5 text-dark fw-bold"><t t-esc="'%.1f' % avg_completion"/>%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Journey -->
+            <div class="card border-0 mb-4">
+                <div class="card-header bg-white border-0 pb-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="text-caqa-primary fw-bold mb-0">Active Accreditation Journey</h5>
+                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill"><i class="fa fa-circle text-success me-1"/> Live Tracking</span>
+                </div>
+                <div class="card-body p-4">
                     <t t-if="applications">
                         <t t-foreach="applications" t-as="app">
-                            <div class="mb-4 border rounded p-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5 class="mb-0"><t t-esc="app.reference"/> — <t t-esc="app.name"/></h5>
-                                        <div class="text-muted"><t t-esc="app.program_id.display_name"/></div>
+                            <div class="mb-4 border border-light rounded-3 p-4 bg-white shadow-sm transition">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6 col-12 mb-3 mb-md-0">
+                                        <h5 class="mb-1 text-caqa-primary fw-bold"><t t-esc="app.reference"/> — <t t-esc="app.name"/></h5>
+                                        <div class="text-muted small"><i class="fa fa-institution me-1"/> <t t-esc="app.program_id.display_name"/></div>
                                     </div>
-                                    <span class="badge text-bg-secondary"><t t-esc="dict(app._fields['state'].selection).get(app.state)"/></span>
+                                    <div class="col-md-3 col-12 mb-3 mb-md-0 text-md-end">
+                                        <span class="badge px-3 py-2 text-uppercase fw-bold rounded-pill" style="background-color: rgba(26,54,93,0.1); color: var(--caqa-primary);">
+                                            <t t-esc="dict(app._fields['state'].selection).get(app.state)"/>
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 col-12 text-md-end">
+                                        <a t-att-href="'/my/caqa/application/%s' % app.id" class="btn btn-caqa-primary rounded-pill px-4">Manage Application <i class="fa fa-arrow-right ms-2"/></a>
+                                    </div>
                                 </div>
-                                <div class="mt-3">
-                                    <div class="small text-muted">Completion</div>
-                                    <div class="progress"><div class="progress-bar" role="progressbar" t-attf-style="width:#{app.completion_rate}%;"><t t-esc="'%.1f' % app.completion_rate"/>%</div></div>
-                                </div>
-                                <div class="mt-3">
-                                    <a t-att-href="'/my/caqa/application/%s' % app.id" class="btn btn-sm btn-primary">Open Application</a>
+                                <div class="mt-4 pt-4 border-top">
+                                    <div class="d-flex justify-content-between text-muted small mb-2 fw-bold">
+                                        <span>Completion Progress</span>
+                                        <span><t t-esc="'%.1f' % app.completion_rate"/>%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar progress-bar-accent" role="progressbar" t-attf-style="width:#{app.completion_rate}%;"></div>
+                                    </div>
                                 </div>
                             </div>
                         </t>
                     </t>
-                    <t t-else=""><div class="alert alert-info">No accreditation applications yet.</div></t>
+                    <t t-else="">
+                        <div class="text-center py-5">
+                            <div class="mb-3"><i class="fa fa-folder-open-o fa-3x text-muted opacity-50"/></div>
+                            <h5 class="text-muted">No active accreditation applications found.</h5>
+                            <p class="text-muted small mb-4">Start an eligibility request to initiate a new accreditation cycle.</p>
+                            <a href="/my/caqa/eligibility/new" class="btn btn-caqa-accent px-4 py-2">Start Eligibility Request</a>
+                        </div>
+                    </t>
                 </div>
             </div>
         </t>
@@ -117,31 +168,106 @@
 
     <template id="portal_caqa_eligibilities">
         <t t-call="caqa_portal.portal_caqa_layout">
-            <div class="card shadow-sm">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <strong>Eligibility Requests</strong>
-                    <a href="/my/caqa/eligibility/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"/> Request Eligibility</a>
+            <t t-set="breadcrumbs" t-value="[{'name': 'Eligibility'}]"/>
+
+            <!-- Page header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="text-caqa-primary fw-bold mb-0">
+                        <i class="fa fa-ticket me-2"/>Eligibility Requests
+                    </h3>
+                    <p class="text-muted small mb-0">Track and manage your accreditation eligibility requests.</p>
                 </div>
-                <div class="card-body">
-                <t t-if="eligibilities">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead><tr><th>Reference</th><th>Program</th><th>State</th><th>Readiness</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="eligibilities" t-as="e">
-                                    <td><a t-att-href="'/my/caqa/eligibility/%s' % e.id"><t t-esc="e.reference"/></a></td>
-                                    <td><t t-esc="e.program_id.display_name"/></td>
-                                    <td><span class="badge text-bg-secondary"><t t-esc="dict(e._fields['state'].selection).get(e.state)"/></span></td>
-                                    <td><t t-esc="'%.1f' % e.readiness_score"/>%</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <a href="/my/caqa/eligibility/new"
+                   class="btn btn-caqa-primary rounded-pill px-4 fw-bold shadow-sm">
+                    <i class="fa fa-plus-circle me-1"/> New Request
+                </a>
+            </div>
+
+            <!-- Empty state -->
+            <t t-if="not eligibilities">
+                <div class="card border-0 shadow-sm text-center py-5">
+                    <div class="card-body">
+                        <i class="fa fa-ticket fa-3x text-muted mb-3"/>
+                        <h5 class="text-muted">No eligibility requests</h5>
+                        <p class="text-muted">You have not submitted any eligibility requests yet.</p>
+                        <a href="/my/caqa/eligibility/new" class="btn btn-caqa-primary rounded-pill px-4 fw-bold">
+                            <i class="fa fa-plus me-1"/> Request Eligibility
+                        </a>
                     </div>
-                </t>
-                <t t-else=""><div class="alert alert-info">No eligibility requests found.</div></t>
-            </div></div>
+                </div>
+            </t>
+
+            <!-- Eligibility cards grid -->
+            <t t-if="eligibilities">
+                <div class="row g-4">
+                    <t t-foreach="eligibilities" t-as="e">
+                        <div class="col-md-6 col-xl-4">
+                            <a t-attf-href="/my/caqa/eligibility/#{e.id}" class="text-decoration-none">
+                                <div class="card border-0 shadow-sm h-100 rounded-3 overflow-hidden caqa-record-card">
+                                    <div class="card-header-gradient p-3 d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <span class="badge bg-white text-caqa-primary rounded-pill px-2 py-1 small mb-1">
+                                                <i class="fa fa-graduation-cap me-1"/>
+                                                <t t-esc="e.program_id.name or '—'"/>
+                                            </span>
+                                            <h6 class="text-white fw-bold mb-0 mt-1">
+                                                <t t-esc="e.reference"/>
+                                            </h6>
+                                        </div>
+                                        <span t-attf-class="badge rounded-pill shadow-sm #{'bg-warning text-dark' if e.state == 'draft' else 'bg-success text-white' if e.state == 'submitted' else 'bg-info text-white'}">
+                                            <t t-esc="dict(e._fields['state'].selection).get(e.state, e.state)"/>
+                                        </span>
+                                    </div>
+                                    <div class="card-body p-3">
+                                        <p class="small text-muted mb-3">
+                                            <t t-esc="e.name"/>
+                                        </p>
+                                        <div class="row g-2 text-center mb-3">
+                                            <div class="col-4">
+                                                <div class="small text-muted">Readiness</div>
+                                                <div class="fw-bold small text-caqa-primary">
+                                                    <t t-esc="'%.0f' % e.readiness_score"/>%
+                                                </div>
+                                            </div>
+                                            <div class="col-4 border-start border-end">
+                                                <div class="small text-muted">Checklist</div>
+                                                <div class="fw-bold small" style="color:var(--caqa-accent);">
+                                                    <t t-esc="'%.0f' % e.checklist_completion"/>%
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="small text-muted">Profile</div>
+                                                <div class="fw-bold small text-success">
+                                                    <t t-esc="'%.0f' % e.profile_readiness"/>%
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between small fw-bold text-muted mb-1">
+                                            <span><i class="fa fa-tasks me-1"/>Checklist Progress</span>
+                                            <span class="text-caqa-primary">
+                                                <t t-esc="'%.0f' % e.checklist_completion"/>%
+                                            </span>
+                                        </div>
+                                        <div class="progress rounded-pill" style="height: 8px; background-color: #f1f5f9;">
+                                            <div class="progress-bar progress-bar-accent rounded-pill"
+                                                 t-attf-style="width:{e.checklist_completion}%;"/>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-white border-top-0 pt-0 pb-3 px-3 text-end">
+                                        <span class="small text-caqa-primary fw-bold">
+                                            View Details <i class="fa fa-arrow-right ms-1"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </t>
+                </div>
+            </t>
         </t>
     </template>
+
 
 
 
@@ -250,49 +376,55 @@
                 </div>
                 
                 <!-- Applications List -->
-                <div class="card-body p-0">
+                <div class="card-body p-4 bg-light">
                     <t t-if="applications">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Reference</th>
-                                        <th>Application Title</th>
-                                        <th>Program</th>
-                                        <th>Status</th>
-                                        <th>Progress</th>
-                                        <th class="text-end">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="applications" t-as="app">
-                                        <td class="fw-bold text-primary small"><t t-esc="app.reference"/></td>
-                                        <td><t t-esc="app.name"/></td>
-                                        <td class="text-muted small"><t t-esc="app.program_id.display_name"/></td>
-                                        <td>
-                                            <span t-attf-class="badge #{'bg-warning text-dark' if app.state == 'draft' else 'bg-success' if app.state in ['approved', 'conditional_approved'] else 'bg-info'}">
-                                                <t t-esc="dict(app._fields['state'].selection).get(app.state)"/>
-                                            </span>
-                                        </td>
-                                        <td style="min-width: 100px;">
-                                            <div class="progress" style="height: 7px;">
-                                                <div class="progress-bar" t-attf-style="width:#{app.completion_rate}%;"></div>
+                        <div class="row g-3">
+                            <t t-foreach="applications" t-as="app">
+                                <div class="col-12">
+                                    <div class="card border-0 shadow-sm rounded-3 overflow-hidden transition" style="border-left: 4px solid var(--caqa-primary) !important;">
+                                        <div class="card-body p-4">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-5 col-12 mb-3 mb-md-0">
+                                                    <div class="d-flex align-items-center mb-1">
+                                                        <span class="badge bg-light text-caqa-primary border me-2 font-monospace"><t t-esc="app.reference"/></span>
+                                                        <span t-attf-class="badge #{'bg-warning text-dark' if app.state == 'draft' else 'bg-success' if app.state in ['approved', 'conditional_approved'] else 'bg-info'}">
+                                                            <t t-esc="dict(app._fields['state'].selection).get(app.state)"/>
+                                                        </span>
+                                                    </div>
+                                                    <h5 class="text-caqa-primary fw-bold mb-1"><t t-esc="app.name"/></h5>
+                                                    <div class="text-muted small"><i class="fa fa-graduation-cap me-1"/> <t t-esc="app.program_id.display_name"/></div>
+                                                </div>
+                                                
+                                                <div class="col-md-4 col-12 mb-3 mb-md-0">
+                                                    <div class="d-flex justify-content-between text-muted small fw-bold mb-1">
+                                                        <span>Overall Completion</span>
+                                                        <span><t t-esc="'%.0f' % app.completion_rate"/>%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 8px;">
+                                                        <div class="progress-bar progress-bar-accent" role="progressbar" t-attf-style="width:#{app.completion_rate}%;"></div>
+                                                    </div>
+                                                    <div class="small text-muted mt-2">
+                                                        <i class="fa fa-refresh me-1"/> Cycle: <t t-esc="app.cycle_id.name"/>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-3 col-12 text-md-end text-start">
+                                                    <a t-att-href="'/my/caqa/application/%s' % app.id" class="btn btn-caqa-primary w-100 fw-bold">
+                                                        <i class="fa fa-arrow-right me-2"/> Manage Application
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <small class="text-muted"><t t-esc="'%.0f' % app.completion_rate"/>%</small>
-                                        </td>
-                                        <td class="text-end">
-                                            <a t-att-href="'/my/caqa/application/%s' % app.id" class="btn btn-sm btn-outline-primary">
-                                                <i class="fa fa-folder-open"/> Open
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
                         </div>
                     </t>
                     <t t-else="">
-                        <div class="alert alert-info border-0 rounded-0 mb-0 p-4">
-                            <i class="fa fa-info-circle me-2"/> No accreditation applications yet. Click <strong>New Application</strong> to get started.
+                        <div class="text-center py-5 bg-white rounded-3 shadow-sm border">
+                            <div class="mb-3"><i class="fa fa-file-text-o fa-3x text-muted opacity-50"/></div>
+                            <h5 class="text-muted fw-bold">No Applications Active</h5>
+                            <p class="text-muted mb-0">Use the "New Application" button above to start your first accreditation journey.</p>
                         </div>
                     </t>
                 </div>

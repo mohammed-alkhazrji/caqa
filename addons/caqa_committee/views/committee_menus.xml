@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_caqa_committee_root" name="Committee" parent="caqa_core.menu_caqa_operations_root" sequence="80"/>
+    <menuitem id="menu_caqa_committee_root" name="Committee"  sequence="80"/>
     <menuitem id="menu_caqa_committee_session" name="Sessions" parent="menu_caqa_committee_root" action="action_caqa_committee_session" sequence="10"/>
     <menuitem id="menu_caqa_decision_pack" name="Decision Packs" parent="menu_caqa_committee_root" action="action_caqa_decision_pack" sequence="20"/>
     <menuitem id="menu_caqa_final_decision" name="Final Decisions" parent="menu_caqa_committee_root" action="action_caqa_final_decision" sequence="30"/>

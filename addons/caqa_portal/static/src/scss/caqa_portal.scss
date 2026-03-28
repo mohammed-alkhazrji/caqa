@@ -1,5 +1,161 @@
-.caqa-portal-shell .card { border-radius: 14px; }
-.caqa-portal-shell .caqa-portal-nav .list-group-item { border: 0; border-radius: 10px; margin-bottom: 4px; }
-.caqa-portal-shell .progress { height: 12px; border-radius: 999px; }
-.caqa-portal-shell .progress-bar { font-size: 10px; line-height: 12px; }
-.caqa-portal-shell .card-header { background: linear-gradient(90deg, #f8fafc 0%, #eef2ff 100%); }
+/* CAQA Portal Elite UX Design System */
+:root {
+  --caqa-primary: #1A365D;
+  --caqa-accent: #B87C19;
+  --caqa-bg: #F8FAFC;
+  --caqa-text-main: #1e293b;
+  --caqa-text-muted: #64748b;
+}
+
+body.o_portal {
+  background-color: var(--caqa-bg);
+  font-family: 'Inter', 'Cairo', sans-serif;
+  color: var(--caqa-text-main);
+}
+
+.caqa-portal-shell .card { 
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.caqa-portal-shell .card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+}
+
+.caqa-portal-shell .caqa-portal-nav .list-group-item { 
+  border: 0; 
+  border-radius: 8px; 
+  margin-bottom: 6px;
+  padding: 12px 16px;
+  color: var(--caqa-primary);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.caqa-portal-shell .caqa-portal-nav .list-group-item:hover,
+.caqa-portal-shell .caqa-portal-nav .list-group-item.active {
+  background-color: rgba(26, 54, 93, 0.05);
+  color: var(--caqa-primary);
+  font-weight: 700;
+}
+.caqa-portal-shell .caqa-portal-nav .list-group-item.active {
+  border-left: 4px solid var(--caqa-accent);
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.caqa-portal-shell .progress { height: 10px; border-radius: 999px; background-color: #e2e8f0; }
+.caqa-portal-shell .progress-bar { font-size: 10px; line-height: 10px; background-color: var(--caqa-primary); }
+.caqa-portal-shell .progress-bar-accent { background-color: var(--caqa-accent); }
+
+.caqa-portal-shell .card-header { 
+  background-color: #ffffff; 
+  border-bottom: 1px solid #f1f5f9;
+  padding: 16px 20px;
+  font-weight: 700;
+  color: var(--caqa-primary);
+}
+.caqa-portal-shell .card-header-gradient {
+  background: linear-gradient(135deg, var(--caqa-primary) 0%, #2563eb 100%);
+  color: white;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+/* Typography & Utilities */
+.text-caqa-primary { color: var(--caqa-primary) !important; }
+.text-caqa-accent { color: var(--caqa-accent) !important; }
+.btn-caqa-primary { 
+  background-color: var(--caqa-primary); 
+  color: white; 
+  border: none;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+}
+.btn-caqa-primary:hover { background-color: #0f172a; color: white; }
+.btn-caqa-accent {
+  background-color: var(--caqa-accent);
+  color: white;
+  border: none;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(184, 124, 25, 0.2);
+}
+.btn-caqa-accent:hover { background-color: #9A6611; color: white; }
+
+/* Focus Mode Layout */
+.focus-mode-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.sticky-action-bar {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 16px 24px;
+  z-index: 1000;
+  box-shadow: 0 -4px 6px rgba(0,0,0,0.02);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── Side Navigation — Programs & Eligibility detail pages ── */
+.caqa-sidenav-link {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--caqa-text-muted);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-left 0.15s;
+  margin-bottom: 2px;
+  border-left: 3px solid transparent;
+}
+.caqa-sidenav-link:hover {
+  background-color: rgba(26, 54, 93, 0.05);
+  color: var(--caqa-primary);
+  text-decoration: none;
+}
+.caqa-sidenav-link.active {
+  background-color: white;
+  color: var(--caqa-primary);
+  font-weight: 700;
+  border-left: 3px solid var(--caqa-accent);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.caqa-sidenav-link .badge {
+  margin-left: auto;
+}
+
+/* ── Record card grid — lift on hover ── */
+.caqa-record-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.caqa-record-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -4px rgba(26, 54, 93, 0.12) !important;
+}
+
+/* ── Outline variant of primary button ── */
+.btn-outline-caqa-primary {
+  border: 1.5px solid var(--caqa-primary);
+  color: var(--caqa-primary);
+  background: transparent;
+  font-weight: 600;
+}
+.btn-outline-caqa-primary:hover {
+  background-color: var(--caqa-primary);
+  color: white;
+}
+
+/* ── Card inside programs/eligibility detail — no lift ── */
+#section-overview, #section-info, #section-strategic,
+#section-courses, #section-outcomes, #section-checklist, #section-notes {
+  scroll-margin-top: 80px;  /* offset for sticky header */
+}

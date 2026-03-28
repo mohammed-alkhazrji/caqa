@@ -1,68 +1,246 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- REVIEW ASSIGNMENT VIEWS                                             -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <record id="view_caqa_review_assignment_tree" model="ir.ui.view">
         <field name="name">caqa.review.assignment.tree</field>
         <field name="model">caqa.review.assignment</field>
-        <field name="arch" type="xml"><tree><field name="reference"/><field name="application_id"/><field name="reviewer_id"/><field name="role"/><field name="due_date"/><field name="review_count"/><field name="state" widget="badge"/></tree></field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="reference"/>
+                <field name="application_id"/>
+                <field name="reviewer_id"/>
+                <field name="role"/>
+                <field name="due_date"/>
+                <field name="review_count"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'submitted'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-muted="state == 'closed'"/>
+            </tree>
+        </field>
     </record>
+
     <record id="view_caqa_review_assignment_form" model="ir.ui.view">
         <field name="name">caqa.review.assignment.form</field>
         <field name="model">caqa.review.assignment</field>
         <field name="arch" type="xml">
             <form string="Review Assignment">
                 <header>
-                    <button name="action_start" type="object" string="Start" invisible="state != 'new'"/>
+                    <button name="action_start" type="object" string="Start Review" invisible="state != 'new'" class="btn-primary"/>
                     <button name="action_submit" type="object" string="Submit" invisible="state not in ('new','in_progress')"/>
                     <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
                     <field name="state" widget="statusbar" statusbar_visible="new,in_progress,submitted,closed"/>
                 </header>
                 <sheet>
-                    <group><group><field name="reference"/><field name="application_id"/><field name="reviewer_id"/></group><group><field name="role"/><field name="due_date"/><field name="review_count" readonly="1"/></group></group>
-                    <field name="review_ids"><tree><field name="name"/><field name="stage"/><field name="score"/><field name="state" widget="badge"/></tree></field>
+                    <group>
+                        <group>
+                            <field name="reference"/>
+                            <field name="application_id"/>
+                            <field name="reviewer_id"/>
+                        </group>
+                        <group>
+                            <field name="role"/>
+                            <field name="due_date"/>
+                            <field name="review_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="review_ids">
+                        <tree>
+                            <field name="name"/>
+                            <field name="stage"/>
+                            <field name="score"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state in ('submitted','moderated','closed')"
+                                   decoration-warning="state == 'in_progress'"/>
+                        </tree>
+                    </field>
                 </sheet>
                 <chatter/>
             </form>
         </field>
     </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- REVIEW VIEWS                                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <record id="view_caqa_review_tree" model="ir.ui.view">
         <field name="name">caqa.review.tree</field>
         <field name="model">caqa.review</field>
-        <field name="arch" type="xml"><tree><field name="name"/><field name="assignment_id"/><field name="reviewer_id"/><field name="stage"/><field name="score"/><field name="state" widget="badge"/></tree></field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="assignment_id"/>
+                <field name="application_id"/>
+                <field name="reviewer_id"/>
+                <field name="stage"/>
+                <field name="score"/>
+                <field name="state" widget="badge"
+                       decoration-success="state in ('submitted','moderated','closed')"
+                       decoration-warning="state == 'in_progress'"/>
+            </tree>
+        </field>
     </record>
+
     <record id="view_caqa_review_form" model="ir.ui.view">
         <field name="name">caqa.review.form</field>
         <field name="model">caqa.review</field>
         <field name="arch" type="xml">
             <form string="Review">
                 <header>
-                    <button name="action_start" type="object" string="Start" invisible="state != 'draft'"/>
-                    <button name="action_submit" type="object" string="Submit" invisible="state not in ('draft','in_progress')"/>
+                    <button name="action_start" type="object" string="Start Review" invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_submit" type="object" string="Submit Review" invisible="state not in ('draft','in_progress')" class="btn-primary"/>
                     <button name="action_moderate" type="object" string="Moderate" invisible="state != 'submitted'"/>
                     <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
+                    <!-- Bulk Deficiency Creation Buttons -->
+                    <button name="action_create_deficiencies_from_notes"
+                            type="object"
+                            string="⚑ Create Deficiencies from Notes"
+                            class="btn-warning"
+                            invisible="state not in ('in_progress','submitted','moderated')"
+                            confirm="This will create Deficiencies for all public notes that don't already have one. Continue?"/>
+                    <button name="action_create_deficiencies_from_recommendations"
+                            type="object"
+                            string="⚑ Create Deficiencies from Recommendations"
+                            invisible="state not in ('in_progress','submitted','moderated')"
+                            confirm="This will create Deficiencies for all recommendations that don't already have one. Continue?"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,submitted,moderated,closed"/>
                 </header>
                 <sheet>
-                    <group><group><field name="name"/><field name="assignment_id"/><field name="reviewer_id" readonly="1"/><field name="stage"/></group><group><field name="application_id" readonly="1"/><field name="score"/></group></group>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="assignment_id"/>
+                            <field name="reviewer_id" readonly="1"/>
+                            <field name="stage"/>
+                        </group>
+                        <group>
+                            <field name="application_id" readonly="1"/>
+                            <field name="score"/>
+                        </group>
+                    </group>
                     <notebook>
-                        <page string="Summary"><field name="summary" nolabel="1"/></page>
-                        <page string="Notes"><field name="note_ids"><tree editable="bottom"><field name="title"/><field name="note_type"/><field name="severity"/><field name="state"/><field name="internal_only"/></tree></field></page>
-                        <page string="Recommendations"><field name="recommendation_ids"><tree editable="bottom"><field name="recommendation"/><field name="state"/><field name="justification"/></tree></field></page>
+                        <page string="Summary">
+                            <field name="summary" nolabel="1"/>
+                        </page>
+
+                        <page string="Notes">
+                            <field name="note_ids">
+                                <tree editable="bottom" decoration-danger="severity == 'critical'" decoration-warning="severity == 'high'">
+                                    <field name="title"/>
+                                    <field name="note_type"/>
+                                    <field name="severity" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="internal_only"/>
+                                    <field name="deficiency_id" readonly="1" optional="show"/>
+                                    <button name="action_create_deficiency"
+                                            type="object"
+                                            icon="fa-exclamation-circle"
+                                            string="Create Deficiency"
+                                            invisible="deficiency_id != False"
+                                            title="Create a linked Deficiency for this note"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Recommendations">
+                            <field name="recommendation_ids">
+                                <tree editable="bottom">
+                                    <field name="recommendation" widget="badge"/>
+                                    <field name="justification"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="deficiency_id" readonly="1" optional="show"/>
+                                    <button name="action_create_deficiency"
+                                            type="object"
+                                            icon="fa-exclamation-circle"
+                                            string="Create Deficiency"
+                                            invisible="deficiency_id != False"
+                                            title="Create a linked Deficiency for this recommendation"/>
+                                </tree>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
                 <chatter/>
             </form>
         </field>
     </record>
+
+    <!-- Note tree/form standalone -->
     <record id="view_caqa_review_note_tree" model="ir.ui.view">
         <field name="name">caqa.review.note.tree</field>
         <field name="model">caqa.review.note</field>
-        <field name="arch" type="xml"><tree><field name="review_id"/><field name="title"/><field name="note_type"/><field name="severity" widget="badge"/><field name="state" widget="badge"/><field name="deficiency_id"/></tree></field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="severity == 'critical'" decoration-warning="severity == 'high'">
+                <field name="review_id"/>
+                <field name="application_id"/>
+                <field name="title"/>
+                <field name="note_type"/>
+                <field name="severity" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="internal_only"/>
+                <field name="deficiency_id"/>
+            </tree>
+        </field>
     </record>
+
+    <record id="view_caqa_review_note_form" model="ir.ui.view">
+        <field name="name">caqa.review.note.form</field>
+        <field name="model">caqa.review.note</field>
+        <field name="arch" type="xml">
+            <form string="Review Note">
+                <header>
+                    <button name="action_create_deficiency" type="object"
+                            string="⚑ Create Deficiency" class="btn-warning"
+                            invisible="deficiency_id != False"
+                            confirm="This will create a new Deficiency linked to this note. Continue?"/>
+                    <button name="action_mark_responded" type="object" string="Mark Responded" invisible="state != 'open'"/>
+                    <button name="action_accept" type="object" string="Accept" invisible="state != 'responded'"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state != 'responded'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state == 'closed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,responded,accepted,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="review_id"/>
+                            <field name="application_id" readonly="1"/>
+                            <field name="application_indicator_id"/>
+                        </group>
+                        <group>
+                            <field name="note_type"/>
+                            <field name="severity"/>
+                            <field name="internal_only"/>
+                            <field name="deficiency_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="title"/>
+                    <field name="description"/>
+                    <separator string="Institution Response"/>
+                    <field name="institution_response" readonly="state == 'open'"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Recommendation standalone -->
     <record id="view_caqa_recommendation_tree" model="ir.ui.view">
         <field name="name">caqa.recommendation.tree</field>
         <field name="model">caqa.recommendation</field>
-        <field name="arch" type="xml"><tree><field name="review_id"/><field name="recommendation" widget="badge"/><field name="state" widget="badge"/></tree></field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="review_id"/>
+                <field name="application_id"/>
+                <field name="recommendation" widget="badge"/>
+                <field name="state" widget="badge"/>
+                <field name="deficiency_id"/>
+            </tree>
+        </field>
     </record>
+
+    <!-- Reviewer Cockpit (unchanged) -->
     <record id="view_caqa_reviewer_cockpit_form" model="ir.ui.view">
         <field name="name">caqa.reviewer.cockpit.form</field>
         <field name="model">caqa.reviewer.cockpit</field>
@@ -70,32 +248,74 @@
             <form create="false" edit="false">
                 <sheet>
                     <field name="summary_html" widget="html" nolabel="1"/>
-                    <group><field name="reviewer_id"/><field name="assignment_count"/><field name="submitted_count"/><field name="open_note_count"/></group>
-                    <footer><button name="action_open_assignments" string="Open Assignments" type="object" class="btn-primary"/></footer>
+                    <group>
+                        <field name="reviewer_id"/>
+                        <field name="assignment_count"/>
+                        <field name="submitted_count"/>
+                        <field name="open_note_count"/>
+                    </group>
+                    <footer>
+                        <button name="action_open_assignments" string="Open Assignments" type="object" class="btn-primary"/>
+                    </footer>
                 </sheet>
             </form>
         </field>
     </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- PHASE 4: Smart Buttons — Inherited view on caqa.application form    -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_caqa_application_review_buttons" model="ir.ui.view">
+        <field name="name">caqa.application.form.review.buttons</field>
+        <field name="model">caqa.application</field>
+        <field name="inherit_id" ref="caqa_application.view_caqa_application_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <!-- Review Assignments Smart Button -->
+                <button name="action_view_review_assignments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-users">
+                    <field name="review_assignment_count" widget="statinfo" string="Assignments"/>
+                </button>
+                <!-- Reviews Smart Button -->
+                <button name="action_view_reviews"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-star">
+                    <field name="review_total_count" widget="statinfo" string="Reviews"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- ACTIONS                                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <record id="action_caqa_review_assignment" model="ir.actions.act_window">
         <field name="name">Review Assignments</field>
         <field name="res_model">caqa.review.assignment</field>
         <field name="view_mode">tree,form</field>
     </record>
+
     <record id="action_caqa_review" model="ir.actions.act_window">
         <field name="name">Reviews</field>
         <field name="res_model">caqa.review</field>
         <field name="view_mode">tree,form</field>
     </record>
+
     <record id="action_caqa_review_note" model="ir.actions.act_window">
         <field name="name">Review Notes</field>
         <field name="res_model">caqa.review.note</field>
         <field name="view_mode">tree,form</field>
     </record>
+
     <record id="action_caqa_recommendation" model="ir.actions.act_window">
         <field name="name">Recommendations</field>
         <field name="res_model">caqa.recommendation</field>
         <field name="view_mode">tree,form</field>
     </record>
+
     <record id="action_caqa_reviewer_cockpit" model="ir.actions.act_window">
         <field name="name">Reviewer Cockpit</field>
         <field name="res_model">caqa.reviewer.cockpit</field>

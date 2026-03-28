@@ -151,8 +151,13 @@ class CaqaCustomerPortal(CustomerPortal):
         app = self._check_caqa_record('caqa.application', application_id)
         if hasattr(app, 'status_code'):
             return app
+        # Gather reviews (only non-internal notes shown to institution)
+        review_ids = app.review_ids.filtered(lambda r: r.state in ('submitted', 'moderated', 'closed'))
+        review_count = len(review_ids)
         return request.render('caqa_portal.portal_caqa_application_detail', {
             'application': app,
+            'review_ids': review_ids,
+            'review_count': review_count,
             'breadcrumbs': [{'name': app.reference or app.name, 'url': None}],
         })
 
@@ -277,10 +282,30 @@ class CaqaCustomerPortal(CustomerPortal):
         deficiency = self._check_caqa_record('caqa.application.deficiency', deficiency_id, 'application_id.institution_id')
         if hasattr(deficiency, 'status_code'):
             return deficiency
+        update_vals = {}
         response_text = post.get('institution_response', '').strip()
         if response_text:
-            deficiency.sudo().write({'institution_response': response_text})
-            deficiency.sudo().action_mark_responded()
+            update_vals['institution_response'] = response_text
+            
+        file = post.get('attachment')
+        if file and getattr(file, 'filename', False):
+            file_bytes = file.read()
+            update_vals['attachment'] = base64.b64encode(file_bytes)
+            update_vals['attachment_name'] = file.filename
+            
+        if update_vals:
+            deficiency.sudo().write(update_vals)
+            if deficiency.state == 'open':
+                deficiency.sudo().action_mark_responded()
+            # Phase 6: Portal State Sync — use explicit browse to avoid '_unknown' cross-module issue
+            if deficiency.source_note_id.id:
+                note = request.env['caqa.review.note'].sudo().browse(deficiency.source_note_id.id)
+                if note.exists() and note.state == 'open':
+                    note.write({'state': 'responded'})
+            if deficiency.source_recommendation_id.id:
+                rec = request.env['caqa.recommendation'].sudo().browse(deficiency.source_recommendation_id.id)
+                if rec.exists() and rec.state == 'draft':
+                    rec.write({'state': 'submitted'})
         return request.redirect('/my/caqa/application/%s#deficiencies' % deficiency.application_id.id)
 
     @http.route(['/my/caqa/decisions'], type='http', auth='user', website=True)

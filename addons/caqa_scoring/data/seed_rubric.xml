@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Default Rubric -->
+        <record id="default_caqa_rubric_5_point" model="caqa.score.rubric">
+            <field name="name">Standard 5-Point Accreditation Rubric</field>
+            <field name="code">S5PR</field>
+            <field name="is_default" eval="True"/>
+        </record>
+
+        <!-- Rubric Levels -->
+        <record id="rubric_level_1" model="caqa.score.rubric.level">
+            <field name="rubric_id" ref="default_caqa_rubric_5_point"/>
+            <field name="name_en">Unacceptable</field>
+            <field name="name_ar">غير مقبول</field>
+            <field name="description">Does not meet the minimum requirements of the standard indicator. Major deficiencies exist.</field>
+            <field name="value_numeric">1</field>
+            <field name="sequence">10</field>
+            <field name="is_default_fail" eval="True"/>
+            <field name="color">#dc3545</field>
+        </record>
+
+        <record id="rubric_level_2" model="caqa.score.rubric.level">
+            <field name="rubric_id" ref="default_caqa_rubric_5_point"/>
+            <field name="name_en">Marginal</field>
+            <field name="name_ar">مقبول بحد أدنى</field>
+            <field name="description">Meets some requirements but has significant areas needing improvement.</field>
+            <field name="value_numeric">2</field>
+            <field name="sequence">20</field>
+            <field name="is_default_fail" eval="True"/>
+            <field name="color">#fd7e14</field>
+        </record>
+
+        <record id="rubric_level_3" model="caqa.score.rubric.level">
+            <field name="rubric_id" ref="default_caqa_rubric_5_point"/>
+            <field name="name_en">Satisfactory</field>
+            <field name="name_ar">مرضٍ</field>
+            <field name="description">Meets the standard indicator requirements adequately.</field>
+            <field name="value_numeric">3</field>
+            <field name="sequence">30</field>
+            <field name="is_default_fail" eval="False"/>
+            <field name="color">#ffc107</field>
+        </record>
+
+        <record id="rubric_level_4" model="caqa.score.rubric.level">
+            <field name="rubric_id" ref="default_caqa_rubric_5_point"/>
+            <field name="name_en">Good</field>
+            <field name="name_ar">جيد</field>
+            <field name="description">Exceeds minimum requirements with demonstrated quality and consistency.</field>
+            <field name="value_numeric">4</field>
+            <field name="sequence">40</field>
+            <field name="is_default_fail" eval="False"/>
+            <field name="color">#20c997</field>
+        </record>
+
+        <record id="rubric_level_5" model="caqa.score.rubric.level">
+            <field name="rubric_id" ref="default_caqa_rubric_5_point"/>
+            <field name="name_en">Excellent</field>
+            <field name="name_ar">متميز</field>
+            <field name="description">Consistently strong performance that serves as a model of best practice.</field>
+            <field name="value_numeric">5</field>
+            <field name="sequence">50</field>
+            <field name="is_default_fail" eval="False"/>
+            <field name="color">#198754</field>
+        </record>
+    </data>
+</odoo>

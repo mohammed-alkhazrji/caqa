@@ -303,6 +303,19 @@ class CaqaApplicationDeficiency(models.Model):
     institution_response = fields.Html()
     resolution_note = fields.Html()
     source_reference = fields.Char()
+    attachment = fields.Binary(string='Attachment')
+    attachment_name = fields.Char(string='Attachment Name')
+    # ── Traceability fields ──────────────────────────────────────────────────
+    source_note_id = fields.Many2one(
+        'caqa.review.note', ondelete='set null', readonly=True,
+        string='Source Review Note',
+        help='The review note that generated this deficiency (if any).'
+    )
+    source_recommendation_id = fields.Many2one(
+        'caqa.recommendation', ondelete='set null', readonly=True,
+        string='Source Recommendation',
+        help='The recommendation that generated this deficiency (if any).'
+    )
 
     def action_mark_responded(self):
         self.write({'state': 'responded'})

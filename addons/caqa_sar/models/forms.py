@@ -26,12 +26,13 @@ class CaqaFormQuestion(models.Model):
     _name = 'caqa.form.question'
     _description = 'Form Question'
     _order = 'template_id, sequence, id'
+    _rec_name = 'question_text'
 
     template_id = fields.Many2one('caqa.form.template', required=True, ondelete='cascade')
     sequence = fields.Integer(default=10)
     question_text = fields.Char(required=True)
     help_text = fields.Text()
-    field_type = fields.Selection([('text', 'Text'), ('number', 'Number'), ('boolean', 'Boolean'), ('selection', 'Selection')], default='text', required=True)
+    field_type = fields.Selection([('text', 'Text'), ('number', 'Number'), ('boolean', 'Boolean'), ('selection', 'Selection'), ('attachment', 'Attachment')], default='text', required=True)
     selection_options = fields.Char(help='Comma-separated values for selection fields')
     is_required = fields.Boolean(default=False)
 
@@ -90,9 +91,11 @@ class CaqaFormAnswer(models.Model):
     answer_number = fields.Float()
     answer_boolean = fields.Boolean()
     answer_selection = fields.Char()
+    answer_attachment = fields.Binary(string='Attachment')
+    answer_attachment_name = fields.Char(string='Attachment Name')
     is_answered = fields.Boolean(compute='_compute_answered', store=True)
 
-    @api.depends('answer_text', 'answer_number', 'answer_boolean', 'answer_selection')
+    @api.depends('answer_text', 'answer_number', 'answer_boolean', 'answer_selection', 'answer_attachment')
     def _compute_answered(self):
         for rec in self:
-            rec.is_answered = bool(rec.answer_text or rec.answer_number or rec.answer_boolean or rec.answer_selection)
+            rec.is_answered = bool(rec.answer_text or rec.answer_number or rec.answer_boolean or rec.answer_selection or rec.answer_attachment)

@@ -1,3 +1,4 @@
+import base64
 from odoo import http
 from odoo.http import request
 from .portal import CaqaCustomerPortal
@@ -34,6 +35,14 @@ class CaqaApplicationPortal(CaqaCustomerPortal):
                     val = post.get('answer_selection_%s' % a_id)
                     if val is not None: 
                         answer.sudo().write({'answer_selection': val})
+                elif field_type == 'attachment':
+                    file = post.get('answer_attachment_%s' % a_id)
+                    if file and getattr(file, 'filename', False):
+                        file_bytes = file.read()
+                        answer.sudo().write({
+                            'answer_attachment': base64.b64encode(file_bytes),
+                            'answer_attachment_name': file.filename
+                        })
                     
             if post.get('submit_now'):
                 form_response.sudo().action_submit()

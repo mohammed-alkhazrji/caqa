@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_caqa_review_root" name="Review" parent="caqa_core.menu_caqa_operations_root" sequence="60"/>
+    <menuitem id="menu_caqa_review_root" name="Review" sequence="60"/>
     <menuitem id="menu_caqa_reviewer_cockpit" name="Reviewer Cockpit" parent="menu_caqa_review_root" action="action_caqa_reviewer_cockpit" sequence="5"/>
     <menuitem id="menu_caqa_review_assignment" name="Assignments" parent="menu_caqa_review_root" action="action_caqa_review_assignment" sequence="10"/>
     <menuitem id="menu_caqa_review" name="Reviews" parent="menu_caqa_review_root" action="action_caqa_review" sequence="20"/>
