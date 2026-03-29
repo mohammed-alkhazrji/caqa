@@ -18,3 +18,11 @@ access_caqa_score_moderation_manager,caqa.score.moderation.manager,model_caqa_sc
 
 access_caqa_score_snapshot_read,caqa.score.snapshot.read,model_caqa_score_snapshot,group_caqa_score_reviewer,1,0,0,0
 access_caqa_score_snapshot_manager,caqa.score.snapshot.manager,model_caqa_score_snapshot,group_caqa_score_manager,1,0,1,0
+
+access_score_reviewer_view_std_version,caqa.standard.version.score.read,caqa_standards.model_caqa_standard_version,group_caqa_score_reviewer,1,0,0,0
+access_score_reviewer_view_std_chapter,caqa.standard.chapter.score.read,caqa_standards.model_caqa_standard_chapter,group_caqa_score_reviewer,1,0,0,0
+access_score_reviewer_view_std_subchapter,caqa.standard.subchapter.score.read,caqa_standards.model_caqa_standard_subchapter,group_caqa_score_reviewer,1,0,0,0
+access_score_reviewer_view_std_indicator,caqa.standard.indicator.score.read,caqa_standards.model_caqa_standard_indicator,group_caqa_score_reviewer,1,0,0,0
+
+access_score_reviewer_view_app,caqa.application.score.read,caqa_application.model_caqa_application,group_caqa_score_reviewer,1,0,0,0
+access_score_reviewer_view_program,caqa.program.score.read,caqa_program.model_caqa_program,group_caqa_score_reviewer,1,0,0,0

@@ -60,6 +60,7 @@
                         <button name="action_view_indicators" type="object" class="oe_stat_button" icon="fa-sliders">
                             <field name="indicator_count" widget="statinfo" string="Indicators"/>
                         </button>
+
                         <button name="action_view_deficiencies" type="object" class="oe_stat_button" icon="fa-exclamation-circle">
                             <field name="deficiency_count" widget="statinfo" string="Deficiencies"/>
                         </button>

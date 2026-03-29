@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+    <!--  Inherit navbar  -->
+    <t t-inherit="web.NavBar" t-inherit-mode="extension" owl="1">
+        <xpath expr="//nav[hasclass('o_main_navbar')]" position="replace">
+            <nav class="o_main_navbar d-flex justify-content-between caqa-top-navbar"
+            t-on-dropdown-item-selected="onNavBarDropdownItemSelection"
+            data-command-category="navbar">
+                <div class="d-flex align-items-center">
+                    <t t-call="web.NavBar.AppsMenu">
+                        <t t-set="apps" t-value="menuService.getApps()"/>
+                    </t>
+                    <!-- App Brand -->
+                    <DropdownItem
+                        t-if="currentApp"
+                        href="getMenuItemHref(currentApp)"
+                        t-esc="currentApp.name"
+                        class="'o_menu_brand d-none d-md-block'"
+                        dataset="{ menuXmlid: currentApp.xmlid, section: currentApp.id }"
+                        onSelected="() => this.onNavBarDropdownItemSelection(currentApp)"
+                    />
+                </div>
+                <!-- Current App Sections -->
+                <t t-if="currentAppSections.length" t-call="web.NavBar.SectionsMenu">
+                    <t t-set="sections" t-value="currentAppSections"/>
+                </t>
+                <!-- Systray -->
+                <div class="o_menu_systray d-flex align-items-center" role="menu">
+                    <t t-foreach="systrayItems" t-as="item" t-key="item_index">
+                        <ErrorHandler onError="error => handleItemError(error, item)">
+                            <t t-component="item.Component" t-props="item.props"/>
+                        </ErrorHandler>
+                    </t>
+                </div>
+            </nav>
+            <!-- App Launcher Overlay -->
+            <div class="caqa-app-launcher-overlay" id="caqa_app_launcher">
+                <div class="caqa-launcher-header">
+                    <div class="caqa-launcher-brand">
+                        <img src="/code_backend_theme/static/src/img/code_logo.png" class="caqa-logo"/>
+                    </div>
+                    <a id="caqaCloseLauncher" class="caqa-launcher-close">
+                        <i class="fa fa-times"/>
+                    </a>
+                </div>
+                <div class="caqa-launcher-search">
+                    <i class="fa fa-search text-muted"/>
+                    <input type="text" id="caqaAppSearch" placeholder="Search apps..." class="form-control caqa-search-input"/>
+                </div>
+                <div class="caqa-launcher-grid">
+                    <t t-foreach="menuService.getApps()" t-as="app" t-key="app_index">
+                        <a role="menuitem" t-attf-href="#menu_id={{app.id}}" class="caqa-app-card caqa-launcher-item">
+                            <div class="caqa-app-icon-wrapper">
+                                <img class="caqa-app-grid-icon" t-attf-src="data:image/png;base64,{{app.webIconData}}"/>
+                            </div>
+                            <span class="caqa-app-name"><t t-esc="app.name"/></span>
+                        </a>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+    </t>
+    <t t-inherit="web.NavBar.AppsMenu" t-inherit-mode="extension" owl="1">
+        <xpath expr="//Dropdown" position="replace">
+            <div class="caqa-launcher-toggle">
+                <a id="caqaOpenLauncher" class="caqa-app-icon-btn">
+                    <i class="fa fa-th fa-lg"/>
+                </a>
+            </div>
+        </xpath>
+    </t>
+    <t t-inherit="web.UserMenu" t-inherit-mode="extension" owl="1">
+        <xpath expr="//small[hasclass('oe_topbar_name')]" position="replace">
+            <div class="oe_topbar_name"/>
+        </xpath>
+    </t>
+</templates>

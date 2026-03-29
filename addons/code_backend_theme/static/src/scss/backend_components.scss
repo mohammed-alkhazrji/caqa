@@ -1,0 +1,58 @@
+/* CAQA Components & Navbar */
+
+/* Override Odoo Main Navbar */
+.o_main_navbar.caqa-top-navbar {
+    background-color: var(--caqa-primary) !important;
+    border-bottom: none;
+    height: 56px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.o_main_navbar.caqa-top-navbar > div {
+    height: 100%;
+}
+
+/* Secondary Navbar Overrides to Defeat theme.scss */
+.o_main_navbar.caqa-top-navbar .o_menu_sections,
+.o_main_navbar.caqa-top-navbar .o_menu_systray {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+.o_main_navbar.caqa-top-navbar .o_menu_sections .dropdown-toggle,
+.o_main_navbar.caqa-top-navbar .o_menu_sections .o_nav_entry,
+.o_main_navbar.caqa-top-navbar .o_menu_sections > a,
+.o_main_navbar.caqa-top-navbar .o_menu_systray .dropdown-toggle,
+.o_main_navbar.caqa-top-navbar .o_menu_systray > div > a,
+.o_main_navbar.caqa-top-navbar .o_menu_systray > div > button {
+    color: white !important;
+    background-color: transparent !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.o_main_navbar.caqa-top-navbar .dropdown-toggle:hover,
+.o_main_navbar.caqa-top-navbar .o_nav_entry:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+/* Fix Dropdown menus so they stay white and readable */
+.o_main_navbar.caqa-top-navbar .dropdown-menu {
+    background-color: white !important;
+    border-radius: var(--caqa-border-radius-sm);
+    box-shadow: var(--caqa-box-shadow);
+}
+
+.o_main_navbar.caqa-top-navbar .dropdown-menu .dropdown-item {
+    color: var(--caqa-text-main) !important;
+    background-color: transparent !important;
+    padding: 8px 16px;
+}
+
+.o_main_navbar.caqa-top-navbar .dropdown-menu .dropdown-item:hover {
+    background-color: var(--caqa-bg) !important;
+    color: var(--caqa-primary) !important;
+}
+
+/* Cleaned up Secondary Sidebar classes. Navigation will flow natively. */

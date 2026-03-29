@@ -9,6 +9,7 @@ class CaqaScoreLine(models.Model):
 
     cycle_id = fields.Many2one('caqa.score.cycle', string='Cycle', required=True, ondelete='cascade')
     reviewer_id = fields.Many2one('res.users', string='Reviewer', required=True, default=lambda self: self.env.user)
+    reviewer_state = fields.Selection([('draft', 'Draft'), ('completed', 'Completed')], string='Reviewer State', default='draft')
     
     # Target Context
     indicator_id = fields.Many2one('caqa.standard.indicator', string='Indicator', required=True)
@@ -41,13 +42,18 @@ class CaqaScoreLine(models.Model):
         for line in self:
             line.final_score_used = line.moderated_score if line.moderated_score else line.raw_score
 
+    @api.depends('indicator_id', 'cycle_id.application_id')
     def _compute_evidence_count(self):
-        """
-        In a real implementation, this would count evidence linked in caqa_sar 
-        associated with this indicator in the context of the application.
-        """
         for line in self:
-            line.evidence_link_count = 0
+            if line.indicator_id and line.cycle_id.application_id:
+                count = self.env['caqa.evidence'].search_count([
+                    ('application_id', '=', line.cycle_id.application_id.id),
+                    ('application_indicator_id.indicator_id', '=', line.indicator_id.id),
+                    ('state', 'not in', ('draft', 'rejected', 'closed'))
+                ])
+                line.evidence_link_count = count
+            else:
+                line.evidence_link_count = 0
 
     @api.constrains('rubric_level_id', 'justification')
     def _check_justification(self):

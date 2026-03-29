@@ -2,21 +2,37 @@
 <odoo>
     <!-- Main Menu for Scoring Engine -->
     <menuitem id="menu_caqa_scoring_root" 
-              name="Scoring Engine" 
-              web_icon="fa,balance-scale"
+              name="Scoring Engine"
               sequence="35"
+              web_icon="caqa_scoring/static/description/star-half-stroke-solid-full.svg"
+              groups="caqa_scoring.group_caqa_score_manager"/>
+
+    <!-- Assessment Workspace Portal Menu -->
+    <record id="action_caqa_workspace_url" model="ir.actions.act_url">
+        <field name="name">Assessment Workspace</field>
+        <field name="url">/my/caqa/assessment</field>
+        <field name="target">self</field>
+    </record>
+
+    <menuitem id="menu_caqa_assessment_workspace" 
+              name="Assessment Workspace"
+              sequence="34"
+              action="action_caqa_workspace_url"
+              web_icon="caqa_scoring/static/description/star-half-solid-full.svg"
               groups="caqa_scoring.group_caqa_score_reviewer"/>
 
     <!-- Operational Menus -->
     <menuitem id="menu_caqa_scoring_operations" 
               name="Operations" 
-              parent="menu_caqa_scoring_root" 
+              parent="menu_caqa_scoring_root"
+              groups="caqa_scoring.group_caqa_score_manager"
               sequence="10"/>
 
     <menuitem id="menu_caqa_score_cycle" 
               name="Evaluation Cycles" 
               parent="menu_caqa_scoring_operations" 
-              action="action_caqa_score_cycle" 
+              action="action_caqa_score_cycle"
+              groups="caqa_scoring.group_caqa_score_manager"
               sequence="10"/>
 
     <!-- Configuration Menus -->
@@ -29,6 +45,7 @@
     <menuitem id="menu_caqa_score_rubric" 
               name="Evaluation Rubrics" 
               parent="menu_caqa_scoring_configuration" 
-              action="action_caqa_score_rubric" 
+              action="action_caqa_score_rubric"
+              groups="caqa_scoring.group_caqa_score_manager"
               sequence="10"/>
 </odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_caqa_application_form_scoring_inherit" model="ir.ui.view">
+        <field name="name">caqa.application.form.scoring.inherit</field>
+        <field name="model">caqa.application</field>
+        <field name="inherit_id" ref="caqa_application.view_caqa_application_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_score_cycles" type="object" class="oe_stat_button" icon="fa-balance-scale" invisible="score_cycle_count == 0">
+                    <field name="score_cycle_count" widget="statinfo" string="Evaluation Cycles"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

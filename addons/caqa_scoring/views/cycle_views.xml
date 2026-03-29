@@ -26,8 +26,10 @@
         <field name="arch" type="xml">
             <form string="Evaluation Cycle">
                 <header>
-                    <button name="action_start_progress" type="object" string="Start Scoring" class="btn-primary" states="draft" groups="caqa_scoring.group_caqa_score_manager"/>
-                    <button name="action_submit" type="object" string="Submit to Moderation" class="btn-success" states="in_progress"/>
+                    <button name="action_start_progress" type="object" string="Start Scoring" class="btn-primary" invisible="state != 'draft'" groups="caqa_scoring.group_caqa_score_manager"/>
+                    <button name="action_submit" type="object" string="Submit to Moderation" class="btn-success" invisible="state != 'in_progress'"/>
+                    <button name="action_finalize_moderation" type="object" string="Finalize Moderation" class="btn-warning" invisible="state != 'submitted'" groups="caqa_scoring.group_caqa_score_lead_reviewer"/>
+                    <button name="action_freeze" type="object" string="Freeze Decision" class="btn-danger" invisible="state not in ('moderated', 'submitted')" groups="caqa_scoring.group_caqa_score_manager" confirm="This will generate an immutable snapshot. Proceed?"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,submitted,moderated,frozen"/>
                 </header>
                 <sheet>
@@ -36,21 +38,21 @@
                     </div>
                     <group>
                         <group name="info">
-                            <field name="application_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="application_id" readonly="state != 'draft'"/>
                             <field name="program_id"/>
-                            <field name="standard_version_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                            <field name="cycle_type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="standard_version_id" readonly="state != 'draft'"/>
+                            <field name="cycle_type" readonly="state != 'draft'"/>
                         </group>
                         <group name="status">
-                            <field name="reviewer_ids" widget="many2many_tags" attrs="{'readonly': [('state', 'in', ('submitted', 'moderated', 'frozen'))]}"/>
+                            <field name="reviewer_ids" widget="many2many_tags" readonly="state in ('submitted', 'moderated', 'frozen')"/>
                             <field name="final_score"/>
                             <field name="decision_status"/>
-                            <field name="snapshot_id" attrs="{'invisible': [('snapshot_id', '=', False)]}"/>
+                            <field name="snapshot_id" invisible="not snapshot_id"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Score Lines">
-                            <field name="line_ids" context="{'default_cycle_id': active_id}" attrs="{'readonly': [('state', 'in', ('submitted', 'moderated', 'frozen'))]}">
+                            <field name="line_ids" context="{'default_cycle_id': active_id}" readonly="state in ('submitted', 'moderated', 'frozen')">
                                 <tree editable="bottom" decoration-danger="variance_flag==True">
                                     <field name="reviewer_id"/>
                                     <field name="indicator_id"/>
@@ -63,24 +65,22 @@
                             </field>
                         </page>
                         <page string="Moderation Logs">
-                            <field name="moderation_ids" readonly="1">
-                                <tree>
-                                    <field name="indicator_id"/>
-                                    <field name="reviewer_1_score"/>
-                                    <field name="reviewer_2_score"/>
-                                    <field name="variance_value"/>
-                                    <field name="final_agreed_score"/>
-                                    <field name="moderated_at"/>
+                            <field name="moderation_ids" context="{'default_cycle_id': active_id}" readonly="state != 'submitted'">
+                                <tree editable="bottom" create="0">
+                                    <field name="indicator_id" readonly="1"/>
+                                    <field name="reviewer_1_score" readonly="1"/>
+                                    <field name="reviewer_2_score" readonly="1"/>
+                                    <field name="variance_value" readonly="1"/>
+                                    <field name="moderation_decision" required="1"/>
+                                    <field name="final_agreed_score" required="1"/>
+                                    <field name="moderated_at" readonly="1"/>
+                                    <button name="action_apply_moderation" type="object" string="Apply" class="btn-warning" icon="fa-check-square-o"/>
                                 </tree>
                             </field>
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+
             </form>
         </field>
     </record>

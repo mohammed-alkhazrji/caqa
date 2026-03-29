@@ -178,6 +178,11 @@
         <field name="model">caqa.application</field>
         <field name="inherit_id" ref="caqa_application.view_caqa_application_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_evidence" type="object" class="oe_stat_button" icon="fa-paperclip" invisible="evidence_count == 0">
+                    <field name="evidence_count" widget="statinfo" string="Evidence"/>
+                </button>
+            </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="SAR Versions" name="sar_versions">
                     <field name="sar_version_ids" readonly="1">

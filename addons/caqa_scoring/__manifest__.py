@@ -16,13 +16,24 @@
     'depends': ['caqa_application', 'caqa_standards', 'caqa_review'],
     'data': [
         'security/security_groups.xml',
+        'security/caqa_scoring_rules.xml',
         'security/ir.model.access.csv',
         'data/seed_rubric.xml',
         'views/rubric_views.xml',
         'views/cycle_views.xml',
+        'views/application_view_inherit.xml',
+        'views/scoring_portal_templates.xml',
         'views/menus.xml',
     ],
     'installable': True,
     'application': False,
     'auto_install': False,
+    'assets': {
+        'web.assets_backend': [
+        ],
+        'web.assets_frontend': [
+            'caqa_scoring/static/src/scss/workspace.scss',
+            'caqa_scoring/static/src/js/workspace.js',
+        ],
+    }
 }

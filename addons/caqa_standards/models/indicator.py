@@ -19,6 +19,7 @@ class CaqaStandardIndicator(models.Model):
     weight = fields.Float(default=0.0, tracking=True)
     expected_evidence_count = fields.Integer(default=1, tracking=True)
     active = fields.Boolean(default=True)
+    is_critical = fields.Boolean(string='Is Critical', default=False, tracking=True)
     checkpoint_ids = fields.One2many('caqa.standard.checkpoint', 'indicator_id', string='Checkpoints')
     evidence_requirement_ids = fields.One2many('caqa.evidence.requirement', 'indicator_id', string='Evidence Requirements')
     checkpoint_count = fields.Integer(compute='_compute_counts')

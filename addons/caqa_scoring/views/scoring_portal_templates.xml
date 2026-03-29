@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- 1. Menu Link in Portal Account -->
+    <template id="portal_my_home_menu_assessment" name="Portal layout : assessment menu entries" inherit_id="portal.portal_breadcrumbs" priority="40">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name in ['assessment_workspace_dashboard', 'scoring_cycles', 'scoring_detail']" t-attf-class="breadcrumb-item #{'active ' if page_name == 'assessment_workspace_dashboard' else ''}">
+                <a t-attf-href="/my/caqa/assessment?{{ keep_query() }}">Assessment Workspace</a>
+            </li>
+            <li t-if="page_name == 'scoring_cycles'" class="breadcrumb-item active">
+                Assignments
+            </li>
+            <li t-if="cycle" class="breadcrumb-item active">
+                <t t-esc="cycle.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_assessment" name="Show Assessment Workspace" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div t-attf-class="o_portal_index_card col-md-6 order-2 #{'d-none' if not cycle_count else ''}">
+                <a href="/my/caqa/assessment" title="Assessment Workspace" class="d-flex justify-content-start gap-2 gap-md-3 align-items-center py-3 pe-2 px-md-3 h-100 rounded text-decoration-none text-reset text-bg-light">
+                    <div class="o_portal_icon align-self-start">
+                        <i class="fa fa-3x fa-briefcase text-primary"/>
+                    </div>
+                    <div>
+                        <h5 class="mt-0 mb-1 d-flex gap-2">
+                            <span data-placeholder_count="cycle_count"><t t-out="cycle_count or 0"/></span>
+                            <span>Assessment Workspace</span>
+                        </h5>
+                        <p class="m-0 text-600">
+                            Evaluate assigned quality applications
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- 2. Main Dashboard -->
+    <template id="portal_workspace_dashboard" name="Assessment Workspace Dashboard">
+        <t t-call="portal.portal_layout">
+            <div class="caqa-portal-shell container mt-4 mb-5">
+                
+                <h2 class="text-caqa-primary font-weight-bold mb-4">
+                    <i class="fa fa-dashboard me-2"></i> Reviewer Dashboard
+                </h2>
+
+                <div class="row g-4 mb-4">
+                    <!-- Total Assignments -->
+                    <div class="col-md-3">
+                        <a href="/my/caqa/assessment/assignments" class="text-decoration-none text-reset">
+                            <div class="card caqa-record-card h-100 border-0 shadow-sm">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-caqa-primary">
+                                        <i class="fa fa-folder-open fa-3x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="card-title text-muted mb-0">Total Applications</h5>
+                                        <h2 class="mb-0 text-caqa-primary fw-bold"><t t-esc="total_assignments"/></h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Open Cycles -->
+                    <div class="col-md-3">
+                        <a href="/my/caqa/assessment/assignments" class="text-decoration-none text-reset">
+                            <div class="card caqa-record-card h-100 border-0 shadow-sm">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="me-3 text-warning">
+                                        <i class="fa fa-clock-o fa-3x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="card-title text-muted mb-0">In Progress</h5>
+                                        <h2 class="mb-0 text-caqa-primary fw-bold"><t t-esc="open_cycles"/></h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Remaining Indicators -->
+                    <div class="col-md-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="me-3 text-danger">
+                                    <i class="fa fa-tasks fa-3x"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title text-muted mb-0">Remaining Indicators</h5>
+                                    <h2 class="mb-0 text-caqa-primary fw-bold"><t t-esc="remaining_lines"/></h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Completion Rate -->
+                    <div class="col-md-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="me-3 text-success">
+                                    <i class="fa fa-check-circle fa-3x"></i>
+                                </div>
+                                <div class="w-100">
+                                    <h5 class="card-title text-muted mb-0">Overall Progress</h5>
+                                    <h2 class="mb-1 text-caqa-primary fw-bold"><t t-esc="completion_rate"/>%</h2>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar progress-bar-accent" role="progressbar" t-attf-style="width: {{completion_rate}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Assignments List Preview -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header card-header-gradient d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-white"><i class="fa fa-list me-2"></i>My Recent Assessments</h5>
+                        <a href="/my/caqa/assessment/assignments" class="btn btn-sm btn-light text-caqa-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <t t-if="not cycles"><p class="p-4 text-muted">No assessment cycles assigned.</p></t>
+                        <table class="table table-hover table-borderless mb-0">
+                            <tbody>
+                                <tr t-foreach="cycles[:5]" t-as="cycle" class="align-middle border-bottom">
+                                    <td class="ps-4 py-3">
+                                        <h6 class="mb-0 fw-bold"><a t-attf-href="/my/caqa/assessment/#{cycle.id}" class="text-caqa-primary text-decoration-none"><t t-esc="cycle.application_id.name"/></a></h6>
+                                        <small class="text-muted"><t t-esc="cycle.program_id.name or 'Institutional'"/> | <t t-esc="cycle.name"/></small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border"><t t-esc="cycle.cycle_type"/></span>
+                                    </td>
+                                    <td>
+                                        <span t-attf-class="badge rounded-pill #{'bg-warning' if cycle.state == 'in_progress' else 'bg-success' if cycle.state in ('frozen', 'moderated') else 'bg-secondary'}">
+                                            <t t-esc="dict(cycle.fields_get(['state'])['state']['selection'])[cycle.state]"/>
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a t-attf-href="/my/caqa/assessment/#{cycle.id}" class="btn btn-sm btn-outline-caqa-primary rounded-pill px-3">Open Assessment</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- 3. List of Cycles (Assignments Grid) -->
+    <template id="portal_workspace_assignments" name="My Assignments">
+        <t t-call="portal.portal_layout">
+            <div class="caqa-portal-shell container mt-4 mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-caqa-primary font-weight-bold mb-0">
+                        <i class="fa fa-folder-open me-2"></i> My Assignments
+                    </h2>
+                </div>
+
+                <div t-if="not cycles" class="alert alert-info shadow-sm border-0 rounded-3">
+                    You have not been assigned to any evaluation cycles.
+                </div>
+
+                <div class="row g-4" t-if="cycles">
+                    <t t-foreach="cycles" t-as="cycle">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card caqa-record-card h-100">
+                                <div class="card-header bg-white border-0 pt-3 pb-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <span t-attf-class="badge #{'bg-warning text-dark' if cycle.state == 'in_progress' else 'bg-success' if cycle.state in ('frozen', 'moderated') else 'bg-secondary'}">
+                                            <t t-esc="dict(cycle.fields_get(['state'])['state']['selection'])[cycle.state]"/>
+                                        </span>
+                                        <small class="text-muted"><t t-esc="cycle.name"/></small>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-caqa-primary fw-bold mb-1"><t t-esc="cycle.application_id.name"/></h5>
+                                    <p class="card-text text-muted small mb-3"><i class="fa fa-graduation-cap me-1"></i> <t t-esc="cycle.program_id.name or 'Institutional Profile'"/></p>
+                                    
+                                    <div class="d-flex justify-content-between mb-1 mt-4">
+                                        <span class="small text-muted fw-bold">Type</span>
+                                        <span class="small text-dark fw-bold"><t t-esc="cycle.cycle_type"/></span>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light border-0 py-3 rounded-bottom text-center">
+                                    <a t-attf-href="/my/caqa/assessment/#{cycle.id}" class="btn btn-caqa-primary btn-sm w-100 rounded-pill">Open Assessment <i class="fa fa-arrow-right ms-1"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- 4. Cycle Detail / Assessment Grid Area -->
+    <template id="portal_workspace_detail" name="Assessment Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="no_footer" t-value="True"/>
+
+            <div class="caqa-portal-shell container-fluid px-md-5 mt-4 mb-5 pb-5">
+                
+                <!-- Notice if Readonly -->
+                <div t-if="not is_editable and not is_manager" class="alert alert-warning shadow-sm border-0 rounded-3 mb-4">
+                    <i class="fa fa-lock me-2"></i> This assessment is locked (Submitted or Not In Progress). Read-only mode.
+                </div>
+                <div t-if="is_manager" class="alert alert-info shadow-sm border-0 rounded-3 mb-4">
+                    <i class="fa fa-eye me-2"></i> Manager View: You are viewing all submitted and drafted lines.
+                </div>
+
+                <div class="row g-4">
+                    <!-- Left Sidebar Chapters -->
+                    <div class="col-lg-3 d-none d-lg-block">
+                        <div class="card shadow-sm border-0 position-sticky" style="top: 80px;">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h6 class="mb-0 text-caqa-primary fw-bold">Assessment Structure</h6>
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="list-group caqa-portal-nav list-group-flush">
+                                    <t t-foreach="grouped_lines" t-as="group">
+                                        <t t-set="crit" t-value="group[0]"/>
+                                        <t t-set="crit_lines" t-value="group[1]"/>
+                                        <!-- Calculate completions -->
+                                        <t t-set="crit_completed" t-value="len([l for l in crit_lines if l.rubric_level_id])"/>
+                                        <t t-set="crit_total" t-value="len(crit_lines)"/>
+                                        
+                                        <a t-attf-href="#section-crit-#{crit.id}" class="caqa-sidenav-link">
+                                            <span>
+                                                <i class="fa fa-folder-o me-2 text-caqa-accent"></i> <t t-esc="crit.code"/> <small class="text-muted ms-1"><t t-esc="crit.name"/></small>
+                                            </span>
+                                            <span t-attf-class="badge rounded-pill #{'bg-success' if crit_completed == crit_total else 'bg-light text-dark border'} ms-auto">
+                                                <t t-esc="crit_completed"/>/<t t-esc="crit_total"/>
+                                            </span>
+                                        </a>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Panel -->
+                    <div class="col-lg-9">
+                        <div class="card shadow-sm border-0 mb-4">
+                            <div class="card-body p-4">
+                                <h3 class="fw-bold text-caqa-primary mb-1"><t t-esc="cycle.application_id.name"/></h3>
+                                <p class="text-muted mb-0"><t t-esc="cycle.cycle_type"/> | <t t-esc="cycle.standard_version_id.name"/></p>
+                            </div>
+                        </div>
+
+                        <!-- Criteria Sections -->
+                        <form id="assessment_form" t-attf-action="/my/caqa/assessment/#{cycle.id}/submit" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            
+                            <t t-foreach="grouped_lines" t-as="group">
+                                <t t-set="crit" t-value="group[0]"/>
+                                <t t-set="crit_lines" t-value="group[1]"/>
+                                
+                                <div t-attf-id="section-crit-#{crit.id}" class="card shadow-sm border-0 mb-4 caqa-section-block" style="scroll-margin-top: 100px;">
+                                    <div class="card-header card-header-gradient d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0 text-white"><t t-esc="crit.code"/> - <t t-esc="crit.name"/></h5>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="list-group list-group-flush">
+                                            
+                                            <t t-foreach="crit_lines" t-as="line">
+                                                <div class="list-group-item p-4 caqa-indicator-item" t-att-data-line-id="line.id">
+                                                    
+                                                    <!-- Manager Addon: Reviewer Name -->
+                                                    <t t-if="is_manager">
+                                                        <div class="badge bg-secondary mb-2"><i class="fa fa-user"></i> <t t-esc="line.reviewer_id.name"/></div>
+                                                    </t>
+
+                                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                                        <div>
+                                                            <h6 class="fw-bold text-caqa-primary mb-1">
+                                                                <span class="badge bg-light text-caqa-primary border me-2"><t t-esc="line.indicator_id.code"/></span>
+                                                                <t t-esc="line.indicator_id.name"/>
+                                                            </h6>
+                                                            <p class="text-muted small mb-0"><t t-esc="line.indicator_id.description"/></p>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <span class="badge rounded-pill bg-light text-muted border px-3 py-2"><i class="fa fa-balance-scale me-1"></i> Weight: <t t-esc="line.indicator_weight"/></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row g-3">
+                                                        <!-- Rubric Selection -->
+                                                        <div class="col-md-5">
+                                                            <label class="form-label small fw-bold text-muted">Assessment Score</label>
+                                                            <select class="form-select form-select-sm rubric-selector" t-att-name="'score_' + str(line.id)" t-att-disabled="not is_editable or line.reviewer_state == 'completed'">
+                                                                <option value="">-- Choose Score --</option>
+                                                                <t t-foreach="rubrics" t-as="r">
+                                                                    <option t-att-value="r.id" t-att-data-val="r.value_numeric" t-att-selected="r.id == line.rubric_level_id.id">
+                                                                        <t t-esc="r.value_numeric"/> - <t t-esc="r.description"/>
+                                                                    </option>
+                                                                </t>
+                                                            </select>
+                                                            <div class="invalid-feedback justification-warning mt-1" style="display:none; font-size:11px;">
+                                                                <i class="fa fa-warning"></i> Score is low. Justification is strictly required.
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Justification -->
+                                                        <div class="col-md-7">
+                                                            <label class="form-label small fw-bold text-muted">Justification / Notes</label>
+                                                            <textarea class="form-control form-control-sm justification-input" rows="2" placeholder="Required for scores 1 or 2..." t-att-name="'justification_' + str(line.id)" t-att-disabled="not is_editable or line.reviewer_state == 'completed'"><t t-esc="line.justification"/></textarea>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Evidence Attached -->
+                                                    <div class="mt-3 bg-light rounded p-2" t-if="line.evidence_link_count > 0">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span class="small text-muted fw-bold"><i class="fa fa-paperclip"></i> Linked Evidence (<t t-esc="line.evidence_link_count"/>):</span>
+                                                            <button class="btn btn-sm btn-outline-caqa-primary" type="button" data-bs-toggle="collapse" t-attf-data-bs-target="#evidenceCollapse_#{line.id}" aria-expanded="false">
+                                                                <i class="fa fa-folder-open me-1"></i> Show Evidence
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        <div class="collapse mt-3" t-attf-id="evidenceCollapse_#{line.id}">
+                                                            <t t-set="my_evidences" t-value="evidence_data.get(line.indicator_id.id, [])"/>
+                                                            <t t-if="not my_evidences">
+                                                                <div class="small text-muted fst-italic py-2 border rounded bg-white px-3"><i class="fa fa-info-circle me-1"></i> No approved evidence available.</div>
+                                                            </t>
+                                                            <t t-foreach="my_evidences" t-as="evidence">
+                                                                <div class="card card-body shadow-sm border p-3 bg-white mb-2">
+                                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                                        <h6 class="fw-bold mb-0 text-caqa-accent"><i class="fa fa-file-text-o me-2"></i><t t-esc="evidence.name"/></h6>
+                                                                        <span class="badge bg-light text-muted border"><t t-esc="evidence.state.title()"/></span>
+                                                                    </div>
+                                                                    <t t-if="evidence.summary">
+                                                                        <div class="small text-muted mb-2 px-2 border-start border-3 border-secondary"><t t-raw="evidence.summary"/></div>
+                                                                    </t>
+                                                                    <t t-if="evidence.attachment_ids">
+                                                                        <div class="d-flex flex-wrap gap-2 mt-2 pt-2 border-top">
+                                                                            <t t-foreach="evidence.attachment_ids" t-as="attachment">
+                                                                                <a t-attf-href="/web/content/#{attachment.attachment_id.id}?download=true" target="_blank" class="badge rounded-pill bg-light text-caqa-primary border text-decoration-none py-1 px-3 hover-shadow-sm">
+                                                                                    <i class="fa fa-download me-1"></i> <t t-esc="attachment.name"/>
+                                                                                </a>
+                                                                            </t>
+                                                                        </div>
+                                                                    </t>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </t>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            <!-- Hidden submission trigger -->
+                            <button type="submit" id="hidden_submit_btn" class="d-none"></button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Sticky Action Footer -->
+                <div t-if="is_editable" class="sticky-action-bar d-flex justify-content-between align-items-center rounded shadow-lg mt-4" style="bottom: 20px;">
+                    <div>
+                        <span class="text-muted small fw-bold me-3" id="save_status_text">Changes unsaved.</span>
+                    </div>
+                    <div class="gap-2 d-flex">
+                        <button class="btn btn-caqa-accent px-4 fw-bold" id="btn_save_assessment" t-att-data-cycle-id="cycle.id">
+                            <i class="fa fa-save me-1"></i> Save Evaluation
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- 5. Evidence Popup/Modal View -->
+    <template id="portal_workspace_evidence_popup" name="Indicator Evidence">
+        <t t-call="portal.portal_layout">
+            <t t-set="no_footer" t-value="True"/>
+            <div class="caqa-portal-shell container mt-4 mb-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white pb-0 pt-4 px-4 border-bottom-0">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-0 text-caqa-primary fw-bold"><i class="fa fa-folder-open me-2"></i> Evidence Repository</h3>
+                            <a t-attf-href="/my/caqa/assessment/#{cycle.id}" class="btn btn-outline-secondary btn-sm"><i class="fa fa-arrow-left me-1"></i> Back to Assessment</a>
+                        </div>
+                        <div class="alert alert-info border-0 rounded-3 shadow-sm mb-4">
+                            <h6 class="fw-bold mb-1"><t t-esc="indicator.code"/> - <t t-esc="indicator.name"/></h6>
+                            <p class="mb-0 small"><t t-esc="indicator.description"/></p>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body px-4 pt-0 pb-4">
+                        <t t-if="not evidences">
+                            <div class="text-center py-5 text-muted">
+                                <i class="fa fa-folder-o fa-4x mb-3 text-light"></i>
+                                <h5>No Evidence Provided</h5>
+                                <p>The institution did not upload any specific evidence for this indicator.</p>
+                            </div>
+                        </t>
+
+                        <t t-foreach="evidences" t-as="evidence">
+                            <div class="border rounded p-3 mb-3 hover-shadow-sm transition-all">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h6 class="fw-bold text-dark mb-0"><i class="fa fa-file-text-o text-caqa-accent me-2"></i><t t-esc="evidence.name"/></h6>
+                                    <span class="badge bg-light text-muted border"><t t-esc="evidence.state.capitalize()"/></span>
+                                </div>
+                                <t t-if="evidence.summary">
+                                    <div class="small text-muted mb-3 bg-light p-2 rounded">
+                                        <t t-raw="evidence.summary"/>
+                                    </div>
+                                </t>
+                                
+                                <t t-if="evidence.attachment_ids">
+                                    <h6 class="small fw-bold mt-2">Attachments (<t t-esc="len(evidence.attachment_ids)"/>):</h6>
+                                    <div class="list-group list-group-flush border rounded">
+                                        <t t-foreach="evidence.attachment_ids" t-as="attachment">
+                                            <a t-attf-href="/web/content/#{attachment.attachment_id.id}?download=true" target="_blank" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2">
+                                                <span class="text-caqa-primary small"><i class="fa fa-download me-2"></i><t t-esc="attachment.name"/></span>
+                                                <i class="fa fa-external-link text-muted small"></i>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <span class="small text-danger"><i class="fa fa-exclamation-triangle"></i> No attachments uploaded for this record.</span>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -30,6 +30,7 @@ class CaqaScoreCycle(models.Model):
     ], string='Status', required=True, default='draft', tracking=True)
 
     reviewer_ids = fields.Many2many('res.users', 'caqa_score_cycle_reviewer_rel', 'cycle_id', 'user_id', string='Reviewers')
+    manager_id = fields.Many2one('res.users', string='Cycle Manager', tracking=True)
     line_ids = fields.One2many('caqa.score.line', 'cycle_id', string='Score Lines')
     moderation_ids = fields.One2many('caqa.score.moderation', 'cycle_id', string='Moderation Logs')
     snapshot_id = fields.Many2one('caqa.score.snapshot', string='Frozen Snapshot', readonly=True)
@@ -132,3 +133,46 @@ class CaqaScoreCycle(models.Model):
                 self.env['caqa.score.moderation'].create(moderation_vals)
                 
         self.state = 'submitted'
+
+    def action_finalize_moderation(self):
+        self.ensure_one()
+        if any(line.variance_flag for line in self.line_ids):
+            raise UserError(_('You cannot finalize moderation. Some indicators still have unresolved variances.'))
+        self.state = 'moderated'
+
+    def action_freeze(self):
+        self.ensure_one()
+        if self.state not in ['submitted', 'moderated']:
+            raise UserError(_('You cannot freeze a cycle that is not submitted or moderated.'))
+        if any(line.variance_flag for line in self.line_ids):
+            raise UserError(_('Please resolve all variances before freezing the cycle.'))
+            
+        import json
+        snapshot_dict = {
+            'cycle_ref': self.name,
+            'application_ref': self.application_id.name,
+            'standard_version': self.standard_version_id.name,
+            'final_score': self.final_score,
+            'lines': []
+        }
+        for line in self.line_ids:
+            snapshot_dict['lines'].append({
+                'indicator': line.indicator_id.name,
+                'weight': line.indicator_weight,
+                'raw_score': line.raw_score,
+                'moderated_score': line.moderated_score,
+                'final_score_used': line.final_score_used,
+                'weighted_score': line.weighted_score,
+                'justification': line.justification,
+                'reviewer': line.reviewer_id.name,
+            })
+            
+        snapshot = self.env['caqa.score.snapshot'].create({
+            'application_id': self.application_id.id,
+            'cycle_id': self.id,
+            'snapshot_data': json.dumps(snapshot_dict, ensure_ascii=False, indent=2)
+        })
+        
+        self.snapshot_id = snapshot.id
+        self.state = 'frozen'
+        self._compute_decision_status()

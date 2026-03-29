@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_caqa_site_visit_root" name="Site Visit"  sequence="70"/>
+    <menuitem id="menu_caqa_site_visit_root" name="Site Visit" sequence="70" web_icon="caqa_site_visit,description/visitor.png"/>
     <menuitem id="menu_caqa_site_visit" name="Visits" parent="menu_caqa_site_visit_root" action="action_caqa_site_visit" sequence="10"/>
     <menuitem id="menu_caqa_site_visit_report" name="Visit Reports" parent="menu_caqa_site_visit_root" action="action_caqa_site_visit_report" sequence="20"/>
 </odoo>

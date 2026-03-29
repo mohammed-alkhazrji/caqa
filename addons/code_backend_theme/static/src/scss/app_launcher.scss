@@ -1,0 +1,164 @@
+/* App Launcher Overlay */
+.caqa-app-launcher-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(26, 54, 93, 0.95); /* Dark blue based on --caqa-primary */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 9999;
+    
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.05);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    display: flex;
+    flex-direction: column;
+}
+
+body.caqa-app-launcher-open .caqa-app-launcher-overlay {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+/* Header & Close */
+.caqa-launcher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+}
+
+.caqa-logo {
+    height: 40px;
+}
+
+.caqa-launcher-close {
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.2s;
+}
+
+.caqa-launcher-close:hover {
+    color: white;
+}
+
+/* Search Box */
+.caqa-launcher-search {
+    align-self: center;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.caqa-launcher-search i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.caqa-search-input {
+    width: 100%;
+    padding: 16px 20px 16px 50px;
+    border-radius: var(--caqa-border-radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.caqa-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.caqa-search-input:focus {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Grid Layout */
+.caqa-launcher-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 30px;
+    padding: 0 48px 48px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    overflow-y: auto;
+}
+
+.caqa-launcher-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    transition: transform 0.2s, background-color 0.2s;
+    padding: 16px 8px;
+    border-radius: var(--caqa-border-radius);
+}
+
+.caqa-launcher-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+    text-decoration: none;
+    color: white;
+}
+
+.caqa-app-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.caqa-app-grid-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px; /* Classic Enterprise app icon radius */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.caqa-app-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Topbar Toggle Button */
+.caqa-launcher-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    height: 100%;
+    cursor: pointer;
+}
+
+.caqa-app-icon-btn {
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.caqa-app-icon-btn:hover {
+    opacity: 1;
+}

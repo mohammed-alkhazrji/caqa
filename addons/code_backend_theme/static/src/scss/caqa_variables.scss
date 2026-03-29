@@ -1,0 +1,19 @@
+/* CAQA Design System Variables */
+:root {
+  --caqa-primary: #1A365D;
+  --caqa-accent: #B87C19;
+  --caqa-bg: #F8FAFC;
+  --caqa-text-main: #1e293b;
+  --caqa-text-muted: #64748b;
+  
+  --caqa-border-radius: 12px;
+  --caqa-border-radius-sm: 8px;
+  --caqa-box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --caqa-box-shadow-hover: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+}
+
+body.o_web_client {
+  background-color: var(--caqa-bg);
+  font-family: 'Inter', 'Cairo', sans-serif;
+  color: var(--caqa-text-main);
+}
