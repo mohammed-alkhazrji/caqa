@@ -37,9 +37,7 @@ class CaqaScoreRubricLevel(models.Model):
                                      help="If true, a score of this level indicates failure or non-compliance.")
     color = fields.Char(string='Color', default='#B87C19', help="Hex color code for UI badges.")
 
-    def name_get(self):
-        result = []
+    @api.depends('value_numeric', 'name_en', 'name_ar')
+    def _compute_display_name(self):
         for level in self:
-            name = f"{level.value_numeric} - {level.name_en} ({level.name_ar})"
-            result.append((level.id, name))
-        return result
+            level.display_name = f"{level.value_numeric} - {level.name_en} ({level.name_ar})"

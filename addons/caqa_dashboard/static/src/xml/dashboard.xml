@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="caqa_dashboard.Dashboard" owl="1">
+        <div class="caqa-portal-shell flex-grow-1 overflow-auto caqa-dashboard-container" dir="rtl">
+            <t t-if="state.loading">
+                <div class="d-flex align-items-center justify-content-center h-100 fs-3 text-caqa-primary">
+                    <i class="fa fa-circle-o-notch fa-spin ms-3"></i> جاري تحميل بيانات النظام...
+                </div>
+            </t>
+            <t t-else="">
+                <div class="container-fluid py-4 focus-mode-container w-100 mx-0" style="max-width: none;">
+                    
+                    <!-- Hero Section -->
+                    <div class="card mb-4 border-0 shadow-sm caqa-record-card overflow-hidden">
+                        <div class="card-body p-4 hero-gradient d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                            <div class="mb-3 mb-md-0">
+                                <h2 class="fw-bold mb-1 text-white">مركز قيادة CAQA</h2>
+                                <p class="mb-0 text-white-50 fs-5">مرحباً بك مجدداً، <t t-esc="state.data.user_name"/>!</p>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button class="btn btn-caqa-accent shadow" t-on-click="openApplications">
+                                    <i class="fa fa-folder-open ms-2"></i> عرض طلبات الاعتماد
+                                </button>
+                                <button class="btn btn-outline-light" t-on-click="openVisits" style="border: 1.5px solid white; color: white;">
+                                    <i class="fa fa-map-marker ms-2"></i> الزيارات الميدانية
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts Segment -->
+                    <t t-if="state.data.alerts and state.data.alerts.length > 0">
+                        <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center mb-4" style="background-color: #FEF3C7; color: #92400E; border-right: 4px solid #D97706 !important;">
+                            <i class="fa fa-exclamation-triangle fs-4 ms-3"></i>
+                            <div>
+                                <h6 class="mb-0 fw-bold">تنبيهات إدارية هامة</h6>
+                                <span><t t-esc="state.data.alerts[0].message"/></span>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Primary KPI Grid -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
+                            <div class="card border-0 shadow-sm h-100 caqa-record-card text-center p-3">
+                                <div class="text-caqa-primary mb-2"><i class="fa fa-pie-chart fs-3"></i></div>
+                                <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">متوسط الجاهزية</h6>
+                                <h2 class="fw-bold text-caqa-primary mb-0"><t t-esc="state.data.kpis.readiness_score || 0"/>%</h2>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
+                            <div class="card border-0 shadow-sm h-100 caqa-record-card text-center p-3">
+                                <div class="text-success mb-2"><i class="fa fa-tasks fs-3"></i></div>
+                                <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">إنجاز التقرير الذاتي</h6>
+                                <h2 class="fw-bold text-success mb-0"><t t-esc="state.data.kpis.sar_completion || 0"/>%</h2>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
+                            <div class="card border-0 shadow-sm h-100 caqa-record-card text-center p-3">
+                                <div class="text-warning mb-2"><i class="fa fa-line-chart fs-3"></i></div>
+                                <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">تقدم المتابعة التصحيحية</h6>
+                                <h2 class="fw-bold mb-0" style="color: #D97706;"><t t-esc="state.data.kpis.followup_progress || 0"/>%</h2>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
+                            <div class="card border-0 shadow-sm h-100 caqa-record-card text-center p-3">
+                                <div class="text-secondary mb-2"><i class="fa fa-folder-open-o fs-3"></i></div>
+                                <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">طلبات قيد المراجعة</h6>
+                                <h2 class="fw-bold text-secondary mb-0"><t t-esc="state.data.kpis.pending_review || 0"/></h2>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
+                            <div class="card border-0 shadow-sm h-100 caqa-record-card text-center p-3">
+                                <div class="text-danger mb-2"><i class="fa fa-bug fs-3"></i></div>
+                                <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">حالات عدم مطابقة</h6>
+                                <h2 class="fw-bold text-danger mb-0"><t t-esc="state.data.kpis.open_deficiencies || 0"/></h2>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3 col-xl-2">
+                            <div class="card border-0 shadow-sm h-100 caqa-record-card text-center p-3">
+                                <div class="text-info mb-2"><i class="fa fa-map-marker fs-3"></i></div>
+                                <h6 class="text-muted mb-1 text-uppercase fw-semibold" style="font-size: 0.8rem;">زيارات ميدانية نشطة</h6>
+                                <h2 class="fw-bold text-info mb-0"><t t-esc="state.data.kpis.active_visits || 0"/></h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytical Charts Area -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold text-caqa-primary mb-0">توزيع الطلبات حسب الحالة</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div style="height: 250px;">
+                                        <canvas t-ref="appsByStateChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold text-caqa-primary mb-0">حالات عدم المطابقة حسب الخطورة</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div style="height: 250px;">
+                                        <canvas t-ref="defByTypeChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

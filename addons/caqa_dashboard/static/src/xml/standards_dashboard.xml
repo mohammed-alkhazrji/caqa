@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="caqa_dashboard.StandardsDashboard" owl="1">
+        <div class="caqa-portal-shell flex-grow-1 overflow-auto caqa-dashboard-container" dir="rtl">
+            <t t-if="state.loading">
+                <div class="d-flex align-items-center justify-content-center h-100 fs-3 text-caqa-primary">
+                    <i class="fa fa-spinner fa-spin ms-3"></i> جاري إعداد بيانات المعايير...
+                </div>
+            </t>
+            <t t-else="">
+                <div class="container-fluid py-4 focus-mode-container w-100 mx-0" style="max-width: none;">
+                    
+                    <!-- Header Section -->
+                    <div class="card mb-4 border-0 shadow-sm caqa-record-card overflow-hidden">
+                        <div class="card-body p-4 hero-gradient d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                            <div class="mb-3 mb-md-0">
+                                <h2 class="fw-bold mb-1 text-white">تحليلات المعايير</h2>
+                                <p class="mb-0 text-white-50 fs-6">نظرة شاملة على الأبواب، والفصول، والمؤشرات (Standards Analytics)</p>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button class="btn btn-caqa-accent shadow" t-on-click="openVersions">
+                                    <i class="fa fa-book ms-2"></i> استعراض النسخ
+                                </button>
+                                <button class="btn btn-outline-light" t-on-click="openIndicators" style="border: 1.5px solid white; color: white;">
+                                    <i class="fa fa-list ms-2"></i> استعراض المؤشرات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Strip -->
+                    <div class="card mb-4 border-0 shadow-sm">
+                        <div class="card-body py-3 d-flex gap-3 align-items-center flex-wrap">
+                            <span class="text-caqa-primary fw-bold"><i class="fa fa-filter ms-1"></i> تصفية سريعة:</span>
+                            <select class="form-select w-auto bg-light border-0 py-1" style="min-width: 150px; font-size: 1rem;"><option>كل إطارات العمل</option></select>
+                            <select class="form-select w-auto bg-light border-0 py-1" style="min-width: 150px; font-size: 1rem;"><option>نوع الاعتماد</option></select>
+                            <select class="form-select w-auto bg-light border-0 py-1" style="min-width: 150px; font-size: 1rem;"><option>حالة النسخة</option></select>
+                        </div>
+                    </div>
+
+                    <!-- Dense KPI Strip -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3 col-xl-2">
+                            <div class="card border-0 shadow-sm caqa-record-card p-3 d-flex flex-row align-items-center h-100">
+                                <div class="fs-1 ms-3 text-caqa-primary opacity-75"><i class="fa fa-book"></i></div>
+                                <div>
+                                    <h6 class="text-muted mb-0" style="font-size: 0.8rem;">النسخ</h6>
+                                    <h3 class="fw-bold mb-0 text-caqa-primary"><t t-esc="state.data.kpis.versions || 0"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 col-xl-2">
+                            <div class="card border-0 shadow-sm caqa-record-card p-3 d-flex flex-row align-items-center h-100">
+                                <div class="fs-1 ms-3 text-info opacity-75"><i class="fa fa-bookmark"></i></div>
+                                <div>
+                                    <h6 class="text-muted mb-0" style="font-size: 0.8rem;">الأبواب</h6>
+                                    <h3 class="fw-bold mb-0"><t t-esc="state.data.kpis.chapters || 0"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 col-xl-2">
+                            <div class="card border-0 shadow-sm caqa-record-card p-3 d-flex flex-row align-items-center h-100">
+                                <div class="fs-1 ms-3 text-success opacity-75"><i class="fa fa-sitemap"></i></div>
+                                <div>
+                                    <h6 class="text-muted mb-0" style="font-size: 0.8rem;">الفصول</h6>
+                                    <h3 class="fw-bold mb-0"><t t-esc="state.data.kpis.subchapters || 0"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <t t-if="state.data.kpis.standards > 0">
+                            <div class="col-6 col-md-3 col-xl-2">
+                                <div class="card border-0 shadow-sm caqa-record-card p-3 d-flex flex-row align-items-center h-100">
+                                    <div class="fs-1 ms-3 text-secondary opacity-75"><i class="fa fa-tag"></i></div>
+                                    <div>
+                                        <h6 class="text-muted mb-0" style="font-size: 0.8rem;">المعايير</h6>
+                                        <h3 class="fw-bold mb-0"><t t-esc="state.data.kpis.standards || 0"/></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <div class="col-6 col-md-3 col-xl-2">
+                            <div class="card border-0 shadow-sm caqa-record-card p-3 d-flex flex-row align-items-center h-100">
+                                <div class="fs-1 ms-3 text-warning opacity-75"><i class="fa fa-crosshairs"></i></div>
+                                <div>
+                                    <h6 class="text-muted mb-0" style="font-size: 0.8rem;">المؤشرات</h6>
+                                    <h3 class="fw-bold mb-0 text-warning"><t t-esc="state.data.kpis.indicators || 0"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 col-xl-2">
+                            <div class="card border-0 shadow-sm caqa-record-card p-3 d-flex flex-row align-items-center h-100">
+                                <div class="fs-1 ms-3 text-caqa-accent opacity-75"><i class="fa fa-check-square-o"></i></div>
+                                <div>
+                                    <h6 class="text-muted mb-0" style="font-size: 0.8rem;">نقاط الفحص</h6>
+                                    <h3 class="fw-bold mb-0 text-caqa-accent"><t t-esc="state.data.kpis.checkpoints || 0"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Structure Analysis -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-white border-0 pt-4 pb-0">
+                                    <h5 class="fw-bold text-caqa-primary mb-0">الهيكل العام والتوزيع</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div style="height: 300px;">
+                                        <canvas t-ref="standardsDistChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risks Table -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold text-caqa-primary mb-0">أبرز المؤشرات عرضة للضعف</h5>
+                                </div>
+                                <div class="card-body p-0 mt-3 overflow-auto" style="max-height: 300px;">
+                                    <table class="table table-hover align-middle mb-0 border-top">
+                                        <thead class="bg-light text-muted">
+                                            <tr>
+                                                <th class="border-0 pe-4">العنصر</th>
+                                                <th class="border-0 text-center">مرات التكرار</th>
+                                                <th class="border-0 text-center">مؤشر المخاطرة</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="state.data.risks.length > 0">
+                                                <t t-foreach="state.data.risks" t-as="risk" t-key="risk.name">
+                                                    <tr>
+                                                        <td class="pe-4 fw-medium text-caqa-primary"><t t-esc="risk.name"/></td>
+                                                        <td class="text-center fw-bold"><t t-esc="risk.count"/></td>
+                                                        <td class="text-center">
+                                                            <div class="progress" style="height: 6px; width: 60px; margin: auto;">
+                                                                <div class="progress-bar bg-danger" t-attf-style="width: {{ risk.severity_percent }}%;"></div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <tr><td colspan="3" class="text-center text-muted py-5">لا توجد بيانات متاحة لعرض المخاطر.</td></tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

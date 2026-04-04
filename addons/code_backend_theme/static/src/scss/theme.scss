@@ -1582,7 +1582,7 @@ div.dropdown-menu.bootstrap-datetimepicker-widget {
 .o_main_navbar > .o_menu_sections > div, .o_main_navbar > .o_menu_sections > div > a,
 .o_main_navbar .o_menu_systray > div, .o_main_navbar .o_menu_systray > div > a,
 .o_main_navbar .o_menu_toggle, .o_main_navbar .o_navbar_apps_menu, .o_main_navbar .o_menu_brand {
-    color: $f_color !important;
+    color: #4c4c4c !important;
 }
 .o_content .o_expense_purple {
     color: #556ee6;
@@ -1603,7 +1603,7 @@ div.dropdown-menu.bootstrap-datetimepicker-widget {
 }
 // V17 Fixes
 .o_main_navbar .o_menu_sections .o_nav_entry, .o_main_navbar .o_menu_sections .dropdown-toggle {
-    background: white !important;
+    color: #4c4c4c !important;
 }
 .o_cp_searchview .btn.btn-primary {
     max-height: 30px !important;
@@ -1616,7 +1616,7 @@ div.dropdown-menu.bootstrap-datetimepicker-widget {
     background: none !important;
 }
 .o_list_view .table-responsive .table {
-    width: fit-content !important;
+    width: 100% !important;
     left: -14px;
 }
 // Remove button one2many field

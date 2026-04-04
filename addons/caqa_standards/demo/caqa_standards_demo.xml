@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <record id="demo_standard_version_1" model="caqa.standard.version">
-        <field name="framework_id" ref="caqa_core.demo_caqa_framework_1"/>
-        <field name="accreditation_type_id" ref="caqa_core.demo_caqa_accreditation_type_program"/>
+        <field name="framework_id" ref="caqa_core.demo_caqa_framework_1" />
+        <field name="accreditation_type_id" ref="caqa_core.demo_caqa_accreditation_type_program" />
         <field name="name">Program Standards 2026</field>
         <field name="code">PS-2026</field>
         <field name="effective_start_date">2026-01-01</field>
@@ -10,41 +10,35 @@
         <field name="is_default">1</field>
     </record>
     <record id="demo_standard_chapter_1" model="caqa.standard.chapter">
-        <field name="version_id" ref="demo_standard_version_1"/>
+        <field name="version_id" ref="demo_standard_version_1" />
         <field name="code">CH1</field>
         <field name="name">Mission and Governance</field>
-        <field name="weight">15</field>
+        <field name="weight">10.0</field>
     </record>
     <record id="demo_standard_subchapter_1" model="caqa.standard.subchapter">
-        <field name="chapter_id" ref="demo_standard_chapter_1"/>
+        <field name="chapter_id" ref="demo_standard_chapter_1" />
         <field name="code">SC1.1</field>
         <field name="name">Mission Alignment</field>
-        <field name="weight">15</field>
-    </record>
-    <record id="demo_standard_1" model="caqa.standard">
-        <field name="subchapter_id" ref="demo_standard_subchapter_1"/>
-        <field name="code">STD1</field>
-        <field name="name">Documented Mission and Objectives</field>
-        <field name="weight">15</field>
+        <field name="weight">10.00</field>
     </record>
     <record id="demo_indicator_1" model="caqa.standard.indicator">
-        <field name="standard_id" ref="demo_standard_1"/>
+        <field name="subchapter_id" ref="demo_standard_subchapter_1" />
         <field name="code">IND1.1</field>
         <field name="name">Approved and published mission statement exists.</field>
         <field name="indicator_type">documentary</field>
-        <field name="weight">10</field>
+        <field name="weight">10.00</field>
         <field name="expected_evidence_count">1</field>
     </record>
     <record id="demo_checkpoint_1" model="caqa.standard.checkpoint">
-        <field name="indicator_id" ref="demo_indicator_1"/>
+        <field name="indicator_id" ref="demo_indicator_1" />
         <field name="code">CP1</field>
         <field name="name">Mission is formally approved.</field>
-        <field name="weight">5</field>
-        <field name="max_score">5</field>
+        <field name="weight">10.00</field>
+        <field name="max_score">10.00</field>
     </record>
     <record id="demo_evidence_requirement_1" model="caqa.evidence.requirement">
-        <field name="indicator_id" ref="demo_indicator_1"/>
-        <field name="checkpoint_id" ref="demo_checkpoint_1"/>
+        <field name="indicator_id" ref="demo_indicator_1" />
+        <field name="checkpoint_id" ref="demo_checkpoint_1" />
         <field name="requirement_level">checkpoint</field>
         <field name="code">EV1</field>
         <field name="name">Signed mission approval document</field>

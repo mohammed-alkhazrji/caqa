@@ -1,0 +1,72 @@
+.caqa-dashboard-container {
+    --caqa-primary: #1A365D;
+    --caqa-accent: #B87C19;
+    --caqa-bg: #F8FAFC;
+    --caqa-text-main: #1e293b;
+    --caqa-text-muted: #64748b;
+
+    background-color: var(--caqa-bg);
+    font-family: 'Inter', 'Cairo', sans-serif;
+    color: var(--caqa-text-main);
+    
+    .hero-gradient {
+        background: linear-gradient(135deg, var(--caqa-primary) 0%, #172a4f 100%);
+        border-radius: 12px;
+    }
+
+    .card { 
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+    }
+
+    .caqa-record-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    .caqa-record-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px -4px rgba(26, 54, 93, 0.12) !important;
+    }
+
+    .text-caqa-primary { color: var(--caqa-primary) !important; }
+    .text-caqa-accent { color: var(--caqa-accent) !important; }
+
+    .btn-caqa-primary { 
+        background-color: var(--caqa-primary); 
+        color: white; 
+        border: none;
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 8px;
+    }
+    .btn-caqa-primary:hover { 
+        background-color: #0f172a; 
+        color: white; 
+    }
+
+    .btn-caqa-accent {
+        background-color: var(--caqa-accent);
+        color: white;
+        border: none;
+        font-weight: 600;
+        padding: 10px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(184, 124, 25, 0.2);
+        transition: all 0.2s;
+    }
+    .btn-caqa-accent:hover { 
+        background-color: #9A6611; 
+        color: white; 
+        transform: translateY(-1px);
+        box-shadow: 0 6px 10px rgba(184, 124, 25, 0.3);
+    }
+
+    .focus-mode-container {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(26, 54, 93, 0.2) transparent;
+        &::-webkit-scrollbar { width: 6px; }
+        &::-webkit-scrollbar-thumb { background-color: rgba(26, 54, 93, 0.2); border-radius: 3px; }
+    }
+}

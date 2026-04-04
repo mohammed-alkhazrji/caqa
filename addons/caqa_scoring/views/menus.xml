@@ -4,7 +4,7 @@
     <menuitem id="menu_caqa_scoring_root" 
               name="Scoring Engine"
               sequence="35"
-              web_icon="caqa_scoring/static/description/star-half-stroke-solid-full.svg"
+              web_icon="caqa_scoring,static/description/score_12772631.png"
               groups="caqa_scoring.group_caqa_score_manager"/>
 
     <!-- Assessment Workspace Portal Menu -->
@@ -18,7 +18,7 @@
               name="Assessment Workspace"
               sequence="34"
               action="action_caqa_workspace_url"
-              web_icon="caqa_scoring/static/description/star-half-solid-full.svg"
+              web_icon="caqa_scoring,static/description/rating_12950845.png"
               groups="caqa_scoring.group_caqa_score_reviewer"/>
 
     <!-- Operational Menus -->

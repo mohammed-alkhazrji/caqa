@@ -154,11 +154,12 @@ body.caqa-app-launcher-open .caqa-app-launcher-overlay {
 }
 
 .caqa-app-icon-btn {
-    color: white;
+    color: #4c4c4c;
     opacity: 0.8;
     transition: opacity 0.2s;
 }
 
 .caqa-app-icon-btn:hover {
+    color: #000;
     opacity: 1;
 }
